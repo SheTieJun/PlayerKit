@@ -1,0 +1,3 @@
+rootProject.name = "PlayerKit"
+include ':app'
+include ':videokit'
