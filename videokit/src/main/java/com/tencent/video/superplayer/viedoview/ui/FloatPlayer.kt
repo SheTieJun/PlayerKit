@@ -1,4 +1,4 @@
-package com.tencent.video.superplayer.ui.player
+package com.tencent.video.superplayer.viedoview.ui
 
 import android.content.*
 import android.util.AttributeSet
@@ -6,8 +6,9 @@ import android.view.*
 import android.widget.*
 import com.tencent.liteav.superplayer.*
 import com.tencent.rtmp.ui.TXCloudVideoView
-import com.tencent.video.superplayer.SuperPlayerDef.PlayerMode
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.PlayerMode
 import com.tencent.video.superplayer.base.PlayerConfig
+import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
 
 /**
  * 悬浮窗模式播放控件
@@ -18,7 +19,7 @@ import com.tencent.video.superplayer.base.PlayerConfig
  *
  * 2、关闭悬浮窗[.onClick]
  */
-class FloatPlayer : AbsPlayer, View.OnClickListener {
+class FloatPlayer : AbBaseUIPlayer, View.OnClickListener {
     /**
      * 获取悬浮窗中的视频播放view
      */
@@ -40,15 +41,15 @@ class FloatPlayer : AbsPlayer, View.OnClickListener {
     private var mYInView // 滑动事件距离自身上边界的距离
             = 0f
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         initView(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
@@ -108,6 +109,19 @@ class FloatPlayer : AbsPlayer, View.OnClickListener {
         return true
     }
 
+    override val playerMode: PlayerMode
+        get() = PlayerMode.FLOAT
+
+    override fun showLoading() {
+
+    }
+
+    override fun hideLoading() {
+    }
+
+    override fun isDrag(): Boolean {
+        return false
+    }
     /**
      * 获取系统状态栏高度
      */

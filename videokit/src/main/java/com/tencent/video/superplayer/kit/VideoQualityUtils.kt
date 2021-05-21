@@ -1,4 +1,4 @@
-package com.tencent.video.superplayer.model.utils
+package com.tencent.video.superplayer.kit
 
 import com.tencent.liteav.basic.log.TXCLog
 import com.tencent.rtmp.TXBitrateItem

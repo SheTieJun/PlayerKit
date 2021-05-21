@@ -1,7 +1,7 @@
-package com.tencent.video.superplayer.ui.player
+package com.tencent.video.superplayer.viedoview.base
 
 import android.graphics.Bitmap
-import com.tencent.video.superplayer.SuperPlayerDef.*
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.VideoQuality
@@ -9,13 +9,15 @@ import com.tencent.video.superplayer.model.entity.VideoQuality
 /**
  * 播放控制接口
  */
-interface Player {
+interface UIPlayer {
     /**
      * 设置回调
      *
      * @param callback 回调接口实现对象
      */
-    fun setCallback(callback: Callback?)
+    fun setUICallback(callback: VideoViewCallback?)
+
+    val playerMode:PlayerMode
 
     /**
      * 设置水印
@@ -25,6 +27,18 @@ interface Player {
      * @param y   水印的y坐标
      */
     fun setWatermark(bmp: Bitmap?, x: Float, y: Float)
+
+    fun isDrag():Boolean
+
+    /**
+     * 加载中
+     */
+    fun showLoading()
+
+
+    /*隐藏中
+     */
+    fun hideLoading()
 
     /**
      * 显示控件
@@ -125,9 +139,15 @@ interface Player {
     fun updateKeyFrameDescInfo(list: ArrayList<PlayKeyFrameDescInfo>?)
 
     /**
-     * 播放控制回调接口
+     * 释放操作
      */
-    interface Callback {
+    fun onDestroy()
+
+
+    /**
+     * 界面：播放控制回调接口
+     */
+    interface VideoViewCallback {
         /**
          * 切换播放模式回调
          *
@@ -136,7 +156,7 @@ interface Player {
          * 全屏模式      [SuperPlayerDef.PlayerMode.FULLSCREEN]
          * 悬浮窗模式    [SuperPlayerDef.PlayerMode.FLOAT]
          */
-        fun onSwitchPlayMode(playMode: PlayerMode)
+        fun onSwitchPlayMode(playMode: SuperPlayerDef.PlayerMode)
 
 
         /**
@@ -147,7 +167,7 @@ interface Player {
          * 全屏模式      [SuperPlayerDef.PlayerMode.FULLSCREEN]
          * 悬浮窗模式    [SuperPlayerDef.PlayerMode.FLOAT]
          */
-        fun onBackPressed(playMode: PlayerMode?)
+        fun onBackPressed(playMode: SuperPlayerDef.PlayerMode)
 
         /**
          * 悬浮窗位置更新回调
@@ -187,7 +207,8 @@ interface Player {
         /**
          * 投屏
          */
-        fun onTV()
+        fun onShotScreen()
+
         /**
          * 屏幕截图回调
          */
@@ -220,6 +241,11 @@ interface Player {
          * @param isAccelerate 开启：true 关闭：false
          */
         fun onHWAccelerationToggle(isAccelerate: Boolean)
-        fun toggle(showing: Boolean)
+
+
+        /**
+         * 控制view的隐藏和显示
+         */
+        fun onControlViewToggle(showing: Boolean)
     }
 }

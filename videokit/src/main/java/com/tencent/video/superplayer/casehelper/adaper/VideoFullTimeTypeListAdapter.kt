@@ -8,14 +8,6 @@ import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.base.BaseViewHolder
 import com.tencent.video.superplayer.base.timer.TimeType
 
-/**
- * Project Name:LiZhiWeiKe
- * Package Name:com.lizhiweike.lecture.adapter
- * Created by tom on 2018/2/1 18:25 .
- *
- *
- * Copyright (c) 2016—2017 https://www.lizhiweike.com all rights reserved.
- */
 class VideoFullTimeTypeListAdapter(data: ArrayList<TimeType>) :
     BaseKitAdapter<TimeType>(R.layout.superplayer_item_full_time_type, data) {
     private var position = -1

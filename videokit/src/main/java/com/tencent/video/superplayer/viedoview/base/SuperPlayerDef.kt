@@ -1,4 +1,4 @@
-package com.tencent.video.superplayer
+package com.tencent.video.superplayer.viedoview.base
 
 class SuperPlayerDef {
     enum class PlayerMode {

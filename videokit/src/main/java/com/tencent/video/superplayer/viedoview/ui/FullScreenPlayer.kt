@@ -1,10 +1,9 @@
-package com.tencent.video.superplayer.ui.player
+package com.tencent.video.superplayer.viedoview.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.text.TextUtils
-import android.transition.TransitionManager
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.LayoutInflater
@@ -16,18 +15,17 @@ import androidx.core.view.isVisible
 import com.tencent.liteav.superplayer.R
 import com.tencent.liteav.superplayer.databinding.SuperplayerVodPlayerFullscreenBinding
 import com.tencent.rtmp.TXImageSprite
-import com.tencent.video.superplayer.SuperPlayerDef.*
-import com.tencent.video.superplayer.base.ConfigInterface
 import com.tencent.video.superplayer.base.PlayerConfig
+import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.casehelper.PlayKeyListHelper
-import com.tencent.video.superplayer.casehelper.VideoCaseHelper
 import com.tencent.video.superplayer.casehelper.WinSpeedHelper
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.VideoQuality
-import com.tencent.video.superplayer.model.utils.VideoGestureDetector
-import com.tencent.video.superplayer.base.UIConfig
+import com.tencent.video.superplayer.kit.VideoGestureDetector
 import com.tencent.video.superplayer.ui.view.*
+import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.ArrayList
@@ -57,65 +55,23 @@ import kotlin.math.roundToInt
  * 8、硬件加速监听[.onHWAcceleration]
  *
  */
-class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
+class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callback,
     VodQualityView.Callback, PointSeekBar.OnSeekBarChangeListener,
-    PointSeekBar.OnSeekBarPointClickListener, ConfigInterface {
-    private lateinit var playerConfig: PlayerConfig
-    private lateinit var uiConfig: UIConfig
+    PointSeekBar.OnSeekBarPointClickListener {
 
     private lateinit var mViewBinding: SuperplayerVodPlayerFullscreenBinding
 
-    // UI控件
-    private var mLayoutTop // 顶部标题栏布局
-            : View? = null
-    private var mLayoutBottom // 底部进度条所在布局
-            : View? = null
-    private var mIvPause // 暂停播放按钮
-            : ImageView? = null
-    private var mTvTitle // 视频名称文本
-            : TextView? = null
-    private var mTvBackToLive // 返回直播文本
-            : TextView? = null
-    private var mIvWatermark // 水印
-            : ImageView? = null
-    private var mTvCurrent // 当前进度文本
-            : TextView? = null
-    private var mTvDuration // 总时长文本
-            : TextView? = null
-    private var mSeekBarProgress // 播放进度条
-            : PointSeekBar? = null
-    private var mPbLiveLoading // 加载圈
-            : ProgressBar? = null
-    private var mGestureVolumeBrightnessProgressLayout // 音量亮度调节布局
-            : VolumeBrightnessProgressLayout? = null
-    private var mGestureVideoProgressLayout // 手势快进提示布局
-            : VideoProgressLayout? = null
-    private var mTvQuality // 当前画质文本
-            : TextView? = null
-    private var mIvBack // 顶部标题栏中的返回按钮
-            : ImageView? = null
-    private var mIvLock // 锁屏按钮
-            : ImageView? = null
-    private var mIvMore // 更多设置弹窗按钮
-            : ImageView? = null
-    private var mVodQualityView // 画质列表弹窗
-            : VodQualityView? = null
-    private var mVodMoreView // 更多设置弹窗
-            : VodMoreView? = null
-    private var mTvVttText // 关键帧打点信息文本
-            : TextView? = null
-    private var mHideLockViewRunnable // 隐藏锁屏按钮子线程
-            : HideLockViewRunnable? = null
-    private var mGestureDetector // 手势检测监听器
-            : GestureDetector? = null
-    private var mVideoGestureDetector // 手势控制工具
-            : VideoGestureDetector? = null
-    private var isShowing // 自身是否可见
-            = false
-    private var mIsChangingSeekBarProgress // 进度条是否正在拖动，避免SeekBar由于视频播放的update而跳动
-            = false
-    private var mPlayType // 当前播放视频类型
-            : PlayerType? = null
+    // 隐藏锁屏按钮子线程
+    private var mHideLockViewRunnable: HideLockViewRunnable? = null
+    // 手势检测监听器
+    private var mGestureDetector : GestureDetector? = null
+    // 手势控制工具
+
+    private var mVideoGestureDetector  : VideoGestureDetector? = null
+    private var isShowing = false
+    // 进度条是否正在拖动，避免SeekBar由于视频播放的update而跳动
+    private var mIsChangingSeekBarProgress = false
+    private var mPlayType: PlayerType? = null
     private var mCurrentPlayState: PlayerState? = PlayerState.END // 当前播放状态
     private var mDuration // 视频总时长
             : Long = 0
@@ -123,16 +79,12 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             : Long = 0
     private var mProgress // 当前播放进度
             : Long = 0
-    private val mBackgroundBmp // 背景图
-            : Bitmap? = null
     private var mWaterMarkBmp // 水印图
             : Bitmap? = null
     private var mWaterMarkBmpX // 水印x坐标
             = 0f
     private var mWaterMarkBmpY // 水印y坐标
             = 0f
-    private var mBarrageOn // 弹幕是否开启
-            = false
     private var mLockScreen // 是否锁屏
             = false
     private var mTXImageSprite // 雪碧图信息
@@ -146,10 +98,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             : ArrayList<VideoQuality>? = null
     private var mFirstShowQuality // 是都是首次显示画质信息
             = false
-    private var mIvSpeed: ImageView? = null
     private var keyListHelper: PlayKeyListHelper? = null
-    private var mTopShare: View? = null
-    private var mIvTV: View? = null
 
     constructor(context: Context) : super(context) {
         initialize(context)
@@ -197,9 +146,9 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
                     if (downEvent == null || moveEvent == null) {
                         return false
                     }
-                    if (mVideoGestureDetector != null && mGestureVolumeBrightnessProgressLayout != null) {
+                    if (mVideoGestureDetector != null) {
                         mVideoGestureDetector!!.check(
-                            mGestureVolumeBrightnessProgressLayout!!.height,
+                            mViewBinding.superplayerGestureProgress.height,
                             downEvent,
                             moveEvent,
                             distanceX,
@@ -212,7 +161,10 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
                 override fun onDown(e: MotionEvent?): Boolean {
                     if (mLockScreen || isLive()) return true
                     if (mVideoGestureDetector != null) {
-                        mVideoGestureDetector!!.reset(width, mSeekBarProgress!!.progress)
+                        mVideoGestureDetector!!.reset(
+                            width,
+                            mViewBinding.superplayerSeekbarProgress!!.progress
+                        )
                     }
                     return true
                 }
@@ -222,54 +174,53 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
         mVideoGestureDetector!!.setVideoGestureListener(object :
             VideoGestureDetector.VideoGestureListener {
             override fun onBrightnessGesture(newBrightness: Float) {
-                if (mGestureVolumeBrightnessProgressLayout != null) {
-                    mGestureVolumeBrightnessProgressLayout!!.setProgress((newBrightness * 100).toInt())
-                    mGestureVolumeBrightnessProgressLayout!!.setImageResource(R.drawable.superplayer_ic_light_max)
-                    mGestureVolumeBrightnessProgressLayout!!.show()
-                }
+                mViewBinding.superplayerGestureProgress.setProgress((newBrightness * 100).toInt())
+                mViewBinding.superplayerGestureProgress.setImageResource(R.drawable.superplayer_ic_light_max)
+                mViewBinding.superplayerGestureProgress.show()
             }
 
             override fun onVolumeGesture(volumeProgress: Float) {
-                if (mGestureVolumeBrightnessProgressLayout != null) {
-                    mGestureVolumeBrightnessProgressLayout!!.setImageResource(R.drawable.superplayer_ic_volume_max)
-                    mGestureVolumeBrightnessProgressLayout!!.setProgress(volumeProgress.toInt())
-                    mGestureVolumeBrightnessProgressLayout!!.show()
-                }
+                mViewBinding.superplayerGestureProgress.setImageResource(R.drawable.superplayer_ic_volume_max)
+                mViewBinding.superplayerGestureProgress.setProgress(volumeProgress.toInt())
+                mViewBinding.superplayerGestureProgress.show()
             }
 
-            override fun onSeekGesture(progress: Int) {
+            override fun onSeekGesture(seekProgress: Int) {
                 if (isLive()) return
-                var progress = progress
+                var progress = seekProgress
                 mIsChangingSeekBarProgress = true
-                if (mGestureVideoProgressLayout != null) {
-                    if (progress > mSeekBarProgress!!.max) {
-                        progress = mSeekBarProgress!!.max
-                    }
-                    if (progress < 0) {
-                        progress = 0
-                    }
-                    mGestureVideoProgressLayout!!.setProgress(progress)
-                    mGestureVideoProgressLayout!!.show()
-                    val percentage = progress.toFloat() / mSeekBarProgress!!.max
-                    var currentTime = mDuration * percentage
-                    if (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT) {
-                        (if (mLivePushDuration > MAX_SHIFT_TIME) {
-                            (mLivePushDuration - MAX_SHIFT_TIME * (1 - percentage))
-                        } else {
-                            mLivePushDuration * percentage
-                        }).also { currentTime = it }
-                        mGestureVideoProgressLayout!!.setTimeText(formattedTime(currentTime.toLong()))
-                    } else {
-                        mGestureVideoProgressLayout!!.setTimeText(
-                            formattedTime(currentTime.toLong()) + " / " + formattedTime(
-                                mDuration
-                            )
-                        )
-                        updateVideoProgress(currentTime.toLong(), mDuration)
-                    }
-                    setThumbnail(progress)
+                if (progress > mViewBinding.superplayerSeekbarProgress.max) {
+                    progress = mViewBinding.superplayerSeekbarProgress.max
                 }
-                mSeekBarProgress?.progress = (progress)
+                if (progress < 0) {
+                    progress = 0
+                }
+                mViewBinding.superplayerVideoProgressLayout.setProgress(progress)
+                mViewBinding.superplayerVideoProgressLayout.show()
+                val percentage =
+                    progress.toFloat() / mViewBinding.superplayerSeekbarProgress!!.max
+                var currentTime = mDuration * percentage
+                if (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT) {
+                    (if (mLivePushDuration > MAX_SHIFT_TIME) {
+                        (mLivePushDuration - MAX_SHIFT_TIME * (1 - percentage))
+                    } else {
+                        mLivePushDuration * percentage
+                    }).also { currentTime = it }
+                    mViewBinding.superplayerVideoProgressLayout.setTimeText(
+                        formattedTime(
+                            currentTime.toLong()
+                        )
+                    )
+                } else {
+                    mViewBinding.superplayerVideoProgressLayout.setTimeText(
+                        formattedTime(currentTime.toLong()) + " / " + formattedTime(
+                            mDuration
+                        )
+                    )
+                    updateVideoProgress(currentTime.toLong(), mDuration)
+                }
+                setThumbnail(progress)
+                mViewBinding.superplayerSeekbarProgress.progress = (progress)
             }
         })
     }
@@ -280,63 +231,32 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
      * 初始化view
      */
     private fun initView(context: Context) {
-        mViewBinding = SuperplayerVodPlayerFullscreenBinding.inflate(LayoutInflater.from(context))
+        mViewBinding =
+            SuperplayerVodPlayerFullscreenBinding.inflate(LayoutInflater.from(context), this, true)
         mHideLockViewRunnable = HideLockViewRunnable(this)
-        LayoutInflater.from(context).inflate(R.layout.superplayer_vod_player_fullscreen, this)
-        mLayoutTop = findViewById(R.id.superplayer_rl_top)
-        mLayoutTop!!.setOnClickListener(this)
-        mLayoutBottom = findViewById(R.id.superplayer_ll_bottom)
-        mLayoutBottom!!.setOnClickListener(this)
-        mIvBack = findViewById<View>(R.id.superplayer_iv_back) as ImageView
-        mIvLock = findViewById<View>(R.id.superplayer_iv_lock) as ImageView
-        mTvTitle = findViewById<View>(R.id.superplayer_tv_title) as TextView
-        mIvPause = findViewById<View>(R.id.superplayer_iv_pause) as ImageView
-        mIvMore = findViewById<View>(R.id.superplayer_iv_more) as ImageView
-        mTvCurrent = findViewById<View>(R.id.superplayer_tv_current) as TextView
-        mTvDuration = findViewById<View>(R.id.superplayer_tv_duration) as TextView
-        mSeekBarProgress = findViewById<View>(R.id.superplayer_seekbar_progress) as PointSeekBar
-        mSeekBarProgress!!.progress = (0)
-        mSeekBarProgress!!.setOnPointClickListener(this)
-        mSeekBarProgress!!.setOnSeekBarChangeListener(this)
-        mTvQuality = findViewById(R.id.superplayer_tv_quality)
-        mTvBackToLive = findViewById(R.id.superplayer_tv_back_to_live)
-        mPbLiveLoading = findViewById(R.id.superplayer_pb_live)
-        mVodQualityView = findViewById(R.id.superplayer_vod_quality)
-        mVodQualityView!!.setCallback(true, this)
-        mVodMoreView = findViewById(R.id.superplayer_vod_more)
-        mVodMoreView!!.setCallback(this)
-        mTvBackToLive!!.setOnClickListener(this)
-        mIvLock!!.setOnClickListener(this)
-        mIvBack!!.setOnClickListener(this)
-        mIvPause!!.setOnClickListener(this)
-        mIvMore!!.setOnClickListener(this)
-        mTvQuality!!.setOnClickListener(this)
-        mTvVttText = findViewById<View>(R.id.superplayer_large_tv_vtt_text) as TextView
-        mTvVttText!!.setOnClickListener(this)
-        if (mDefaultVideoQuality != null) {
-            mTvQuality!!.text = mDefaultVideoQuality!!.title
+        mViewBinding.apply {
+            superplayerRlTop.setOnClickListener(this@FullScreenPlayer)
+            superplayerLlBottom.setOnClickListener(this@FullScreenPlayer)
+            superplayerSeekbarProgress.apply {
+                setOnPointClickListener(this@FullScreenPlayer)
+                setOnSeekBarChangeListener(this@FullScreenPlayer)
+            }.progress = 0
+            superplayerVodQuality.setCallback(true, this@FullScreenPlayer)
+            superplayerVodMore.setCallback(this@FullScreenPlayer)
+            superplayerIvBack.setOnClickListener(this@FullScreenPlayer)
+            superplayerIvMore.setOnClickListener(this@FullScreenPlayer)
+            superplayerIvPause.setOnClickListener(this@FullScreenPlayer)
+            superplayerTvQuality.setOnClickListener(this@FullScreenPlayer)
+            superplayerTvBackToLive.setOnClickListener(this@FullScreenPlayer)
+            superplayerLargeTvVttText.setOnClickListener(this@FullScreenPlayer)
+            if (mDefaultVideoQuality != null) {
+                superplayerTvQuality.text = mDefaultVideoQuality!!.title
+            }
+            ivSpeed.setOnClickListener(this@FullScreenPlayer)
+            topShare.setOnClickListener(this@FullScreenPlayer)
+            ivTv.setOnClickListener(this@FullScreenPlayer)
         }
-        mGestureVolumeBrightnessProgressLayout =
-            findViewById<View>(R.id.superplayer_gesture_progress) as VolumeBrightnessProgressLayout
-        mGestureVideoProgressLayout =
-            findViewById<View>(R.id.superplayer_video_progress_layout) as VideoProgressLayout
-        mIvWatermark = findViewById<View>(R.id.superplayer_large_iv_water_mark) as ImageView
-        mIvSpeed = findViewById(R.id.iv_speed)
-        mIvSpeed!!.setOnClickListener(this)
-        mTopShare = findViewById(R.id.top_share)
-        mTopShare!!.setOnClickListener(this)
-        mIvTV = findViewById(R.id.iv_tv)
-        mIvTV!!.setOnClickListener(this)
         keyListHelper = PlayKeyListHelper(this)
-
-    }
-
-    fun getKeyListHelper(): PlayKeyListHelper? {
-        return keyListHelper
-    }
-
-    fun getCaseHelper(): VideoCaseHelper? {
-        return mVodMoreView?.getCaseHelper()
     }
 
     /**
@@ -368,9 +288,9 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             } else {
                 show()
             }
-            mControllerCallback?.toggle(isShowing)
+            mControllerCallback?.onControlViewToggle(isShowing)
         } else {
-            mIvLock!!.visibility = VISIBLE
+            mViewBinding.superplayerIvLock.visibility = VISIBLE
             if (mHideLockViewRunnable != null) {
                 removeCallbacks(mHideLockViewRunnable)
                 postDelayed(mHideLockViewRunnable, 7000)
@@ -381,22 +301,22 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
 
     private fun moreView(isShow: Boolean) {
         if (isShow) {
-            if (mVodMoreView?.visibility == View.GONE) {
-                mVodMoreView?.visibility = View.VISIBLE
-                mVodMoreView?.animation =
+            if (mViewBinding.superplayerVodMore.visibility == View.GONE) {
+                mViewBinding.superplayerVodMore.visibility = View.VISIBLE
+                mViewBinding.superplayerVodMore.animation =
                     AnimationUtils.loadAnimation(context, R.anim.slide_right_in)
             }
         } else {
-            if (mVodMoreView?.visibility == View.VISIBLE) {
-                mVodMoreView?.visibility = View.GONE
-                mVodMoreView?.animation =
+            if (mViewBinding.superplayerVodMore.visibility == View.VISIBLE) {
+                mViewBinding.superplayerVodMore.visibility = View.GONE
+                mViewBinding.superplayerVodMore.animation =
                     AnimationUtils.loadAnimation(context, R.anim.slide_right_exit)
             }
         }
     }
 
     private fun showQualityView(isShow: Boolean) {
-        mVodQualityView?.showQualityView(isShow)
+        mViewBinding.superplayerVodQuality.showQualityView(isShow)
     }
 
 
@@ -424,21 +344,22 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             removeCallbacks(mHideLockViewRunnable)
         }
         if (uiConfig.showLock) {
-            mIvLock!!.visibility = VISIBLE
+            mViewBinding.superplayerIvLock.visibility = VISIBLE
         }
         if (mPlayType == PlayerType.LIVE_SHIFT) {
-            if (mLayoutBottom!!.visibility == VISIBLE) mTvBackToLive!!.visibility = VISIBLE
+            if (mViewBinding.superplayerLlBottom.visibility == VISIBLE) {
+                mViewBinding.superplayerTvBackToLive.visibility = VISIBLE
+            }
         }
         val pointParams: MutableList<PointSeekBar.PointParams> = ArrayList()
         if (mTXPlayKeyFrameDescInfoList != null) for (info in mTXPlayKeyFrameDescInfoList!!) {
-            val progress = (info.time / mDuration * mSeekBarProgress!!.max) as Int
+            val progress =
+                (info.time / mDuration * mViewBinding.superplayerSeekbarProgress.max).toInt()
             pointParams.add(PointSeekBar.PointParams(progress, Color.WHITE))
         }
-        mSeekBarProgress!!.setPointList(pointParams)
-        if (mHideViewRunnable != null) {
-            removeCallbacks(mHideViewRunnable)
-            postDelayed(mHideViewRunnable, 7000)
-        }
+        mViewBinding.superplayerSeekbarProgress.setPointList(pointParams)
+        removeCallbacks(mHideViewRunnable)
+        postDelayed(mHideViewRunnable, 7000)
     }
 
     /**
@@ -449,46 +370,46 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
         isShowControl(false)
         showQualityView(false)
         moreView(false)
-        mTvVttText!!.visibility = GONE
-        mIvLock!!.visibility = GONE
+        mViewBinding.superplayerLargeTvVttText.visibility = GONE
+        mViewBinding.superplayerIvLock.visibility = GONE
         if (mPlayType == PlayerType.LIVE_SHIFT) {
-            mTvBackToLive!!.visibility = GONE
+            mViewBinding.superplayerTvBackToLive.visibility = GONE
         }
     }
 
     private fun isShowControl(isShow: Boolean) {
         if (mPlayType == PlayerType.LIVE_SHIFT) {
-            mTvBackToLive!!.isVisible = isShow
+            mViewBinding.superplayerTvBackToLive.isVisible = isShow
         }
         if (isShow) {
-            if (mLayoutTop!!.visibility != View.VISIBLE) {
+            if (mViewBinding.superplayerRlTop.visibility != View.VISIBLE) {
                 if (uiConfig.showTop) {
-                    mLayoutTop?.animation =
+                    mViewBinding.superplayerRlTop.animation =
                         AnimationUtils.loadAnimation(context, R.anim.push_top_in)
-                    mLayoutTop!!.isVisible = isShow
+                    mViewBinding.superplayerRlTop.isVisible = isShow
                 }
             }
-            if (mLayoutBottom!!.visibility != View.VISIBLE) {
+            if (mViewBinding.superplayerLlBottom.visibility != View.VISIBLE) {
                 if (uiConfig.showBottom) {
-                    mLayoutBottom?.animation =
+                    mViewBinding.superplayerLlBottom.animation =
                         AnimationUtils.loadAnimation(context, R.anim.push_bottom_in)
-                    mLayoutBottom!!.isVisible = isShow
+                    mViewBinding.superplayerLlBottom.isVisible = isShow
                 }
             }
         } else {
-            if (mLayoutTop!!.visibility == View.VISIBLE) {
+            if (mViewBinding.superplayerRlTop.visibility == View.VISIBLE) {
                 if (uiConfig.showTop && !uiConfig.keepTop) {
-                    mLayoutTop?.animation =
+                    mViewBinding.superplayerRlTop.animation =
                         AnimationUtils.loadAnimation(context, R.anim.push_top_out)
-                    mLayoutTop!!.isVisible = isShow
+                    mViewBinding.superplayerRlTop.isVisible = isShow
                 }
 
             }
             if (uiConfig.showBottom) {
-                if (mLayoutBottom!!.visibility == View.VISIBLE) {
-                    mLayoutBottom?.animation =
+                if (mViewBinding.superplayerLlBottom.visibility == View.VISIBLE) {
+                    mViewBinding.superplayerLlBottom.animation =
                         AnimationUtils.loadAnimation(context, R.anim.push_bottom_out)
-                    mLayoutBottom!!.isVisible = isShow
+                    mViewBinding.superplayerLlBottom.isVisible = isShow
                 }
             }
         }
@@ -505,16 +426,16 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
     override fun updatePlayState(playState: PlayerState?) {
         when (playState) {
             PlayerState.PLAYING -> {
-                mIvPause!!.setImageResource(R.drawable.superplayer_ic_vod_pause_normal)
+                mViewBinding.superplayerIvPause.setImageResource(R.drawable.superplayer_ic_vod_pause_normal)
             }
             PlayerState.LOADING -> {
-                mIvPause!!.setImageResource(R.drawable.superplayer_ic_vod_pause_normal)
+                mViewBinding.superplayerIvPause.setImageResource(R.drawable.superplayer_ic_vod_pause_normal)
             }
             PlayerState.PAUSE -> {
-                mIvPause!!.setImageResource(R.drawable.superplayer_ic_vod_play_normal)
+                mViewBinding.superplayerIvPause.setImageResource(R.drawable.superplayer_ic_vod_play_normal)
             }
             PlayerState.END -> {
-                mIvPause!!.setImageResource(R.drawable.superplayer_ic_vod_play_normal)
+                mViewBinding.superplayerIvPause.setImageResource(R.drawable.superplayer_ic_vod_play_normal)
             }
         }
         mCurrentPlayState = playState
@@ -523,12 +444,16 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
     /**
      * 设置视频画质信息
      *
-     * @param ArrayList 画质列表
+     * @param list 画质列表
      */
-    override fun setVideoQualityList(ArrayList: ArrayList<VideoQuality>?) {
-        mVideoQualityList = ArrayList
-        mFirstShowQuality = false
-        mTvQuality?.isVisible = true
+    override fun setVideoQualityList(list: ArrayList<VideoQuality>?) {
+        if (list?.isEmpty() == true) {
+            mViewBinding.superplayerTvQuality.isVisible = false
+        } else {
+            mVideoQualityList = list
+            mFirstShowQuality = false
+            mViewBinding.superplayerTvQuality.isVisible = true
+        }
     }
 
     /**
@@ -537,7 +462,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
      * @param title 视频名称
      */
     override fun updateTitle(title: String?) {
-        mTvTitle!!.text = title
+        mViewBinding.superplayerTvTitle.text = title
     }
 
     /**
@@ -549,7 +474,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
     override fun updateVideoProgress(current: Long, duration: Long) {
         mProgress = if (current < 0) 0 else current
         mDuration = if (duration < 0) 0 else duration
-        mTvCurrent!!.text = formattedTime(mProgress)
+        mViewBinding.superplayerTvCurrent.text = formattedTime(mProgress)
         var percentage = if (mDuration > 0) mProgress.toFloat() / mDuration.toFloat() else 1.0f
         if (mProgress == 0L) {
             mLivePushDuration = 0
@@ -563,32 +488,33 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             percentage = 1 - leftTime.toFloat() / mDuration.toFloat()
         }
         if (percentage in 0.0..1.0) {
-            val progress = (percentage * mSeekBarProgress!!.max).roundToInt()
-            if (!mIsChangingSeekBarProgress) mSeekBarProgress!!.progress = (progress)
-            mTvDuration!!.text = formattedTime(mDuration)
+            val progress = (percentage * mViewBinding.superplayerSeekbarProgress.max).roundToInt()
+            if (!mIsChangingSeekBarProgress) mViewBinding.superplayerSeekbarProgress.progress =
+                (progress)
+            mViewBinding.superplayerTvDuration.text = formattedTime(mDuration)
         }
     }
 
-    fun isDrag() = mSeekBarProgress?.mIsOnDrag == true
+    override fun isDrag() = mViewBinding.superplayerSeekbarProgress.mIsOnDrag == true
 
 
     override fun updatePlayType(type: PlayerType?) {
         mPlayType = type
         when (type) {
             PlayerType.VOD -> {
-                mTvBackToLive!!.visibility = GONE
-                mTvDuration!!.visibility = VISIBLE
+                mViewBinding.superplayerTvBackToLive.visibility = GONE
+                mViewBinding.superplayerTvDuration.visibility = VISIBLE
             }
             PlayerType.LIVE -> {
-                mTvBackToLive!!.visibility = GONE
-                mTvDuration!!.visibility = GONE
-                mSeekBarProgress!!.progress = (100)
+                mViewBinding.superplayerTvBackToLive.visibility = GONE
+                mViewBinding.superplayerTvDuration.visibility = GONE
+                mViewBinding.superplayerSeekbarProgress.progress = (100)
             }
             PlayerType.LIVE_SHIFT -> {
-                if (mLayoutBottom!!.visibility == VISIBLE) {
-                    mTvBackToLive!!.visibility = VISIBLE
+                if (mViewBinding.superplayerLlBottom.visibility == VISIBLE) {
+                    mViewBinding.superplayerTvBackToLive.visibility = VISIBLE
                 }
-                mTvDuration!!.visibility = GONE
+                mViewBinding.superplayerTvDuration.visibility = GONE
             }
         }
     }
@@ -600,18 +526,16 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
      */
     override fun updateVideoQuality(videoQuality: VideoQuality?) {
         if (videoQuality == null) {
-            mTvQuality!!.text = ""
+            mViewBinding.superplayerTvQuality.text = ""
             return
         }
         mDefaultVideoQuality = videoQuality
-        if (mTvQuality != null) {
-            mTvQuality!!.text = videoQuality.title
-        }
+        mViewBinding.superplayerTvQuality.text = videoQuality.title
         if (mVideoQualityList != null && mVideoQualityList!!.isNotEmpty()) {
             for (i in mVideoQualityList!!.indices) {
                 val quality = mVideoQualityList!![i]
-                if (quality?.title != null && quality.title == mDefaultVideoQuality!!.title) {
-                    mVodQualityView!!.setDefaultSelectedQuality(i)
+                if (quality.title != null && quality.title == mDefaultVideoQuality!!.title) {
+                    mViewBinding.superplayerVodQuality.setDefaultSelectedQuality(i)
                     break
                 }
             }
@@ -628,7 +552,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             releaseTXImageSprite()
         }
         // 有缩略图的时候不显示进度
-        mGestureVideoProgressLayout!!.setProgressVisibility(!(info?.imageUrls != null && info.imageUrls!!.size != 0))
+        mViewBinding.superplayerVideoProgressLayout.setProgressVisibility(!(info?.imageUrls != null && info.imageUrls!!.size != 0))
         if (mPlayType == PlayerType.VOD) {
             mTXImageSprite = TXImageSprite(context)
             if (info != null) {
@@ -649,7 +573,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
     /**
      * 更新关键帧信息
      *
-     * @param ArrayList 关键帧信息列表
+     * @param list 关键帧信息列表
      */
     override fun updateKeyFrameDescInfo(list: ArrayList<PlayKeyFrameDescInfo>?) {
         mTXPlayKeyFrameDescInfoList = list
@@ -660,18 +584,18 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
         if (!mLockScreen) {
             if (event?.action == MotionEvent.ACTION_UP && mVideoGestureDetector != null && mVideoGestureDetector!!.isVideoProgressModel) {
                 var progress = mVideoGestureDetector!!.videoProgress
-                if (progress > mSeekBarProgress!!.max) {
-                    progress = mSeekBarProgress!!.max
+                if (progress > mViewBinding.superplayerSeekbarProgress.max) {
+                    progress = mViewBinding.superplayerSeekbarProgress.max
                 }
                 if (progress < 0) {
                     progress = 0
                 }
-                mSeekBarProgress!!.progress = (progress)
-                var seekTime = 0
-                val percentage = progress * 1.0f / mSeekBarProgress!!.max
+                mViewBinding.superplayerSeekbarProgress.progress = (progress)
+                var seekTime: Int
+                val percentage = progress * 1.0f / mViewBinding.superplayerSeekbarProgress.max
                 seekTime = if (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT) {
                     if (mLivePushDuration > Companion.MAX_SHIFT_TIME) {
-                        (mLivePushDuration - Companion.MAX_SHIFT_TIME * (1 - percentage)) as Int
+                        (mLivePushDuration - Companion.MAX_SHIFT_TIME * (1 - percentage)).toInt()
                     } else {
                         (mLivePushDuration * percentage).toInt()
                     }
@@ -692,9 +616,12 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
         return true
     }
 
+    override val playerMode: PlayerMode
+        get() = PlayerMode.FULLSCREEN
+
     override fun updateSpeedChange(speedLevel: Float) {
-        mVodMoreView?.updateSpeedChange(speedLevel)
-        mIvSpeed?.let { WinSpeedHelper.showSpeedImage(playerConfig,it) }
+        mViewBinding.superplayerVodMore.updateSpeedChange(speedLevel)
+        mViewBinding.ivSpeed.let { WinSpeedHelper.showSpeedImage(playerConfig, it) }
     }
 
     /**
@@ -735,7 +662,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
     }
 
     private fun showTVLink() {
-        mControllerCallback?.onTV()
+        mControllerCallback?.onShotScreen()
     }
 
     private fun showShare() {
@@ -767,21 +694,21 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             for (i in mVideoQualityList!!.indices) {
                 val quality = mVideoQualityList!![i]
                 if (quality.title != null && quality.title == mDefaultVideoQuality!!.title) {
-                    mVodQualityView!!.setDefaultSelectedQuality(i)
+                    mViewBinding.superplayerVodQuality.setDefaultSelectedQuality(i)
                     break
                 }
             }
             mFirstShowQuality = true
         }
-        mVodQualityView!!.setVideoQualityList(mVideoQualityList)
+        mViewBinding.superplayerVodQuality.setVideoQualityList(mVideoQualityList)
     }
 
-    fun showLoading() {
-        mPbLiveLoading?.let { toggleView(it, true) }
+    override fun showLoading() {
+        mViewBinding.superplayerPbLive.let { toggleView(it, true) }
     }
 
-    fun hideLoading() {
-        mPbLiveLoading?.let { toggleView(it, false) }
+    override fun hideLoading() {
+        mViewBinding.superplayerPbLive.let { toggleView(it, false) }
     }
 
     /**
@@ -794,11 +721,11 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             postDelayed(mHideLockViewRunnable, 7000)
         }
         if (mLockScreen) {
-            mIvLock!!.setImageResource(R.drawable.superplayer_ic_player_lock)
+            mViewBinding.superplayerIvLock.setImageResource(R.drawable.superplayer_ic_player_lock)
             hide()
-            mIvLock!!.visibility = VISIBLE
+            mViewBinding.superplayerIvLock.visibility = VISIBLE
         } else {
-            mIvLock!!.setImageResource(R.drawable.superplayer_ic_player_unlock)
+            mViewBinding.superplayerIvLock.setImageResource(R.drawable.superplayer_ic_player_unlock)
             show()
         }
     }
@@ -822,12 +749,12 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             mControllerCallback!!.onSeekTo(time.toInt())
             mControllerCallback!!.onResume()
         }
-        mTvVttText!!.visibility = GONE
+        mViewBinding.superplayerLargeTvVttText.visibility = GONE
     }
 
-    override fun onProgressChanged(seekBar: PointSeekBar, progress: Int, isFromUser: Boolean) {
-        if (mGestureVideoProgressLayout != null && isFromUser) {
-            mGestureVideoProgressLayout!!.show()
+    override fun onProgressChanged(seekBar: PointSeekBar, progress: Int, fromUser: Boolean) {
+        if (fromUser) {
+            mViewBinding.superplayerVideoProgressLayout.show()
             val percentage = progress.toFloat() / seekBar.max
             var currentTime = mDuration * percentage
             if (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT) {
@@ -836,19 +763,19 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
                 } else {
                     mLivePushDuration * percentage
                 }
-                mGestureVideoProgressLayout!!.setTimeText(formattedTime(currentTime.toLong()))
+                mViewBinding.superplayerVideoProgressLayout.setTimeText(formattedTime(currentTime.toLong()))
             } else {
-                mGestureVideoProgressLayout!!.setTimeText(
+                mViewBinding.superplayerVideoProgressLayout.setTimeText(
                     formattedTime(currentTime.toLong()) + " / " + formattedTime(
                         mDuration
                     )
                 )
                 updateVideoProgress(currentTime.toLong(), mDuration)
             }
-            mGestureVideoProgressLayout!!.setProgress(progress)
+            mViewBinding.superplayerVideoProgressLayout.setProgress(progress)
         }
         // 加载点播缩略图
-        if (isFromUser && mPlayType == PlayerType.VOD) {
+        if (fromUser && mPlayType == PlayerType.VOD) {
             setThumbnail(progress)
         }
     }
@@ -884,6 +811,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
         postDelayed(mHideViewRunnable, 7000)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onSeekBarPointClick(view: View, pos: Int) {
         if (mHideLockViewRunnable != null) {
             removeCallbacks(mHideViewRunnable)
@@ -897,8 +825,9 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
                 val viewX = location[0]
                 val info = mTXPlayKeyFrameDescInfoList!![pos]
                 val content = info.content
-                mTvVttText!!.text = formattedTime(info.time.toLong()) + " " + content
-                mTvVttText!!.visibility = VISIBLE
+                mViewBinding.superplayerLargeTvVttText.text =
+                    formattedTime(info.time.toLong()) + " " + content
+                mViewBinding.superplayerLargeTvVttText.visibility = VISIBLE
                 adjustVttTextViewPos(viewX)
             }
         }
@@ -910,12 +839,12 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
      * @param progress 播放进度
      */
     private fun setThumbnail(progress: Int) {
-        val percentage = progress.toFloat() / mSeekBarProgress!!.max
+        val percentage = progress.toFloat() / mViewBinding.superplayerSeekbarProgress.max
         val seekTime = mDuration * percentage
         if (mTXImageSprite != null) {
             val bitmap = mTXImageSprite!!.getThumbnail(seekTime)
             if (bitmap != null) {
-                mGestureVideoProgressLayout!!.setThumbnail(bitmap)
+                mViewBinding.superplayerVideoProgressLayout.setThumbnail(bitmap)
             }
         }
     }
@@ -926,10 +855,10 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
      * @param viewX 点击的打点view
      */
     private fun adjustVttTextViewPos(viewX: Int) {
-        mTvVttText!!.post {
-            val width = mTvVttText!!.width
+        mViewBinding.superplayerLargeTvVttText.post {
+            val width = mViewBinding.superplayerLargeTvVttText.width
             val marginLeft = viewX - width / 2
-            val params = mTvVttText!!.layoutParams as LayoutParams
+            val params = mViewBinding.superplayerLargeTvVttText.layoutParams as LayoutParams
             params.leftMargin = marginLeft
             if (marginLeft < 0) {
                 params.leftMargin = 0
@@ -938,7 +867,7 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
             if (marginLeft + width > screenWidth) {
                 params.leftMargin = screenWidth - width
             }
-            mTvVttText!!.layoutParams = params
+            mViewBinding.superplayerLargeTvVttText.layoutParams = params
         }
     }
 
@@ -972,9 +901,9 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
      * 隐藏锁屏按钮的runnable
      */
     private class HideLockViewRunnable(controller: FullScreenPlayer?) : Runnable {
-        private val mWefControllerFullScreen: WeakReference<FullScreenPlayer?>?
+        private val mWefControllerFullScreen: WeakReference<FullScreenPlayer>?
         override fun run() {
-            mWefControllerFullScreen?.get()?.mIvLock?.isVisible = false
+            mWefControllerFullScreen?.get()?.mViewBinding?.superplayerIvLock?.isVisible = false
         }
 
         init {
@@ -982,34 +911,35 @@ class FullScreenPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback,
         }
     }
 
-    fun onDestroyCallBack() {
-        mVodMoreView?.onDestroyTimeCallBack()
+    private fun onDestroyCallBack() {
+        mViewBinding.superplayerVodMore.onDestroyTimeCallBack()
     }
 
-    fun hideTV(isShow: Boolean = false) {
-        TransitionManager.beginDelayedTransition(this)
-        mIvTV?.isVisible = isShow
+    override fun onDestroy() {
+        super.onDestroy()
+        onDestroyCallBack()
     }
 
-    fun hideQualities() {
-        TransitionManager.beginDelayedTransition(this)
-        mTvQuality?.isVisible = false
-    }
 
     override fun setPlayConfig(config: PlayerConfig) {
-
+        super.setPlayConfig(config)
+        this.playerConfig = config
+        WinSpeedHelper.showSpeedImage(config, mViewBinding.ivSpeed)
+        mViewBinding.superplayerVodMore.setPlayConfig(config)
     }
 
     override fun setUIConfig(uiConfig: UIConfig) {
-        this.uiConfig = uiConfig
-        WinSpeedHelper.showSpeedImage(playerConfig, mIvSpeed!!)
-        mIvTV?.isVisible = uiConfig.showTV
-        mIvSpeed?.isVisible = uiConfig.showSpeed
-        mTopShare?.isVisible = uiConfig.showShare
-        mIvMore?.isVisible = uiConfig.showMore
-        mIvLock?.isVisible = uiConfig.showLock
-        mLayoutTop?.isVisible = uiConfig.showTop || uiConfig.keepTop
-        mLayoutBottom?.isVisible = uiConfig.showBottom
+        super.setUIConfig(uiConfig)
+        mViewBinding.apply {
+             superplayerVodMore.setUIConfig(uiConfig)
+            ivTv.isVisible = uiConfig.showTV
+            ivSpeed.isVisible = uiConfig.showSpeed
+            topShare.isVisible = uiConfig.showShare
+            superplayerIvMore.isVisible = uiConfig.showMore
+            mViewBinding.superplayerIvLock.isVisible = uiConfig.showLock
+            mViewBinding.superplayerRlTop.isVisible = uiConfig.showTop || uiConfig.keepTop
+            mViewBinding.superplayerLlBottom.isVisible = uiConfig.showBottom
+        }
     }
 
 }

@@ -8,14 +8,6 @@ import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.base.BaseViewHolder
 
 
-/**
- * Project Name:LiZhiWeiKe
- * Package Name:com.lizhiweike.lecture.adapter
- * Created by tom on 2018/2/1 18:25 .
- *
- *
- * Copyright (c) 2016—2017 https://www.lizhiweike.com all rights reserved.
- */
 class VideoFullSpeedListAdapter(data: ArrayList<Float>) : BaseKitAdapter<Float>(R.layout.superplayer_item_video_full_speed, data) {
     private var curSpeed = 0f
 

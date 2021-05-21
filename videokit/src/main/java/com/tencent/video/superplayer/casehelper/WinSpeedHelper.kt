@@ -10,7 +10,7 @@ import com.tencent.video.superplayer.base.ConfigInterface
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.casehelper.adaper.VideoSmallSpeedListAdapter
-import com.tencent.video.superplayer.ui.player.WindowPlayer
+import com.tencent.video.superplayer.viedoview.ui.WindowPlayer
 
 
 /**

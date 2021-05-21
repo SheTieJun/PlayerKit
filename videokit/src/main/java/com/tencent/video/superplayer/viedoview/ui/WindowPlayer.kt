@@ -1,4 +1,4 @@
-package com.tencent.video.superplayer.ui.player
+package com.tencent.video.superplayer.viedoview.ui
 
 import android.animation.ValueAnimator
 import android.content.*
@@ -14,13 +14,15 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.view.isVisible
 import com.tencent.liteav.superplayer.*
-import com.tencent.video.superplayer.GlobalConfig
-import com.tencent.video.superplayer.SuperPlayerDef.*
+import com.tencent.video.superplayer.base.PlayerConfig
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.casehelper.WinSpeedHelper
 import com.tencent.video.superplayer.model.entity.VideoQuality
-import com.tencent.video.superplayer.model.utils.VideoGestureDetector
+import com.tencent.video.superplayer.kit.VideoGestureDetector
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.ui.view.*
+import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
+import kotlin.math.roundToInt
 
 /**
  * 窗口模式播放控件
@@ -35,9 +37,10 @@ import com.tencent.video.superplayer.ui.view.*
  * [.onStartTrackingTouch]
  * [.onStopTrackingTouch]
  */
-class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQualityView.Callback, PointSeekBar.OnSeekBarChangeListener {
-    private var mConfigs: UIConfig = UIConfig.ofDef() //配置
-
+class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
+    VodMoreView.Callback,
+    VodQualityView.Callback,
+    PointSeekBar.OnSeekBarChangeListener{
     // UI控件
     private var mLayoutTop // 顶部标题栏布局
             : View? = null
@@ -110,15 +113,15 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
 
     private var mIvTV: View? = null
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         initialize(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initialize(context)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
             context,
             attrs,
             defStyleAttr
@@ -136,16 +139,14 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
                 if (isLive()) return false  //直播双击不做处理
                 togglePlayState()
                 show()
-                if (mHideViewRunnable != null) {
-                    removeCallbacks(mHideViewRunnable)
-                    postDelayed(mHideViewRunnable, 7000)
-                }
+                removeCallbacks(mHideViewRunnable)
+                postDelayed(mHideViewRunnable, 7000)
                 return true
             }
 
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
                 if (isLive()) {
-                    mControllerCallback?.toggle(!isShowing)
+                    mControllerCallback?.onControlViewToggle(!isShowing)
                     return false
                 }
                 toggle()
@@ -238,13 +239,17 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
 
     fun isLive() = (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT)
 
-    /**
-     * 界面展示那些新的配置
-     */
-    fun updateConfig(winConfigs: UIConfig) {
-        this.mConfigs = winConfigs
-        mIvTV?.isVisible = mConfigs.showTV
-        mSpeedHelper?.getSpeedView()?.isVisible = mConfigs.showSpeed
+
+    override fun setUIConfig(uiConfig: UIConfig) {
+        super.setUIConfig(uiConfig)
+        mIvTV?.isVisible = uiConfig.showTV
+        mSpeedHelper?.setUIConfig(uiConfig)
+        mSpeedHelper?.getSpeedView()?.isVisible = uiConfig.showSpeed
+    }
+
+    override fun setPlayConfig(config: PlayerConfig) {
+        super.setPlayConfig(config)
+        mSpeedHelper?.setPlayConfig(config)
     }
 
     /**
@@ -288,10 +293,9 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
         mIvTV = findViewById(R.id.iv_tv)
         mIvTV!!.setOnClickListener(this)
         mTvQuality!!.setOnClickListener(this)
-        updateConfig(mConfigs)
     }
 
-    fun isDrag() =  mSeekBarProgress?.mIsOnDrag == true
+    override fun isDrag() =  mSeekBarProgress?.mIsOnDrag == true
     /**
      * 切换播放状态
      *
@@ -320,7 +324,7 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
         } else {
             show()
         }
-        mControllerCallback?.toggle(isShowing)
+        mControllerCallback?.onControlViewToggle(isShowing)
     }
 
     /**
@@ -354,13 +358,10 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
      * 显示控件
      */
     override fun show() {
-        if (GlobalConfig.instance.isHideAll) return
         isShowing = true
         isShowControl(true)
-        if (mHideViewRunnable != null) {
-            removeCallbacks(mHideViewRunnable)
-            postDelayed(mHideViewRunnable, 7000)
-        }
+        removeCallbacks(mHideViewRunnable)
+        postDelayed(mHideViewRunnable, 7000)
     }
 
     fun isShowControl(isShow: Boolean) {
@@ -369,24 +370,24 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
         }
         if (isShow) {
             if (mLayoutTop!!.visibility != View.VISIBLE) {
-                if (mConfigs.showTop) {
+                if (uiConfig.showTop) {
                     mLayoutTop?.animation = AnimationUtils.loadAnimation(context, R.anim.push_top_in)
                 }
             }
             if (mLayoutBottom!!.visibility != View.VISIBLE) {
-                if (mConfigs.showBottom) {
+                if (uiConfig.showBottom) {
                     mLayoutBottom?.animation =
                             AnimationUtils.loadAnimation(context, R.anim.push_bottom_in)
                 }
             }
         } else {
             if (mLayoutTop!!.visibility == View.VISIBLE) {
-                if (mConfigs.showTop) {
+                if (uiConfig.showTop) {
                     mLayoutTop?.animation = AnimationUtils.loadAnimation(context, R.anim.push_top_out)
                 }
             }
             if (mLayoutBottom!!.visibility == View.VISIBLE) {
-                if (mConfigs.showBottom) {
+                if (uiConfig.showBottom) {
                     mLayoutBottom?.animation =
                             AnimationUtils.loadAnimation(context, R.anim.push_bottom_out)
                 }
@@ -455,8 +456,8 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
                     if (mDuration > MAX_SHIFT_TIME) MAX_SHIFT_TIME.toLong() else mDuration
             percentage = 1 - leftTime.toFloat() / mDuration.toFloat()
         }
-        if (percentage >= 0 && percentage <= 1) {
-            val progress = Math.round(percentage * mSeekBarProgress!!.max)
+        if (0.0 <= percentage && percentage <= 1.0) {
+            val progress = (percentage * mSeekBarProgress!!.max).roundToInt()
             if (!mIsChangingSeekBarProgress) {
                 if (mPlayType == PlayerType.LIVE) {
                     mSeekBarProgress!!.progress = (mSeekBarProgress!!.max)
@@ -601,6 +602,9 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
         return true
     }
 
+    override val playerMode: PlayerMode
+        get() = PlayerMode.WINDOW
+
     override fun updateSpeedChange(speedLevel: Float) {
         mSpeedHelper?.showSpeedImage()
     }
@@ -664,7 +668,7 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
      * 展示投屏信息
      */
     private fun showTvLink() {
-        mControllerCallback?.onTV()
+        mControllerCallback?.onShotScreen()
     }
 
     override fun onProgressChanged(seekBar: PointSeekBar, progress: Int, fromUser: Boolean) {
@@ -745,11 +749,11 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
         }
     }
 
-    fun showLoading() {
+    override fun showLoading() {
         mPbLiveLoading?.let { toggleView(it, true) }
     }
 
-    fun hideLoading() {
+    override fun hideLoading() {
         mPbLiveLoading?.let { toggleView(it, false) }
     }
 
@@ -799,7 +803,7 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
         if (!mFirstShowQuality && mDefaultVideoQuality != null) {
             for (i in mVideoQualityList!!.indices) {
                 val quality = mVideoQualityList!![i]
-                if (quality != null && quality.title != null && quality.title == mDefaultVideoQuality!!.title) {
+                if (quality?.title != null && quality.title == mDefaultVideoQuality!!.title) {
                     mVodQualityView!!.setDefaultSelectedQuality(i)
                     break
                 }
@@ -810,7 +814,7 @@ class WindowPlayer : AbsPlayer, View.OnClickListener, VodMoreView.Callback, VodQ
     }
 
     fun hideTV(isShow: Boolean = false) {
-        if (mConfigs.showTV) {
+        if (uiConfig.showTV) {
             TransitionManager.beginDelayedTransition(this)
             mIvTV?.isVisible = isShow
         } else {

@@ -10,7 +10,7 @@ import com.tencent.liteav.superplayer.*
 /**
  * 滑动手势控制播放进度时显示的进度提示view
  */
-class VideoProgressLayout : RelativeLayout {
+class VideoProgressLayout : FrameLayout {
     private var mIvThumbnail // 视频缩略图
             : ImageView? = null
     private var mTvTime // 视频进度文本

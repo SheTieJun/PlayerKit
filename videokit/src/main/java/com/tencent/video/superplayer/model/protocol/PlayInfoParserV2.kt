@@ -3,7 +3,7 @@ package com.tencent.video.superplayer.model.protocol
 import android.util.Log
 import com.tencent.liteav.basic.log.TXCLog
 import com.tencent.video.superplayer.model.entity.*
-import com.tencent.video.superplayer.model.utils.VideoQualityUtils
+import com.tencent.video.superplayer.kit.VideoQualityUtils
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException

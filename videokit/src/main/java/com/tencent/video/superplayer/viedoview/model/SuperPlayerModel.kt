@@ -1,6 +1,5 @@
-package com.tencent.video.superplayer
+package com.tencent.video.superplayer.viedoview.model
 
-import com.tencent.video.superplayer.model.entity.SuperPlayerVideoIdV2
 
 /**
  * 超级播放器支持三种方式播放视频:
@@ -42,11 +41,7 @@ class SuperPlayerModel {
      * ------------------------------------------------------------------
      */
     var videoId: SuperPlayerVideoId? = null
-
-    @Deprecated("")
-    var videoIdV2: SuperPlayerVideoIdV2? = null
-    var title =
-        "" // 视频文件名 （用于显示在UI层);使用file id播放，若未指定title，则使用FileId返回的Title；使用url播放需要指定title，否则title显示为空
+    var title = "" // 视频文件名 （用于显示在UI层);使用file id播放，若未指定title，则使用FileId返回的Title；使用url播放需要指定title，否则title显示为空
 
     class SuperPlayerURL {
         constructor(url: String, qualityName: String) {

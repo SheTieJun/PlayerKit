@@ -1,6 +1,5 @@
 package com.tencent.video.superplayer.base
 
-import com.tencent.video.superplayer.casehelper.VideoCaseHelper
 
 
 interface ConfigInterface {

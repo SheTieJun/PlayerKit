@@ -1,0 +1,1 @@
+-keep com.tencent.video.**{}

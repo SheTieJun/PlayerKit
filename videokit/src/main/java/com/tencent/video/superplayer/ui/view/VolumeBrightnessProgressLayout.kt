@@ -10,7 +10,7 @@ import com.tencent.liteav.superplayer.databinding.SuperplayerVideoVolumeBrightne
 /**
  * 滑动手势设置音量、亮度时显示的提示view
  */
-class VolumeBrightnessProgressLayout : RelativeLayout {
+class VolumeBrightnessProgressLayout : FrameLayout {
     private lateinit var mViewBinding:SuperplayerVideoVolumeBrightnessProgressLayoutBinding
     private var mHideRunnable: HideRunnable? = null
     private var mDuration = 1000 // view消失延迟时间(秒)

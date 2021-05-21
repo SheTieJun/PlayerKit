@@ -12,16 +12,11 @@ import com.tencent.video.superplayer.ui.view.PointSeekBar.*
 
 /**
  * 一个带有打点的，模仿seekbar的view
- *
- * 除seekbar基本功能外，还具备关键帧信息打点的功能
- *
  * 1、添加打点信息[.addPoint]
  *
  * 2、自定义thumb[TCThumbView]
  *
  * 3、打点view[TCPointView]
- *
- * 4、打点信息参数[PointParams]
  */
 class PointSeekBar : RelativeLayout {
     private var mWidth // 自身宽度

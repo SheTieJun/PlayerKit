@@ -1,10 +1,9 @@
-package com.tencent.video.superplayer.model
+package com.tencent.video.superplayer.viedoview.player
 
 import com.tencent.rtmp.TXLivePlayer
 import com.tencent.rtmp.ui.TXCloudVideoView
-import com.tencent.video.superplayer.SuperPlayerDef.*
-import com.tencent.video.superplayer.SuperPlayerModel
-import com.tencent.video.superplayer.base.PlayerConfig
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
+import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
 import com.tencent.video.superplayer.model.entity.VideoQuality
 
 interface SuperPlayer {
@@ -51,11 +50,6 @@ interface SuperPlayer {
     fun pause()
 
     /**
-     * 暂停点播视频
-     */
-    fun pauseVod()
-
-    /**
      * 恢复播放
      */
     fun resume()
@@ -70,11 +64,11 @@ interface SuperPlayer {
      */
     fun autoPlay(auto:Boolean)
 
-    fun getWidth():Int
+    fun getVideoWidth():Int
 
-    fun getHeight():Int
+    fun getVideoHeight():Int
 
-    fun getRotation() :Int
+    fun getVideoRotation() :Int
     /**
      * 停止播放
      */
@@ -139,8 +133,7 @@ interface SuperPlayer {
      */
     fun setObserver(observer: SuperPlayerObserver?)
 
+    fun getDuration():Long
 
-    fun getPlayConfig():PlayerConfig
-
-    fun setPlayConfig(playerConfig: PlayerConfig)
+    fun getPosition():Long
 }

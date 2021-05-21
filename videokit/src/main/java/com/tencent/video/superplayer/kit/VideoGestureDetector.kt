@@ -1,4 +1,4 @@
-package com.tencent.video.superplayer.model.utils
+package com.tencent.video.superplayer.kit
 
 import android.app.Activity
 import android.app.Service

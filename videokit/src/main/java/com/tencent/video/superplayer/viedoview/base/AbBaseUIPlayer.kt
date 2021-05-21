@@ -1,13 +1,17 @@
-package com.tencent.video.superplayer.ui.player
+package com.tencent.video.superplayer.viedoview.base
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.View
-import android.widget.RelativeLayout
+import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import com.tencent.video.superplayer.SuperPlayerDef.PlayerState
-import com.tencent.video.superplayer.SuperPlayerDef.PlayerType
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.PlayerState
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.PlayerType
+import com.tencent.video.superplayer.base.ConfigInterface
+import com.tencent.video.superplayer.base.PlayerConfig
+import com.tencent.video.superplayer.base.UIConfig
+import com.tencent.video.superplayer.base.timer.TimerConfigure
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.VideoQuality
@@ -15,21 +19,22 @@ import com.tencent.video.superplayer.model.entity.VideoQuality
 /**
  * 播放器公共逻辑
  */
-abstract class AbsPlayer : RelativeLayout, Player {
-    protected var mControllerCallback // 播放控制回调
-            : Player.Callback? = null
+abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerConfigure.CallBack {
+    protected var playerConfig: PlayerConfig = PlayerConfig.playerConfig
+    protected var uiConfig: UIConfig = UIConfig.uiConfig
+    protected var mControllerCallback: UIPlayer.VideoViewCallback? = null
     protected var mHideViewRunnable = Runnable { hide() }
 
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context) {}
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     ) {
     }
 
-    override fun setCallback(callback: Player.Callback?) {
+    override fun setUICallback(callback: UIPlayer.VideoViewCallback?) {
         mControllerCallback = callback
     }
 
@@ -49,6 +54,7 @@ abstract class AbsPlayer : RelativeLayout, Player {
     override fun updateImageSpriteInfo(info: PlayImageSpriteInfo?) {}
     override fun updateKeyFrameDescInfo(list: ArrayList<PlayKeyFrameDescInfo>?) {}
     override fun updateSpeedChange(speedLevel: Float) {}
+    override fun onDestroy() {}
     /**
      * 设置控件的可见性
      *
@@ -85,6 +91,23 @@ abstract class AbsPlayer : RelativeLayout, Player {
         }
         value += digit.toString()
         return value
+    }
+
+    override fun setPlayConfig(config: PlayerConfig) {
+        this.playerConfig = config
+    }
+
+    override fun setUIConfig(uiConfig: UIConfig) {
+        this.uiConfig = uiConfig
+    }
+
+    override fun onTick(progress: Long) {
+    }
+
+    override fun onStateChange(state: Int) {
+    }
+
+    override fun onChangeModel(repeatMode: Int) {
     }
 
     companion object {

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tencent.liteav.superplayer.R
 import com.tencent.video.superplayer.base.BaseKitAdapter
-import com.tencent.video.superplayer.ui.player.FullScreenPlayer
+import com.tencent.video.superplayer.viedoview.ui.FullScreenPlayer
 
 
 typealias onNext = (Any) -> Unit

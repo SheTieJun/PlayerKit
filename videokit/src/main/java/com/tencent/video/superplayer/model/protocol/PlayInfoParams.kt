@@ -1,7 +1,6 @@
 package com.tencent.video.superplayer.model.protocol
 
-import com.tencent.video.superplayer.SuperPlayerVideoId
-import com.tencent.video.superplayer.model.entity.SuperPlayerVideoIdV2
+import com.tencent.video.superplayer.viedoview.model.SuperPlayerVideoId
 
 /**
  * 视频信息协议解析需要传入的参数
@@ -14,15 +13,12 @@ class PlayInfoParams {
             : String? = null
     var videoId //v4 协议参数
             : SuperPlayerVideoId? = null
-    var videoIdV2 //v2 协议参数
-            : SuperPlayerVideoIdV2? = null
 
     override fun toString(): String {
         return "TCPlayInfoParams{" +
                 ", appId='" + appId + '\'' +
                 ", fileId='" + fileId + '\'' +
                 ", v4='" + (if (videoId != null) videoId.toString() else "") + '\'' +
-                ", v2='" + (if (videoIdV2 != null) videoIdV2.toString() else "") + '\'' +
                 '}'
     }
 }

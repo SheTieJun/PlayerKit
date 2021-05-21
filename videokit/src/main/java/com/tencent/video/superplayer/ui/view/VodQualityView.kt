@@ -16,15 +16,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
- * Created by yuejiaoli on 2018/7/4.
- *
  * 视频画质选择弹框
- *
  * 1、设置画质列表[.setVideoQualityList]
- *
  * 2、设置默认选中的画质[.setDefaultSelectedQuality]
  */
-class VodQualityView : RelativeLayout {
+class VodQualityView : FrameLayout {
     private var mContext: Context? = null
     private var mCallback // 回调
             : Callback? = null

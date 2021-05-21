@@ -13,7 +13,7 @@ import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.casehelper.VideoCaseHelper
 
 
-class VodMoreView : RelativeLayout, CompoundButton.OnCheckedChangeListener, ConfigInterface {
+class VodMoreView : FrameLayout, CompoundButton.OnCheckedChangeListener, ConfigInterface {
     private var mCallback: Callback? = null
     private lateinit var playerConfig: PlayerConfig
     private lateinit var uiConfig: UIConfig
@@ -39,14 +39,14 @@ class VodMoreView : RelativeLayout, CompoundButton.OnCheckedChangeListener, Conf
     }
 
     private fun init(context: Context) {
-        mViewBinding = SuperplayerControlCaseViewBinding.inflate(LayoutInflater.from(context))
-        addView(mViewBinding.root)
+        mViewBinding = SuperplayerControlCaseViewBinding.inflate(LayoutInflater.from(context),this,true)
+        mCaseHelper = VideoCaseHelper(this)
     }
 
     override fun setPlayConfig(config: PlayerConfig) {
         this.playerConfig = config
-        mCaseHelper = VideoCaseHelper(this)
         mCaseHelper?.setCurSpeed(config.speed)
+        mCaseHelper?.setPlayConfig(config)
         mViewBinding.superplayerSwitchAccelerate.isChecked = config.enableHWAcceleration
         mViewBinding.superplayerSwitchAccelerate.setOnCheckedChangeListener(this)
         mViewBinding.superplayerSwitchMirror.setOnCheckedChangeListener(this)
@@ -64,6 +64,7 @@ class VodMoreView : RelativeLayout, CompoundButton.OnCheckedChangeListener, Conf
             superplayerSwitchAccelerate.isVisible = uiConfig.isShowAccelerate
             superplayerLlMirror.isVisible = uiConfig.isShowMirror
         }
+        mCaseHelper?.setUIConfig(uiConfig)
     }
 
 

@@ -1,6 +1,6 @@
-package com.tencent.video.superplayer
+package com.tencent.video.superplayer.viedoview.base
 
-object SuperPlayerCode {
+internal object SuperPlayerCode {
     const val OK = 0
     const val NET_ERROR = 10001
     const val PLAY_URL_EMPTY = 20001
