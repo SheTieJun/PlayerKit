@@ -6,6 +6,9 @@ import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.VideoQuality
 
+/**
+ * 播放回调
+ */
 interface SuperPlayerObserver {
     /**
      * 开始播放

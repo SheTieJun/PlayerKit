@@ -1,10 +1,12 @@
 package me.shetj.playerkitdemo
 
-import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef
+import androidx.lifecycle.Lifecycle
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.base.VideoViewCallbackBuilder
 import com.tencent.video.superplayer.kit.PlayerKit
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef
 import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
+import me.shetj.base.ktx.isAtLeast
 import me.shetj.base.ktx.logi
 import me.shetj.base.ktx.showToast
 import me.shetj.base.mvvm.BaseBindingActivity
@@ -15,6 +17,7 @@ import me.shetj.playerkitdemo.databinding.ActivityMainBinding
 class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     private var isTv: Boolean = false
     private var iskey: Boolean = false
+    protected var isAuto:Boolean = false
     override fun onActivityCreate() {
         super.onActivityCreate()
         ArmsUtils.statuInScreen2(this)
@@ -26,9 +29,9 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             val model = SuperPlayerModel()
             model.url =
                 "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
+            mViewBinding.superVodPlayerView.autoPlay(isAuto)
             mViewBinding.superVodPlayerView.setPlayToSeek(10)
             mViewBinding.superVodPlayerView.play(model.url)
-            mViewBinding.superVodPlayerView.autoPlay(true)
 
             mViewBinding.btnFloatView.setOnClickListener {
                 mViewBinding.superVodPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.FLOAT)
@@ -36,7 +39,8 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             }
 
             mViewBinding.btnUrl.setOnClickListener {
-                val model = SuperPlayerModel().apply {
+                mViewBinding.superVodPlayerView.autoPlay(isAuto)
+                SuperPlayerModel().apply {
                     val url =
                         "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
                     multiURLs = ArrayList<SuperPlayerModel.SuperPlayerURL>().apply {
@@ -44,14 +48,14 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                         add(SuperPlayerModel.SuperPlayerURL(url, "标清"))
                         add(SuperPlayerModel.SuperPlayerURL(url, "高清"))
                     }
+                    mViewBinding.superVodPlayerView.playWithModel(this)
+                    mViewBinding.btnUrl.text = "已设置多url"
                 }
-                mViewBinding.superVodPlayerView.playWithModel(model)
-                mViewBinding.superVodPlayerView.autoPlay(true)
-                mViewBinding.btnUrl.text = "已设置多url"
             }
 
             mViewBinding.btnKey.setOnClickListener {
                 if (!iskey) {
+                    //设置后可以自动或者手动设置
                     mViewBinding.superVodPlayerView.setKeyList(
                         "测试列表",
                         KeyListAdapter(ArrayList<String>().apply {
@@ -59,12 +63,13 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                                 add("播放item$it")
                             }
                         }).apply {
-                            setOnItemClickListener { adapter, view, position ->
+                            setOnItemClickListener { _, _, position ->
                                 getItem(position).showToast()
                             }
                         },
                         onNext = {
                             it.toString().showToast()
+                            //这里做具体的下一集
                         })
                     iskey = true
                 }else{
@@ -73,6 +78,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 }
                 mViewBinding.btnKey.text = "设置播放列表KeyList:$iskey"
             }
+
 
             /**
              * 设置全屏显示的window
@@ -96,6 +102,9 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 }
                 onPause ={
                     "onPause".logi()
+                }
+                onError ={ _, message ->
+                    "onError:$message".logi()
                 }
             })
         }

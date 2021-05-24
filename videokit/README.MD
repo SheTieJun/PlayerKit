@@ -4,14 +4,13 @@ https://cloud.tencent.com/document/product/266/45554 参数说明，如果有什
 ```
 
 ```
-        val model = SuperPlayerModel()
-//        model.url =
-//            "https://vod2.lycheer.net/73e20c6evodtranscq1253442168/d238a8f65285890807609259635/v.f117442.mp4?t=5fdb67b0&us=ab85cd03d9&sign=2e34d0d67a2f4272d1edf3ad421bbf93"
+mViewBinding.superVodPlayerView.setAutoPlay(true)
+       val model = SuperPlayerModel() 
         model.url =
             "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
         mViewBinding.superVodPlayerView.setPlayToSeek(10)
         mViewBinding.superVodPlayerView.playWithModel(model)
-        mViewBinding.superVodPlayerView.setAutoPlay(true)
+ 
         mViewBinding.superVodPlayerView.setPlayerViewCallback(object : SimPlayerCallBack() {
             override fun onClickShare() {
                 super.onClickShare()

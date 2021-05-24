@@ -2,9 +2,8 @@ package me.shetj.playerkitdemo
 
 import android.app.Application
 import android.content.Context
-import com.tencent.video.superplayer.model.net.HttpClient
-import com.tencent.video.superplayer.model.net.HttpURLClient
-import me.shetj.base.S
+import com.tencent.video.superplayer.model.net.PlayerHttpClient
+import com.tencent.video.superplayer.model.net.SuperPlayerHttpClient
 import me.shetj.base.network.RxHttp
 import me.shetj.base.network.callBack.SimpleNetCallBack
 
@@ -21,8 +20,8 @@ class APP : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        HttpURLClient.instance.setHttpClient(object : HttpClient {
-            override fun doGet(url: String?, callBack: HttpURLClient.OnHttpCallback?) {
+        SuperPlayerHttpClient.instance.setHttpClient(object : PlayerHttpClient {
+            override fun doGet(url: String?, callBack: SuperPlayerHttpClient.OnHttpCallback?) {
                 if (url != null) {
                     RxHttp.get(url).executeCus(object : SimpleNetCallBack<String>(this@APP) {
                         override fun onSuccess(data: String) {
@@ -38,7 +37,7 @@ class APP : Application() {
                 }
             }
 
-            override fun doPost(url: String?, json: String?, callBack: HttpURLClient.OnHttpCallback?) {
+            override fun doPost(url: String?, json: String?, callBack: SuperPlayerHttpClient.OnHttpCallback?) {
                 url?.let {
                     RxHttp.post(it).apply {
                         upJson(json)

@@ -7,7 +7,7 @@ import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.ResolutionName
 import com.tencent.video.superplayer.model.entity.VideoQuality
-import com.tencent.video.superplayer.model.net.HttpURLClient
+import com.tencent.video.superplayer.model.net.SuperPlayerHttpClient
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -35,7 +35,7 @@ class PlayInfoProtocolV4(  // 协议请求输入的参数
             return
         }
         val urlString = makeUrlString()
-        HttpURLClient.instance.get(urlString, object : HttpURLClient.OnHttpCallback {
+        SuperPlayerHttpClient.instance.doGet(urlString, object : SuperPlayerHttpClient.OnHttpCallback {
             override fun onSuccess(result: String) {
                 val ret = parseJson(result, callback)
                 if (ret) {

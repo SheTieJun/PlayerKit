@@ -11,11 +11,11 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import com.tencent.liteav.superplayer.R
 import com.tencent.liteav.superplayer.databinding.SuperplayerVodViewBinding
 import com.tencent.rtmp.TXLivePlayer
@@ -44,15 +44,14 @@ import com.tencent.video.superplayer.viedoview.player.SuperPlayerObserver
  * 悬浮窗播放、画质切换、
  * 硬件加速、倍速播放、镜像播放、手势控制等功能，同时支持直播与点播
  */
-class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPlayer,
+open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPlayer,
     ConfigInterface, SuperPlayerObserver, KeyListListener {
 
-    private var parentViewGroup: ViewGroup? = null
-    private var showInFullView: ViewGroup? = null
-
+    protected var parentViewGroup: ViewGroup? = null
+    protected var showInFullView: ViewGroup? = null
     protected var playerConfig: PlayerConfig = PlayerConfig.playerConfig
     protected var uiConfig: UIConfig = UIConfig.uiConfig
-    protected val playKeyListConfig :PlayKeyListConfig by lazy { PlayKeyListConfig.ofDef() }
+    protected val playKeyListConfig: PlayKeyListConfig by lazy { PlayKeyListConfig.ofDef() }
     protected var mContext: Context? = null
     protected lateinit var mSuperPlayer: SuperPlayer
 
@@ -69,7 +68,6 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
 
     // 腾讯云视频播放view
     protected var mTXCloudVideoView: TXCloudVideoView? = null
-
     private var mLayoutParamWindowMode: ViewGroup.LayoutParams? = null// 窗口播放时SuperPlayerView的布局参数
 
     // 全屏controller的布局参数
@@ -82,7 +80,6 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     protected var mWindowParams: WindowManager.LayoutParams? = null
 
     protected val uiPlayerList = ArrayList<AbBaseUIPlayer>()
-
     protected var onPlayerCallback: OnPlayerCallback? = null
 
     //释放循环播放
@@ -138,6 +135,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
                 removeView(mWindowPlayer)
                 removeView(superplayerControllerFloat)
             }
+            //添加到列表方便操作
             uiPlayerList.add(superplayerControllerLarge)
             uiPlayerList.add(superplayerControllerSmall)
             uiPlayerList.add(superplayerControllerFloat)
@@ -164,7 +162,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
         setUIConfig(uiConfig)
     }
 
-
+    //初始话播放器
     private fun initPlayer() {
         mSuperPlayer = SuperPlayerImpl(mContext, mTXCloudVideoView)
         setObserver(this)
@@ -264,6 +262,9 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
         mSuperPlayer.resumeLive()
     }
 
+    /**
+     * 必须在播放链接设置之前[play]设置
+     */
     override fun autoPlay(auto: Boolean) {
         mSuperPlayer.autoPlay(auto)
     }
@@ -286,6 +287,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
 
     override fun destroy() {
         mSuperPlayer.destroy()
+        onDestroy()
     }
 
     override fun switchPlayMode(playerMode: PlayerMode) {
@@ -387,6 +389,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     }
 
     override fun release() {
+        onDestroy()
         uiPlayerList.forEach {
             it.release()
         }
@@ -402,7 +405,6 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
 
     private fun checkShowLoading(isShowLoading: Boolean) {
         if (isShowLoading) {
-            onPlayerCallback?.onLoading()
             showLoading()
         } else {
             hideLoading()
@@ -412,10 +414,6 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     private fun showPlayBtn(isShow: Boolean) {
         mViewBinding?.ivStartPlayer?.isVisible = isShow
         mViewBinding?.halfTranBg?.isVisible = isShow
-        if (isShow) {
-            mViewBinding?.ivStartPlayer?.updateLayoutParams {
-            }
-        }
     }
 
     override fun setVideoQualityList(list: ArrayList<VideoQuality>?) {
@@ -508,6 +506,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
 
     override fun onPlayLoading() {
         updatePlayState(PlayerState.LOADING)
+        onPlayerCallback?.onLoading()
     }
 
     override fun onPlayComplete() {
@@ -534,7 +533,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
      */
     override fun nextOne() {
         val newPosition = playKeyListConfig.position + 1
-        if ( playKeyListConfig.keyList?.size?:0 > newPosition) {
+        if (playKeyListConfig.keyList?.size ?: 0 > newPosition) {
             playKeyListConfig.keyList!![newPosition]?.apply {
                 playKeyListConfig.onNext?.invoke(this)
                 updatePosition(newPosition)
@@ -551,7 +550,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
 
     override fun setKeyList(
         name: String?,
-        adapter: BaseKitAdapter<*>? ,
+        adapter: BaseKitAdapter<*>?,
         position: Int,
         onNext: onNext?
     ) {
@@ -585,14 +584,9 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     ) {
         if (playerType == PlayerType.LIVE) {
             if (success) {
-                Toast.makeText(mContext, "正在切换到" + quality.title + "...", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("正在切换到${quality.title}...")
             } else {
-                Toast.makeText(
-                    mContext,
-                    "切换" + quality.title + "清晰度失败，请稍候重试",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast("切换${quality.title}清晰度失败，请稍候重试")
             }
         }
     }
@@ -604,9 +598,9 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     ) {
         if (playerType == PlayerType.LIVE) {
             if (success) {
-                Toast.makeText(mContext, "清晰度切换成功", Toast.LENGTH_SHORT).show()
+                showToast("清晰度切换成功")
             } else {
-                Toast.makeText(mContext, "清晰度切换失败", Toast.LENGTH_SHORT).show()
+                showToast("清晰度切换失败")
             }
         }
     }
@@ -615,6 +609,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
         if (message != null) {
             showMsg(message, "")
         }
+        onPlayerCallback?.onError(code, message)
     }
 
     override fun onPlayerTypeChange(playType: PlayerType?) {
@@ -661,6 +656,9 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
         }
     }
 
+    /**
+     * 会执行所有的onDestroy
+     */
     override fun onDestroy() {
         playKeyListConfig.clear()
         uiPlayerList.forEach {
@@ -668,6 +666,10 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
         }
     }
 
+    /**
+     * 用户操作界面的回调
+     */
+    @Suppress("DEPRECATION")
     private val mControllerCallback: UIPlayer.VideoViewCallback =
         object : UIPlayer.VideoViewCallback {
             override fun onSwitchPlayMode(playMode: PlayerMode) {
@@ -683,10 +685,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
                     onPlayerCallback?.onStartFullScreenPlay()
                     mViewBinding?.uiPlayerContent?.removeView(mWindowPlayer)
                     mViewBinding?.uiPlayerContent?.addView(mFullScreenPlayer, mVodControllerParams)
-                    //TODO 需要获取视频的旋转角度
-                    if (mSuperPlayer.getVideoWidth() > mSuperPlayer!!.getVideoHeight()) {
-                        rotateScreenOrientation(Orientation.LANDSCAPE)
-                    }
+                    rotateScreenOrientation(getVideoOrientation())
                     showFullPlayer()
 
                 } else if (playMode == PlayerMode.WINDOW) { // 请求窗口模式
@@ -705,6 +704,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
                             mWindowManager!!.removeView(mFloatPlayer)
                             mSuperPlayer.setPlayerView(mTXCloudVideoView)
                             mSuperPlayer.resume()
+                            onPlayerCallback?.onStopFloatWindow()
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -744,7 +744,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
                     mWindowParams!!.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                             or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
                     mWindowParams!!.format = PixelFormat.TRANSLUCENT
-                    mWindowParams!!.gravity = Gravity.LEFT or Gravity.TOP
+                    mWindowParams!!.gravity = Gravity.START or Gravity.TOP
                     val rect = playerConfig.floatViewRect
                     mWindowParams!!.x = rect.x
                     mWindowParams!!.y = rect.y
@@ -761,6 +761,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
                         mSuperPlayer.setPlayerView(videoView)
                         mSuperPlayer.resume()
                     }
+                    onPlayerCallback?.onStartFloatWindowPlay()
                 }
                 mSuperPlayer.switchPlayMode(playMode)
             }
@@ -819,7 +820,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
             override fun onSnapshot() {
                 mSuperPlayer.snapshot { bitmap ->
                     if (bitmap != null) {
-                        //TODO保存图片
+                        onPlayerCallback?.onSnapshot(bitmap)
                     } else {
                         showToast(R.string.superplayer_screenshot_fail)
                     }
@@ -851,6 +852,23 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
             }
         }
 
+    private fun getVideoOrientation(): Orientation {
+        val videoRotation = getVideoRotation()
+        return if (mSuperPlayer.getVideoHeight() >= mSuperPlayer.getVideoWidth()) {
+            if (videoRotation == 90) {
+                Orientation.LANDSCAPE
+            } else {
+                Orientation.PORTRAIT
+            }
+        } else {
+            if (videoRotation == 90) {
+                Orientation.PORTRAIT
+            } else {
+                Orientation.LANDSCAPE
+            }
+        }
+    }
+
     private fun showFullPlayer() {
         if (showInFullView != null) {
             parentViewGroup = this.parent as ViewGroup
@@ -859,7 +877,9 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
                 this,
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             )
+            return
         }
+        Log.e("SuperPlayerView","showInFullView is null ,please set setFullInWindow")
     }
 
     private fun exitFullPlayer() {
@@ -871,9 +891,9 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
 
     private fun rotateScreenOrientation(orientation: Orientation) {
         when (orientation) {
-            Orientation.LANDSCAPE -> (mContext as? Activity?)?.requestedOrientation =
+            Orientation.LANDSCAPE -> (mContext as? Activity)?.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            Orientation.PORTRAIT -> (mContext as? Activity?)?.requestedOrientation =
+            Orientation.PORTRAIT -> (mContext as? Activity)?.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }

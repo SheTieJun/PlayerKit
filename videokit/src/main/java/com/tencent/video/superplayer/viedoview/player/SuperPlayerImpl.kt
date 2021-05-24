@@ -302,7 +302,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
      *
      * @param model
      */
-    fun playWithModel(model: SuperPlayerModel?) {
+    private fun playWithModel(model: SuperPlayerModel?) {
         mCurrentModel = model
         if (PlayerState.END != playerState) {
             stop()
@@ -344,15 +344,14 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
             var videoURL: String? = null
             val videoQualities: ArrayList<VideoQuality> = ArrayList()
             var defaultVideoQuality: VideoQuality? = null
-            if (model.multiURLs != null && !model.multiURLs!!.isEmpty()) { // 多码率URL播放
-                var i = 0
-                for (superPlayerURL in model.multiURLs!!) {
+            if (model.multiURLs != null && model.multiURLs!!.isNotEmpty()) { // 多码率URL播放
+                for ((i, superPlayerURL) in model.multiURLs!!.withIndex()) {
                     if (i == model.playDefaultIndex) {
                         videoURL = superPlayerURL!!.url
                     }
                     videoQualities.add(
                         VideoQuality(
-                            i++,
+                            i,
                             superPlayerURL!!.qualityName,
                             superPlayerURL.url
                         )
@@ -466,7 +465,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
             } else {
                 mVodPlayer!!.setToken(null)
             }
-            val ret = mVodPlayer!!.startPlay(url)
+            mVodPlayer!!.startPlay(url)
             if (!isAutoPlay) {
                 updatePlayerState(PlayerState.PAUSE)
             }
@@ -599,7 +598,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
     }
 
     private val playName: String?
-        private get() {
+        get() {
             var title: String? = ""
             if (mCurrentModel != null && !TextUtils.isEmpty(mCurrentModel!!.title)) {
                 title = mCurrentModel!!.title
@@ -793,21 +792,18 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         }
     }
 
-    override fun seek(position: Int, isCallBack: Boolean) {
+    override fun seek(position: Int, isCallback: Boolean) {
         if (playerType == PlayerType.VOD) {
             if (mVodPlayer != null) {
                 mVodPlayer!!.seek(position)
             }
+        } else {
+            updatePlayerType(PlayerType.LIVE_SHIFT)
+            if (mLivePlayer != null) {
+                mLivePlayer!!.seek(position)
+            }
         }
-//        else {
-//            updatePlayerType(PlayerType.LIVE_SHIFT)
-//            LogReport.instance
-//                .uploadLogs(LogReport.ELK_ACTION_TIMESHIFT, 0, 0)
-//            if (mLivePlayer != null) {
-//                mLivePlayer!!.seek(position)
-//            }
-//        }
-        if (isCallBack) {
+        if (isCallback) {
             if (mObserver != null) {
                 mObserver!!.onSeek(position)
             }
@@ -815,12 +811,16 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
     }
 
     override fun snapshot(listener: TXLivePlayer.ITXSnapshotListener) {
-        if (playerType == PlayerType.VOD) {
-            mVodPlayer!!.snapshot(listener)
-        } else if (playerType == PlayerType.LIVE) {
-            mLivePlayer!!.snapshot(listener)
-        } else {
-            listener.onSnapshot(null)
+        when (playerType) {
+            PlayerType.VOD -> {
+                mVodPlayer!!.snapshot(listener)
+            }
+            PlayerType.LIVE -> {
+                mLivePlayer!!.snapshot(listener)
+            }
+            else -> {
+                listener.onSnapshot(null)
+            }
         }
     }
 

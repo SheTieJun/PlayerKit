@@ -1,5 +1,7 @@
 package com.tencent.video.superplayer.viedoview.player
 
+import android.graphics.Bitmap
+
 /**
  * SuperPlayerView的回调接口
  */
@@ -31,7 +33,10 @@ interface OnPlayerCallback {
     fun onStartFloatWindowPlay()
 
 
-    fun onStopSmallWindow()
+    /**
+     *
+     */
+    fun onStopFloatWindow()
     /**
      * 点击分享
      */
@@ -50,7 +55,7 @@ interface OnPlayerCallback {
     /**
      * 截图
      */
-    fun onSnapshot(path:String)
+    fun onSnapshot(bitmap:Bitmap)
 
     /**
      * 加载中
@@ -102,5 +107,10 @@ interface OnPlayerCallback {
      * 投屏按钮
      */
     fun onShotScreen()
+
+    /**
+     * 错误回调
+     */
+    fun onError(code: Int, message: String?)
 }
 

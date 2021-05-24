@@ -1,5 +1,6 @@
 package com.tencent.video.superplayer.base
 
+import android.graphics.Bitmap
 import com.tencent.video.superplayer.viedoview.player.OnPlayerCallback
 
 
@@ -31,7 +32,7 @@ typealias OnShare = () -> Unit
 
 typealias OnStopFloatWindow = () -> Unit
 
-typealias OnSnapshot = (path: String) -> Unit
+typealias OnSnapshot = (bitmap: Bitmap) -> Unit
 
 typealias OnResumeLive = () -> Unit
 
@@ -42,6 +43,8 @@ typealias OnSpeedChange = (speed: Float) -> Unit
 typealias OnShotScreen = () -> Unit
 
 typealias OnStop = () ->Unit
+
+typealias OnError = (code: Int, message: String?)  ->Unit
 
 class VideoViewCallbackBuilder {
 
@@ -85,6 +88,8 @@ class VideoViewCallbackBuilder {
 
     var onShotScreen: OnShotScreen? = null
 
+    var onError:OnError?= null
+
     companion object {
 
         inline fun build(block: VideoViewCallbackBuilder.() -> Unit) =
@@ -113,7 +118,7 @@ class VideoViewCallbackBuilder {
                 onStartFloatWindow?.invoke()
             }
 
-            override fun onStopSmallWindow() {
+            override fun onStopFloatWindow() {
                 onStopFloatWindow?.invoke()
             }
 
@@ -129,8 +134,8 @@ class VideoViewCallbackBuilder {
                 onVideoSize?.invoke(width, height)
             }
 
-            override fun onSnapshot(path: String) {
-                onSnapshot?.invoke(path)
+            override fun onSnapshot(bitmap: Bitmap) {
+                onSnapshot?.invoke(bitmap)
             }
 
             override fun onLoading() {
@@ -171,6 +176,10 @@ class VideoViewCallbackBuilder {
 
             override fun onShotScreen() {
                 onShotScreen?.invoke()
+            }
+
+            override fun onError(code: Int, message: String?) {
+                onError?.invoke(code, message)
             }
 
         }
