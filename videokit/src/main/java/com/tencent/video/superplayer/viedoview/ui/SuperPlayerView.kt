@@ -20,10 +20,10 @@ import com.tencent.liteav.superplayer.R
 import com.tencent.liteav.superplayer.databinding.SuperplayerVodViewBinding
 import com.tencent.rtmp.TXLivePlayer
 import com.tencent.rtmp.ui.TXCloudVideoView
-import com.tencent.video.superplayer.base.ConfigInterface
-import com.tencent.video.superplayer.base.PlayerConfig
-import com.tencent.video.superplayer.base.UIConfig
+import com.tencent.video.superplayer.base.*
 import com.tencent.video.superplayer.base.timer.TimerConfigure
+import com.tencent.video.superplayer.casehelper.KeyListListener
+import com.tencent.video.superplayer.casehelper.onNext
 import com.tencent.video.superplayer.kit.PlayerKit.checkOp
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
@@ -45,13 +45,14 @@ import com.tencent.video.superplayer.viedoview.player.SuperPlayerObserver
  * 硬件加速、倍速播放、镜像播放、手势控制等功能，同时支持直播与点播
  */
 class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPlayer,
-    ConfigInterface, SuperPlayerObserver {
+    ConfigInterface, SuperPlayerObserver, KeyListListener {
 
     private var parentViewGroup: ViewGroup? = null
     private var showInFullView: ViewGroup? = null
 
     protected var playerConfig: PlayerConfig = PlayerConfig.playerConfig
     protected var uiConfig: UIConfig = UIConfig.uiConfig
+    protected val playKeyListConfig :PlayKeyListConfig by lazy { PlayKeyListConfig.ofDef() }
     protected var mContext: Context? = null
     protected lateinit var mSuperPlayer: SuperPlayer
 
@@ -115,6 +116,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
         initPlayer()
     }
 
+    //ignore
     override fun isDrag(): Boolean {
         return false
     }
@@ -498,8 +500,10 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     override fun onPlayStop() {
         updatePlayState(PlayerState.END)
         onPlayerCallback?.onStop()
-        mFullScreenPlayer?.updateImageSpriteInfo(null)
-        mFullScreenPlayer?.updateKeyFrameDescInfo(null)
+        uiPlayerList.forEach {
+            it.updateImageSpriteInfo(null)
+            it.updateKeyFrameDescInfo(null)
+        }
     }
 
     override fun onPlayLoading() {
@@ -528,8 +532,34 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     /**
      * 如果是列表播放自定一下一集
      */
-    private fun nextOne() {
+    override fun nextOne() {
+        val newPosition = playKeyListConfig.position + 1
+        if ( playKeyListConfig.keyList?.size?:0 > newPosition) {
+            playKeyListConfig.keyList!![newPosition]?.apply {
+                playKeyListConfig.onNext?.invoke(this)
+                updatePosition(newPosition)
+            }
+        }
+    }
 
+    override fun updatePosition(position: Int) {
+        playKeyListConfig.position = position
+        uiPlayerList.forEach {
+            it.updatePosition(position)
+        }
+    }
+
+    override fun setKeyList(
+        name: String?,
+        adapter: BaseKitAdapter<*>? ,
+        position: Int,
+        onNext: onNext?
+    ) {
+        uiPlayerList.forEach {
+            it.setKeyList(name, adapter, position, onNext)
+        }
+        playKeyListConfig.onNext = onNext
+        playKeyListConfig.keyList = adapter?.data
     }
 
     override fun onVideoSize(width: Int, height: Int) {
@@ -614,8 +644,10 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
         info: PlayImageSpriteInfo?,
         list: ArrayList<PlayKeyFrameDescInfo>?
     ) {
-        mFullScreenPlayer?.updateImageSpriteInfo(info)
-        mFullScreenPlayer?.updateKeyFrameDescInfo(list)
+        uiPlayerList.forEach {
+            it.updateImageSpriteInfo(info)
+            it.updateKeyFrameDescInfo(list)
+        }
     }
 
     open fun onBackPressed(): Boolean {
@@ -630,6 +662,7 @@ class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPla
     }
 
     override fun onDestroy() {
+        playKeyListConfig.clear()
         uiPlayerList.forEach {
             it.onDestroy()
         }

@@ -6,6 +6,7 @@ import com.tencent.video.superplayer.base.VideoViewCallbackBuilder
 import com.tencent.video.superplayer.kit.PlayerKit
 import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
 import me.shetj.base.ktx.logi
+import me.shetj.base.ktx.showToast
 import me.shetj.base.mvvm.BaseBindingActivity
 import me.shetj.base.mvvm.BaseViewModel
 import me.shetj.base.tools.app.ArmsUtils
@@ -47,6 +48,30 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 mViewBinding.superVodPlayerView.playWithModel(model)
                 mViewBinding.superVodPlayerView.autoPlay(true)
                 mViewBinding.btnUrl.text = "已设置多url"
+            }
+
+            mViewBinding.btnKey.setOnClickListener {
+                if (!iskey) {
+                    mViewBinding.superVodPlayerView.setKeyList(
+                        "测试列表",
+                        KeyListAdapter(ArrayList<String>().apply {
+                            repeat(10) {
+                                add("播放item$it")
+                            }
+                        }).apply {
+                            setOnItemClickListener { adapter, view, position ->
+                                getItem(position).showToast()
+                            }
+                        },
+                        onNext = {
+                            it.toString().showToast()
+                        })
+                    iskey = true
+                }else{
+                    mViewBinding.superVodPlayerView.setKeyList(null,null,0,null)
+                    iskey = false
+                }
+                mViewBinding.btnKey.text = "设置播放列表KeyList:$iskey"
             }
 
             /**

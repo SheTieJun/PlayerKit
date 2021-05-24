@@ -15,10 +15,13 @@ import androidx.core.view.isVisible
 import com.tencent.liteav.superplayer.R
 import com.tencent.liteav.superplayer.databinding.SuperplayerVodPlayerFullscreenBinding
 import com.tencent.rtmp.TXImageSprite
+import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.base.UIConfig
+import com.tencent.video.superplayer.casehelper.KeyListListener
 import com.tencent.video.superplayer.casehelper.PlayKeyListHelper
 import com.tencent.video.superplayer.casehelper.WinSpeedHelper
+import com.tencent.video.superplayer.casehelper.onNext
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.VideoQuality
@@ -57,18 +60,20 @@ import kotlin.math.roundToInt
  */
 class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callback,
     VodQualityView.Callback, PointSeekBar.OnSeekBarChangeListener,
-    PointSeekBar.OnSeekBarPointClickListener {
+    PointSeekBar.OnSeekBarPointClickListener, KeyListListener {
 
     private lateinit var mViewBinding: SuperplayerVodPlayerFullscreenBinding
 
     // 隐藏锁屏按钮子线程
     private var mHideLockViewRunnable: HideLockViewRunnable? = null
+
     // 手势检测监听器
-    private var mGestureDetector : GestureDetector? = null
+    private var mGestureDetector: GestureDetector? = null
     // 手势控制工具
 
-    private var mVideoGestureDetector  : VideoGestureDetector? = null
+    private var mVideoGestureDetector: VideoGestureDetector? = null
     private var isShowing = false
+
     // 进度条是否正在拖动，避免SeekBar由于视频播放的update而跳动
     private var mIsChangingSeekBarProgress = false
     private var mPlayType: PlayerType? = null
@@ -98,7 +103,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
             : ArrayList<VideoQuality>? = null
     private var mFirstShowQuality // 是都是首次显示画质信息
             = false
-    private var keyListHelper: PlayKeyListHelper? = null
+    private val keyListHelper: PlayKeyListHelper by lazy { PlayKeyListHelper(this) }
 
     constructor(context: Context) : super(context) {
         initialize(context)
@@ -163,7 +168,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
                     if (mVideoGestureDetector != null) {
                         mVideoGestureDetector!!.reset(
                             width,
-                            mViewBinding.superplayerSeekbarProgress!!.progress
+                            mViewBinding.superplayerSeekbarProgress.progress
                         )
                     }
                     return true
@@ -198,7 +203,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
                 mViewBinding.superplayerVideoProgressLayout.setProgress(progress)
                 mViewBinding.superplayerVideoProgressLayout.show()
                 val percentage =
-                    progress.toFloat() / mViewBinding.superplayerSeekbarProgress!!.max
+                    progress.toFloat() / mViewBinding.superplayerSeekbarProgress.max
                 var currentTime = mDuration * percentage
                 if (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT) {
                     (if (mLivePushDuration > MAX_SHIFT_TIME) {
@@ -256,7 +261,6 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
             topShare.setOnClickListener(this@FullScreenPlayer)
             ivTv.setOnClickListener(this@FullScreenPlayer)
         }
-        keyListHelper = PlayKeyListHelper(this)
     }
 
     /**
@@ -266,14 +270,8 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
      */
     private fun togglePlayState() {
         when (mCurrentPlayState) {
-            PlayerState.PAUSE, PlayerState.END -> if (mControllerCallback != null) {
-                mControllerCallback!!.onResume()
-            }
-            PlayerState.PLAYING, PlayerState.LOADING -> {
-                if (mControllerCallback != null) {
-                    mControllerCallback!!.onPause()
-                }
-            }
+            PlayerState.PAUSE, PlayerState.END -> mControllerCallback?.onResume()
+            PlayerState.PLAYING, PlayerState.LOADING -> mControllerCallback?.onPause()
         }
         show()
     }
@@ -405,8 +403,8 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
                 }
 
             }
-            if (uiConfig.showBottom) {
-                if (mViewBinding.superplayerLlBottom.visibility == View.VISIBLE) {
+            if (mViewBinding.superplayerLlBottom.visibility == View.VISIBLE) {
+                if (uiConfig.showBottom && !uiConfig.keepTop) {
                     mViewBinding.superplayerLlBottom.animation =
                         AnimationUtils.loadAnimation(context, R.anim.push_bottom_out)
                     mViewBinding.superplayerLlBottom.isVisible = isShow
@@ -495,7 +493,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
         }
     }
 
-    override fun isDrag() = mViewBinding.superplayerSeekbarProgress.mIsOnDrag == true
+    override fun isDrag() = mViewBinding.superplayerSeekbarProgress.mIsOnDrag
 
 
     override fun updatePlayType(type: PlayerType?) {
@@ -931,15 +929,32 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
     override fun setUIConfig(uiConfig: UIConfig) {
         super.setUIConfig(uiConfig)
         mViewBinding.apply {
-             superplayerVodMore.setUIConfig(uiConfig)
+            superplayerVodMore.setUIConfig(uiConfig)
             ivTv.isVisible = uiConfig.showTV
             ivSpeed.isVisible = uiConfig.showSpeed
             topShare.isVisible = uiConfig.showShare
             superplayerIvMore.isVisible = uiConfig.showMore
             mViewBinding.superplayerIvLock.isVisible = uiConfig.showLock
             mViewBinding.superplayerRlTop.isVisible = uiConfig.showTop || uiConfig.keepTop
-            mViewBinding.superplayerLlBottom.isVisible = uiConfig.showBottom
+            mViewBinding.superplayerLlBottom.isVisible = uiConfig.showBottom || uiConfig.keepBottom
         }
+    }
+
+    override fun nextOne() {
+        keyListHelper.nextOne()
+    }
+
+    override fun updatePosition(position: Int) {
+        keyListHelper.updatePosition(position)
+    }
+
+    override fun setKeyList(
+        name: String?,
+        adapter: BaseKitAdapter<*>?,
+        position: Int,
+        onNext: onNext?
+    ) {
+        keyListHelper.setKeyList(name, adapter, position, onNext)
     }
 
 }

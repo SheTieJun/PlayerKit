@@ -147,7 +147,8 @@ object VideoQualityUtils {
         quality.index = bitrateItem.index
         var getName = false
         for (resolutionName in resolutionNames!!) {
-            if ((resolutionName!!.width == bitrateItem.width && resolutionName.height == bitrateItem.height || resolutionName.width == bitrateItem.height && resolutionName.height == bitrateItem.width)
+            if ((resolutionName!!.width == bitrateItem.width && resolutionName.height == bitrateItem.height
+                        || resolutionName.width == bitrateItem.height && resolutionName.height == bitrateItem.width)
                 && "video".equals(resolutionName.type, ignoreCase = true)
             ) {
                 quality.title = resolutionName.name

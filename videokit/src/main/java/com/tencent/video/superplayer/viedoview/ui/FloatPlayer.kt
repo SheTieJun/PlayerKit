@@ -6,8 +6,11 @@ import android.view.*
 import android.widget.*
 import com.tencent.liteav.superplayer.*
 import com.tencent.rtmp.ui.TXCloudVideoView
+import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.PlayerMode
 import com.tencent.video.superplayer.base.PlayerConfig
+import com.tencent.video.superplayer.casehelper.KeyListListener
+import com.tencent.video.superplayer.casehelper.onNext
 import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
 
 /**

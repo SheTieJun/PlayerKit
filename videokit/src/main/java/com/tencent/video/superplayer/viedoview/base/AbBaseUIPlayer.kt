@@ -6,12 +6,15 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.PlayerState
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.PlayerType
 import com.tencent.video.superplayer.base.ConfigInterface
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.base.timer.TimerConfigure
+import com.tencent.video.superplayer.casehelper.KeyListListener
+import com.tencent.video.superplayer.casehelper.onNext
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.VideoQuality
@@ -19,7 +22,8 @@ import com.tencent.video.superplayer.model.entity.VideoQuality
 /**
  * 播放器公共逻辑
  */
-abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerConfigure.CallBack {
+abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerConfigure.CallBack ,
+    KeyListListener {
     protected var playerConfig: PlayerConfig = PlayerConfig.playerConfig
     protected var uiConfig: UIConfig = UIConfig.uiConfig
     protected var mControllerCallback: UIPlayer.VideoViewCallback? = null
@@ -108,6 +112,23 @@ abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerCon
     }
 
     override fun onChangeModel(repeatMode: Int) {
+    }
+
+
+    override fun nextOne() {
+
+    }
+
+    override fun updatePosition(position: Int) {
+    }
+
+    override fun setKeyList(
+        name: String?,
+        adapter: BaseKitAdapter<*>?,
+        position: Int,
+        onNext: onNext?
+    ) {
+
     }
 
     companion object {

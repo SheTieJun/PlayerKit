@@ -14,7 +14,18 @@ import com.tencent.video.superplayer.viedoview.ui.FullScreenPlayer
 
 typealias onNext = (Any) -> Unit
 
-class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) {
+interface KeyListListener{
+
+    fun nextOne()
+
+    fun updatePosition(position:Int)
+
+    fun setKeyList(name: String?, adapter: BaseKitAdapter<*>?, position: Int = 0, onNext: onNext?=null)
+
+}
+
+class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) :
+     KeyListListener {
     private val mLlSpeedList = fullScreenPlayer.findViewById<View>(R.id.ll_data_list)
     private val mTvKey: TextView = fullScreenPlayer.findViewById(R.id.superplayer_tv_play_list)
     private val mTvName: TextView = fullScreenPlayer.findViewById(R.id.tv_name)
@@ -41,7 +52,7 @@ class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) {
         }
     }
 
-    fun nextOne() {
+    override fun nextOne() {
         if ((mRecycleView.adapter as? BaseKitAdapter< *>)?.data?.size ?: 0 > position + 1) {
             (mRecycleView.adapter as? BaseKitAdapter< *>)?.getItem(position + 1)?.apply {
                 onNext?.invoke(this)
@@ -50,7 +61,26 @@ class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) {
         }
     }
 
-    fun setKeyAndAdapter(name: String?, adapter: BaseKitAdapter<*>?, position: Int = 0, onNext: onNext?) {
+
+    private fun showLectureList(isShow: Boolean) {
+        if (isShow) {
+            fullScreenPlayer.hide()
+            mLlSpeedList?.visibility = View.VISIBLE
+            mLlSpeedList?.animation = AnimationUtils.loadAnimation(fullScreenPlayer.context, R.anim.slide_right_in)
+            mRecycleView.scrollToPosition(position)
+        } else {
+            mLlSpeedList?.visibility = View.GONE
+            mLlSpeedList?.animation = AnimationUtils.loadAnimation(fullScreenPlayer.context, R.anim.slide_right_exit)
+        }
+    }
+
+    override fun updatePosition(position: Int) {
+        this.position = position
+        this.mIvNext.isVisible = position + 1 < mAdapter?.itemCount ?: 0
+        this.mAdapter?.notifyDataSetChanged()
+    }
+
+    override fun setKeyList(name: String?, adapter: BaseKitAdapter<*>?, position: Int, onNext: onNext?) {
         mTvName.text = name
         mTvKey.text = name
         mRecycleView.adapter = adapter
@@ -68,23 +98,6 @@ class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) {
                 updatePosition(pos)
                 showLectureList(false)
             }
-        }
-    }
-
-    fun updatePosition(position: Int) {
-        this.position = position
-        mIvNext.isVisible = position + 1 < mAdapter?.itemCount ?: 0
-    }
-
-    private fun showLectureList(isShow: Boolean) {
-        if (isShow) {
-            fullScreenPlayer.hide()
-            mLlSpeedList?.visibility = View.VISIBLE
-            mLlSpeedList?.animation = AnimationUtils.loadAnimation(fullScreenPlayer.context, R.anim.slide_right_in)
-            mRecycleView.scrollToPosition(position)
-        } else {
-            mLlSpeedList?.visibility = View.GONE
-            mLlSpeedList?.animation = AnimationUtils.loadAnimation(fullScreenPlayer.context, R.anim.slide_right_exit)
         }
     }
 

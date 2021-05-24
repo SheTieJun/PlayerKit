@@ -14,12 +14,15 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.view.isVisible
 import com.tencent.liteav.superplayer.*
+import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.casehelper.WinSpeedHelper
 import com.tencent.video.superplayer.model.entity.VideoQuality
 import com.tencent.video.superplayer.kit.VideoGestureDetector
 import com.tencent.video.superplayer.base.UIConfig
+import com.tencent.video.superplayer.casehelper.KeyListListener
+import com.tencent.video.superplayer.casehelper.onNext
 import com.tencent.video.superplayer.ui.view.*
 import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
 import kotlin.math.roundToInt
@@ -40,7 +43,7 @@ import kotlin.math.roundToInt
 class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
     VodMoreView.Callback,
     VodQualityView.Callback,
-    PointSeekBar.OnSeekBarChangeListener{
+    PointSeekBar.OnSeekBarChangeListener, KeyListListener {
     // UI控件
     private var mLayoutTop // 顶部标题栏布局
             : View? = null
@@ -648,11 +651,6 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
                 mControllerCallback!!.onSwitchPlayMode(PlayerMode.FULLSCREEN)
             }
         }
-//        else if (id == R.id.superplayer_ll_replay) { //重播按钮
-//            if (mControllerCallback != null) {
-//                mControllerCallback!!.onResume()
-//            }
-//        }
         else if (id == R.id.superplayer_tv_back_to_live) { //返回直播按钮
             if (mControllerCallback != null) {
                 mControllerCallback!!.onResumeLive()
@@ -704,13 +702,12 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         val curProgress = seekBar.progress
         val maxProgress = seekBar.max
         when (mPlayType) {
-            PlayerType.VOD -> if (curProgress >= 0 && curProgress <= maxProgress) {
+            PlayerType.VOD -> if (curProgress in 0..maxProgress) {
                 // 关闭重播按钮
                 val percentage = curProgress.toFloat() / maxProgress
                 val position = (mDuration * percentage).toInt()
                 if (mControllerCallback != null) {
                     mControllerCallback!!.onSeekTo(position)
-//                    mControllerCallback!!.onResume()
                 }
             }
             PlayerType.LIVE, PlayerType.LIVE_SHIFT -> {
@@ -762,10 +759,15 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
      *
      * @param ArrayList 画质列表
      */
-    override fun setVideoQualityList(ArrayList: ArrayList<VideoQuality>?) {
-        mVideoQualityList = ArrayList
-        mFirstShowQuality = false
-        mTvQuality?.isVisible = true
+    override fun setVideoQualityList(list: ArrayList<VideoQuality>?) {
+
+        if (list?.isEmpty() == true) {
+            mTvQuality?.isVisible = false
+        } else {
+            mVideoQualityList = list
+            mFirstShowQuality = false
+            mTvQuality?.isVisible = true
+        }
     }
 
     override fun updateVideoQuality(videoQuality: VideoQuality?) {
@@ -792,10 +794,8 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         if (mVideoQualityList == null || mVideoQualityList!!.size == 0) {
             return
         }
-        if (mVideoQualityList!!.size == 1 && (mVideoQualityList!![0] == null || TextUtils.isEmpty(
-                        mVideoQualityList!![0]!!.title
-                ))
-        ) {
+        if (mVideoQualityList!!.size == 1
+            && (TextUtils.isEmpty(mVideoQualityList!![0].title))) {
             return
         }
         // 设置默认显示分辨率文字
@@ -803,7 +803,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         if (!mFirstShowQuality && mDefaultVideoQuality != null) {
             for (i in mVideoQualityList!!.indices) {
                 val quality = mVideoQualityList!![i]
-                if (quality?.title != null && quality.title == mDefaultVideoQuality!!.title) {
+                if (quality.title != null && quality.title == mDefaultVideoQuality!!.title) {
                     mVodQualityView!!.setDefaultSelectedQuality(i)
                     break
                 }
@@ -813,17 +813,4 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         mVodQualityView!!.setVideoQualityList(mVideoQualityList)
     }
 
-    fun hideTV(isShow: Boolean = false) {
-        if (uiConfig.showTV) {
-            TransitionManager.beginDelayedTransition(this)
-            mIvTV?.isVisible = isShow
-        } else {
-            mIvTV?.isVisible = false
-        }
-    }
-
-    fun hideQualities() {
-        TransitionManager.beginDelayedTransition(this)
-        mTvQuality?.isVisible = false
-    }
 }
