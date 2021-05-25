@@ -1,123 +1,163 @@
-### 腾讯的超级播放器
+## 腾讯的超级播放器
+> 对他的demo 进行2次封装，优化和添加一下新的功能
+
+具备播放器基本功能，以及
+1. 竖屏切换
+2. 悬浮窗播放
+3. 画质切换
+4. 硬件加速
+5. 倍速播放
+6. 镜像播放
+7. 手势控制
+8. 支持直播与点播
+9. 功能缓存
+10. 截屏
+11. 设置播放起始位置
+12. 定时播放功能
+13. 自动下一集功能
+14. 自动开始播放
+15. 界面控制
+
+
+
+#### 1. 全屏切换
+
+```kotlin
+//一般不需自己进行设置
+player.switchPlayMode(PlayerMode.WINDOW) //小屏
+player.switchPlayMode(PlayerMode.FULLSCREEN) //全屏
 ```
-https://cloud.tencent.com/document/product/266/45554 参数说明，如果有什么不对就发给后端
-```
-
-```
-mViewBinding.superVodPlayerView.setAutoPlay(true)
-       val model = SuperPlayerModel() 
-        model.url =
-            "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
-        mViewBinding.superVodPlayerView.setPlayToSeek(10)
-        mViewBinding.superVodPlayerView.playWithModel(model)
- 
-        mViewBinding.superVodPlayerView.setPlayerViewCallback(object : SimPlayerCallBack() {
-            override fun onClickShare() {
-                super.onClickShare()
-                "点击了分享".showToast()
-            }
-
-            override fun onStartFullScreenPlay() {
-                super.onStartFullScreenPlay()
-                "全屏播放".showToast()
-                ArmsUtils.fullScreencall(this@TXPlayerActivity)
-            }
-
-            override fun onStopFullScreenPlay() {
-                super.onStopFullScreenPlay()
-                "停止全屏播放".showToast()
-                ArmsUtils.statuInScreen2(this@TXPlayerActivity,true)
-            }
-
-            override fun onStartFloatWindowPlay() {
-                super.onStartFloatWindowPlay()
-                "悬浮窗播放".showToast()
-            }
-
-            override fun onClickFloatCloseBtn() {
-                super.onClickFloatCloseBtn()
-                "退出悬浮播放".showToast()
-            }
-        })
+#### 2. 悬浮窗播放
+权限：  ` <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />`
+```kotlin
+player.switchPlayMode(PlayerMode.FLOAT) //设置
 ```
 
- 悬浮窗
-```
-        mViewBinding.btnFloatView.setOnClickListener {
-            mViewBinding.superVodPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.FLOAT)
-            finish()
+#### 3. 画质切换
+1. 通过腾讯云自己的的API获取到不同的画质
+2. 通过设置播放参数
+```kotlin
+   SuperPlayerModel().apply {
+        val url =  "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
+        multiURLs = ArrayList<SuperPlayerModel.SuperPlayerURL>().apply {
+            add(SuperPlayerModel.SuperPlayerURL(url, "流程"))
+            add(SuperPlayerModel.SuperPlayerURL(url, "标清"))
+            add(SuperPlayerModel.SuperPlayerURL(url, "高清"))
         }
+        player.playWithModel(this)
+   }
 ```
 
-设置列表key 切换
-```
-        mViewBinding.btnKey.setOnClickListener {
-            if (!iskey) {
-                mViewBinding.superVodPlayerView.setKeyList(
-                    "测试列表",
-                    KeyListAdapter(ArrayList<String>().apply {
-                        repeat(10) {
-                            add("播放item$it")
-                        }
-                    }).apply {
-                        setOnItemClickListener { adapter, view, position ->
-                            getItem(position).showToast()
-                        }
-                    },
-                    onNext = {
-                        it.toString().showToast()
-                    })
-                iskey = true
-            }else{
-                mViewBinding.superVodPlayerView.setKeyList(null,null)
-                iskey = false
-            }
-            mViewBinding.btnKey.text = "设置播放列表KeyList:$iskey"
-        }
+#### 4. 硬件加速
+```kotlin
+player.enableHardwareDecode(true)
 ```
 
-设置多url
+#### 5. 倍速播放
+```kotlin
+player.setPlaySpeed(1.0f)
 ```
-        mViewBinding.btnUrl.setOnClickListener {
-            val model = SuperPlayerModel().apply {
-                val url =
-                    "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
-                multiURLs = ArrayList<SuperPlayerModel.SuperPlayerURL>().apply {
-                    add(SuperPlayerModel.SuperPlayerURL(url, "流程"))
-                    add(SuperPlayerModel.SuperPlayerURL(url, "标清"))
-                    add(SuperPlayerModel.SuperPlayerURL(url, "高清"))
-                }
-            }
-            mViewBinding.superVodPlayerView.playWithModel(model)
-            mViewBinding.superVodPlayerView.setAutoPlay(true)
-            mViewBinding.btnUrl.text = "已设置多url"
-        }
+#### 6. 镜像播放
+```kotlin
+player.setPlaySpeed(1.0f)
 ```
-投屏按钮回调
+#### 7. 手势控制
+
+#### 8. 支持直播与点播
+通过播放url 判断是否是直播
+```
+    /**
+     * 是否是RTMP协议
+     *
+     * @param videoURL
+     * @return
+     */
+    private fun isRTMPPlay(videoURL: String?): Boolean {
+        return !TextUtils.isEmpty(videoURL) && videoURL!!.startsWith("rtmp")
+    }
+
+    /**
+     * 是否是HTTP-FLV协议
+     *
+     * @param videoURL
+     * @return
+     */
+    private fun isFLVPlay(videoURL: String?): Boolean {
+        return (!TextUtils.isEmpty(videoURL) && videoURL!!.startsWith("http://")
+                || videoURL!!.startsWith("https://")) && videoURL.contains(".flv")
+    }
+
 ```
 
-        mViewBinding.btnTv.setOnClickListener {
-            isTv = if (!isTv) {
-                mViewBinding.superVodPlayerView.setTVControl(object : TVControl {
-                    override fun startShowTVLink() {
-                        "点击了投屏".showToast()
-                    }
+#### 9. 功能缓存
+SDK 自带的缓存
+
+#### 10. 截屏
+```kotlin
+player.snapshot(...)
+```
+
+#### 11. 设置播放起始位置
+```kotlin
+player.setPlayToSeek(10)
+```
+
+#### 12. 定时播放功能
+1. 更多菜单里面
+2. 通过代码设置
+```
+TimerConfigure.instance.startTime(10*60*1000)
+```
+
+#### 13. 自动下一集功能
+```
+player.setKeyList("测试列表",
+                KeyListAdapter(ArrayList<String>().apply {
+                            repeat(10) {
+                                add("播放item$it")
+                            }
+                        }).apply {
+                            setOnItemClickListener { _, _, position ->
+                                getItem(position).showToast()
+                            }
+                        },
+                        onNext = {
+                            it.toString().showToast()
+                            //这里做具体的下一集
+                        })
+
+ player.nextOneKey()//下一集，触发 onNext
+```
+
+#### 14. 自动开始播放
+```kotlin
+player.autoPlay(true)
+```
+
+#### 15. 界面控制
+```kotlin
+//后期可能会修改
+player. setPlayConfig( PlayerConfig)
+player.setUIConfig(UIConfig.build {
+                    this.showTV = false
                 })
-                true
-            }else{
-                mViewBinding.superVodPlayerView.setTVControl(null)
-                false
-            }
-            mViewBinding.btnTv.text = "设置TV:$isTv"
-        }
 ```
-隐藏全部的view
+
+#### 16.播放回调
 ```
-        mViewBinding.btnHide.setOnClickListener {
-            GlobalConfig.instance.isHideAll = !GlobalConfig.instance.isHideAll
-            if (GlobalConfig.instance.isHideAll){
-                mViewBinding.superVodPlayerView.hideAll()
-            }
-            mViewBinding.btnHide.text = "隐藏控制：${GlobalConfig.instance.isHideAll}"
-        }
+   mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallbackBuilder.build{
+                onStart = {
+                    "onStart".logi()
+                }
+                onPlayProgress = { current, duration ->
+                    "onPlayProgress:$current$duration".logi()
+                }
+                onPause ={
+                    "onPause".logi()
+                }
+                onError ={ _, message ->
+                    "onError:$message".logi()
+                }
+                //...其他
+            })
 ```

@@ -287,9 +287,14 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
 
     override fun destroy() {
         mSuperPlayer.destroy()
+        release()
         onDestroy()
     }
 
+    /**
+     * 设置播放模式
+     *  [PlayerMode.WINDOW]：窗口模式 ；[PlayerMode.FULLSCREEN]: 全屏模式 ；[PlayerMode.FLOAT]: 悬浮窗模式
+     */
     override fun switchPlayMode(playerMode: PlayerMode) {
         mControllerCallback.onSwitchPlayMode(playerMode)
     }
@@ -314,8 +319,8 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         mSuperPlayer.snapshot(listener)
     }
 
-    override fun setRate(speedLevel: Float) {
-        mSuperPlayer.setRate(speedLevel)
+    override fun setPlaySpeed(speedLevel: Float) {
+        mSuperPlayer.setPlaySpeed(speedLevel)
     }
 
     override fun setMirror(isMirror: Boolean) {
@@ -389,7 +394,6 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
     }
 
     override fun release() {
-        onDestroy()
         uiPlayerList.forEach {
             it.release()
         }
@@ -423,7 +427,7 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
     }
 
     override fun updateSpeedChange(speedLevel: Float) {
-        mSuperPlayer.setRate(speedLevel)
+        mSuperPlayer.setPlaySpeed(speedLevel)
         uiPlayerList.forEach {
             it.updateSpeedChange(speedLevel)
         }
@@ -524,27 +528,30 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
             return
         } else {
             onPlayerCallback?.onComplete()
-            nextOne()
+            nextOneKey()
         }
     }
 
     /**
      * 如果是列表播放自定一下一集
      */
-    override fun nextOne() {
+    override fun nextOneKey() {
         val newPosition = playKeyListConfig.position + 1
         if (playKeyListConfig.keyList?.size ?: 0 > newPosition) {
             playKeyListConfig.keyList!![newPosition]?.apply {
                 playKeyListConfig.onNext?.invoke(this)
-                updatePosition(newPosition)
+                updateListPosition(newPosition)
             }
         }
     }
 
-    override fun updatePosition(position: Int) {
+    /***
+     * 指定当前播放对应的keyList的位置
+     */
+    override fun updateListPosition(position: Int) {
         playKeyListConfig.position = position
         uiPlayerList.forEach {
-            it.updatePosition(position)
+            it.updateListPosition(position)
         }
     }
 
@@ -656,9 +663,6 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         }
     }
 
-    /**
-     * 会执行所有的onDestroy
-     */
     override fun onDestroy() {
         playKeyListConfig.clear()
         uiPlayerList.forEach {

@@ -90,11 +90,6 @@ class VodMoreView : FrameLayout, CompoundButton.OnCheckedChangeListener, ConfigI
         playerConfig.speed = speed
     }
 
-
-    fun getCaseHelper(): VideoCaseHelper? {
-        return mCaseHelper
-    }
-
     fun onDestroyTimeCallBack() {
         mCaseHelper?.onDestroy()
     }

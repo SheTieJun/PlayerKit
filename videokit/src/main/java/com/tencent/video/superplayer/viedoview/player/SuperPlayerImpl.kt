@@ -8,6 +8,7 @@ import com.tencent.liteav.basic.log.TXCLog
 import com.tencent.rtmp.*
 import com.tencent.rtmp.TXLiveConstants.*
 import com.tencent.rtmp.ui.TXCloudVideoView
+import com.tencent.video.superplayer.base.GlobalConfig
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerCode
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
@@ -263,9 +264,9 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         mVodPlayConfig = TXVodPlayConfig().apply {
             val sdcardDir = context!!.getExternalFilesDir(DIRECTORY_MOVIES)
             if (sdcardDir != null) {
-                setCacheFolderPath(sdcardDir.path + "/txcache")
+                setCacheFolderPath(sdcardDir.path + "/vdcache")
             }
-            setCacheMp4ExtName("xml")
+            setCacheMp4ExtName(GlobalConfig.cacheMp4ExtName)
             setHeaders(playerConfig.header)
             setAutoRotate(true)
             setMaxCacheItems(playerConfig.maxCacheItem)
@@ -824,7 +825,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         }
     }
 
-    override fun setRate(speedLevel: Float) {
+    override fun setPlaySpeed(speedLevel: Float) {
         if (playerType == PlayerType.VOD) {
             mVodPlayer!!.setRate(speedLevel)
         }

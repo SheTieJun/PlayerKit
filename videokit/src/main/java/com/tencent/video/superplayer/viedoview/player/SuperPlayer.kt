@@ -92,7 +92,7 @@ interface SuperPlayer {
     fun seek(position: Int,isCallback:Boolean = true)
     fun setPlayToSeek(position: Int)
     fun snapshot(listener: TXLivePlayer.ITXSnapshotListener)
-    fun setRate(speedLevel: Float)
+    fun setPlaySpeed(speedLevel: Float)
     fun setMirror(isMirror: Boolean)
     fun switchStream(quality: VideoQuality)
     fun changeRenderMode(renderMode : Int)

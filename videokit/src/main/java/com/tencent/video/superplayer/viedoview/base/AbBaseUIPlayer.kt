@@ -115,11 +115,11 @@ abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerCon
     }
 
 
-    override fun nextOne() {
+    override fun nextOneKey() {
 
     }
 
-    override fun updatePosition(position: Int) {
+    override fun updateListPosition(position: Int) {
     }
 
     override fun setKeyList(

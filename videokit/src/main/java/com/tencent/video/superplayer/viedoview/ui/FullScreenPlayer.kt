@@ -641,9 +641,6 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
         } else if (i == R.id.superplayer_iv_lock) {             //锁屏按钮
             toggleLockState()
         }
-//        else if (i == R.id.superplayer_ll_replay) {           //重播按钮
-//            replay()
-//        }
         else if (i == R.id.superplayer_tv_back_to_live) {     //返回直播按钮
             if (mControllerCallback != null) {
                 mControllerCallback!!.onResumeLive()
@@ -940,12 +937,12 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
         }
     }
 
-    override fun nextOne() {
-        keyListHelper.nextOne()
+    override fun nextOneKey() {
+        keyListHelper.nextOneKey()
     }
 
-    override fun updatePosition(position: Int) {
-        keyListHelper.updatePosition(position)
+    override fun updateListPosition(position: Int) {
+        keyListHelper.updateListPosition(position)
     }
 
     override fun setKeyList(

@@ -1,6 +1,7 @@
 package com.tencent.video.superplayer.viedoview.base
 
 import android.graphics.Bitmap
+import android.widget.ImageView
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo

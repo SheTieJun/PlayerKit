@@ -16,9 +16,12 @@ typealias onNext = (Any) -> Unit
 
 interface KeyListListener{
 
-    fun nextOne()
+    /**
+     * 下一集
+     */
+    fun nextOneKey()
 
-    fun updatePosition(position:Int)
+    fun updateListPosition(position:Int)
 
     fun setKeyList(name: String?, adapter: BaseKitAdapter<*>?, position: Int = 0, onNext: onNext?=null)
 
@@ -48,15 +51,15 @@ class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) :
         }
         mTvName.setOnClickListener { showLectureList(true) }
         mIvNext.setOnClickListener {
-            nextOne()
+            nextOneKey()
         }
     }
 
-    override fun nextOne() {
+    override fun nextOneKey() {
         if ((mRecycleView.adapter as? BaseKitAdapter< *>)?.data?.size ?: 0 > position + 1) {
             (mRecycleView.adapter as? BaseKitAdapter< *>)?.getItem(position + 1)?.apply {
                 onNext?.invoke(this)
-                updatePosition(position + 1)
+                updateListPosition(position + 1)
             }
         }
     }
@@ -74,7 +77,7 @@ class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) :
         }
     }
 
-    override fun updatePosition(position: Int) {
+    override fun updateListPosition(position: Int) {
         this.position = position
         this.mIvNext.isVisible = position + 1 < mAdapter?.itemCount ?: 0
         this.mAdapter?.notifyDataSetChanged()
@@ -91,11 +94,11 @@ class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) :
         if (position != 0) {
             this.position = position
         }
-        updatePosition(this.position)
+        updateListPosition(this.position)
         adapter?.setOnItemClickListener { _, _, pos ->
             (mRecycleView.adapter as? BaseKitAdapter<*>)?.getItem(pos)?.apply {
                 onNext?.invoke(this)
-                updatePosition(pos)
+                updateListPosition(pos)
                 showLectureList(false)
             }
         }
