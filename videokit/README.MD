@@ -18,9 +18,29 @@
 14. 自动开始播放
 15. 界面控制
 
+#### 基础功能播放
+```
+    playWithModel(model: SuperPlayerModel)
 
+    play(url: String?)
+
+    play(appId: Int, url: String?)//是腾讯云直播url,需要腾讯云的appid
+
+    play(appId: Int, fileId: String?, psign: String?)  //需要腾讯云的appid
+
+    play(
+        appId: Int,
+        superPlayerURLS: List<SuperPlayerModel.SuperPlayerURL?>?,
+        defaultIndex: Int
+    )//如果播放的url 是腾讯云的url,需要腾讯云的appid否则可以所有填写
+
+```
 
 #### 1. 全屏切换
+需要设置全屏时，显示的位置（必须）
+```kotlin
+player.setFullInWindow(this@MainActivity.window)
+```
 
 ```kotlin
 //一般不需自己进行设置
@@ -59,12 +79,13 @@ player.setPlaySpeed(1.0f)
 ```
 #### 6. 镜像播放
 ```kotlin
-player.setPlaySpeed(1.0f)
+player.setMirror(false)
 ```
 #### 7. 手势控制
 
 #### 8. 支持直播与点播
-通过播放url 判断是否是直播
+设置播放后
+内部通过播放url 判断是否是直播
 ```
     /**
      * 是否是RTMP协议
