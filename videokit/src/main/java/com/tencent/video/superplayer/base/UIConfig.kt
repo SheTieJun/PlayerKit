@@ -5,19 +5,19 @@ package com.tencent.video.superplayer.base
  * 界面配置显示
  */
 class UIConfig private constructor(
-    val showTV: Boolean, //展示投屏按钮
-    val showShare: Boolean, //展示分享按钮
-    val showTop: Boolean, //展示顶部条
-    val showBottom: Boolean,//展示底部条
-    val showSpeed: Boolean,//展示倍数
-    val showMore: Boolean,//展示更多
-    val showLock: Boolean, //展示Lock
-    val keepTop: Boolean, //顶部不隐藏
-    val keepBottom: Boolean,//底部不隐藏
-    val isShowAccelerate: Boolean,//展示已经加速功能
-    val isShowPlayStyle: Boolean,//展示播放模式
-    val isShowTimeStyle: Boolean, //展示定时
-    val isShowMirror: Boolean,//镜像功能
+    var showTV: Boolean, //展示投屏按钮
+    var showShare: Boolean, //展示分享按钮
+    var showTop: Boolean, //展示顶部条
+    var showBottom: Boolean,//展示底部条
+    var showSpeed: Boolean,//展示倍数
+    var showMore: Boolean,//展示更多
+    var showLock: Boolean, //展示Lock
+    var keepTop: Boolean, //顶部不隐藏
+    var keepBottom: Boolean,//底部不隐藏
+    var isShowAccelerate: Boolean,//展示已经加速功能
+    var isShowPlayStyle: Boolean,//展示播放模式
+    var isShowTimeStyle: Boolean, //展示定时
+    var isShowMirror: Boolean,//镜像功能
 ) {
 
 

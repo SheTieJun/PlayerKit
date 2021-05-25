@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import com.tencent.liteav.superplayer.*
 import com.tencent.liteav.superplayer.databinding.SuperplayerControlCaseViewBinding
 import com.tencent.video.superplayer.base.ConfigInterface
+import com.tencent.video.superplayer.base.GlobalConfig
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.casehelper.VideoCaseHelper
@@ -45,9 +46,9 @@ class VodMoreView : FrameLayout, CompoundButton.OnCheckedChangeListener, ConfigI
 
     override fun setPlayConfig(config: PlayerConfig) {
         this.playerConfig = config
-        mCaseHelper?.setCurSpeed(config.speed)
+        mCaseHelper?.setCurSpeed(GlobalConfig.speed)
         mCaseHelper?.setPlayConfig(config)
-        mViewBinding.superplayerSwitchAccelerate.isChecked = config.enableHWAcceleration
+        mViewBinding.superplayerSwitchAccelerate.isChecked = GlobalConfig.enableHWAcceleration
         mViewBinding.superplayerSwitchAccelerate.setOnCheckedChangeListener(this)
         mViewBinding.superplayerSwitchMirror.setOnCheckedChangeListener(this)
     }
@@ -79,15 +80,12 @@ class VodMoreView : FrameLayout, CompoundButton.OnCheckedChangeListener, ConfigI
 
     /**
      * 倍速选择监听
-     *
-     * @param radioGroup
-     * @param checkedId
      */
     fun onCheckedChanged(speed: Float) {
         if (mCallback != null) {
             mCallback!!.onSpeedChange(speed)
         }
-        playerConfig.speed = speed
+        GlobalConfig.speed = speed
     }
 
     fun onDestroyTimeCallBack() {
@@ -130,10 +128,10 @@ class VodMoreView : FrameLayout, CompoundButton.OnCheckedChangeListener, ConfigI
                 mCallback!!.onMirrorChange(isChecked)
             }
         } else if (compoundButton.id == R.id.superplayer_switch_accelerate) {
-            playerConfig.enableHWAcceleration = !playerConfig.enableHWAcceleration
-            mViewBinding.superplayerSwitchAccelerate.isChecked = playerConfig.enableHWAcceleration
+            GlobalConfig.enableHWAcceleration = !GlobalConfig.enableHWAcceleration
+            mViewBinding.superplayerSwitchAccelerate.isChecked = GlobalConfig.enableHWAcceleration
             if (mCallback != null) {
-                mCallback!!.onHWAcceleration(playerConfig.enableHWAcceleration)
+                mCallback!!.onHWAcceleration(GlobalConfig.enableHWAcceleration)
             }
         }
     }

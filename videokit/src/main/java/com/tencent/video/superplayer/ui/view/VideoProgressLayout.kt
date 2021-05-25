@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.*
 import android.widget.*
+import androidx.core.view.isVisible
 import com.tencent.liteav.superplayer.*
 
 /**
@@ -34,7 +35,7 @@ class VideoProgressLayout : FrameLayout {
         mIvThumbnail = findViewById<View>(R.id.superplayer_iv_progress_thumbnail) as ImageView
         mProgressBar = findViewById<View>(R.id.superplayer_pb_progress_bar) as ProgressBar
         mTvTime = findViewById<View>(R.id.superplayer_tv_progress_time) as TextView
-        visibility = GONE
+        isVisible = false
         mHideRunnable = HideRunnable()
     }
 
@@ -42,7 +43,7 @@ class VideoProgressLayout : FrameLayout {
      * 显示view
      */
     fun show() {
-        visibility = VISIBLE
+        isVisible = true
         removeCallbacks(mHideRunnable)
         postDelayed(mHideRunnable, duration.toLong())
     }
@@ -90,7 +91,7 @@ class VideoProgressLayout : FrameLayout {
      * @param enable
      */
     fun setProgressVisibility(enable: Boolean) {
-        mProgressBar!!.visibility = if (enable) VISIBLE else GONE
+        mProgressBar!!.isVisible = enable
     }
 
     /**

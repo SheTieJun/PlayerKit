@@ -16,6 +16,7 @@ import com.tencent.liteav.superplayer.R
 import com.tencent.liteav.superplayer.databinding.SuperplayerVodPlayerFullscreenBinding
 import com.tencent.rtmp.TXImageSprite
 import com.tencent.video.superplayer.base.BaseKitAdapter
+import com.tencent.video.superplayer.base.GlobalConfig
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.casehelper.KeyListListener
@@ -619,7 +620,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
 
     override fun updateSpeedChange(speedLevel: Float) {
         mViewBinding.superplayerVodMore.updateSpeedChange(speedLevel)
-        mViewBinding.ivSpeed.let { WinSpeedHelper.showSpeedImage(playerConfig, it) }
+        mViewBinding.ivSpeed.let { WinSpeedHelper.showSpeedImage(GlobalConfig.speed, it) }
     }
 
     /**
@@ -919,7 +920,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
     override fun setPlayConfig(config: PlayerConfig) {
         super.setPlayConfig(config)
         this.playerConfig = config
-        WinSpeedHelper.showSpeedImage(config, mViewBinding.ivSpeed)
+        WinSpeedHelper.showSpeedImage(GlobalConfig.speed, mViewBinding.ivSpeed)
         mViewBinding.superplayerVodMore.setPlayConfig(config)
     }
 
@@ -934,6 +935,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
             mViewBinding.superplayerIvLock.isVisible = uiConfig.showLock
             mViewBinding.superplayerRlTop.isVisible = uiConfig.showTop || uiConfig.keepTop
             mViewBinding.superplayerLlBottom.isVisible = uiConfig.showBottom || uiConfig.keepBottom
+            isShowing = uiConfig.showTop||uiConfig.showBottom
         }
     }
 

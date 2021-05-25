@@ -53,7 +53,7 @@ class VodQualityView : FrameLayout {
         mListView = findViewById(R.id.superplayer_lv_quality)
         title = findViewById(R.id.title)
         mAdapter = QualityAdapter(ArrayList()).apply {
-            setOnItemClickListener { adapter, view, position ->
+            setOnItemClickListener { _, _, position ->
                 if (mCallback != null) {
                     val quality = getItem(position)
                     mCallback!!.onQualitySelect(quality)

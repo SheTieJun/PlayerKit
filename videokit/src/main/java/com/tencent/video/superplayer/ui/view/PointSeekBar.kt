@@ -63,11 +63,7 @@ class PointSeekBar : RelativeLayout {
             = 0f
     private var mCurrentProgress // 当前seekbar的数值
             = 0
-    /**
-     * 获取seekbar最大值
-     *
-     * @return
-     */
+
     /**
      * 设置seekbar最大值
      *
@@ -83,6 +79,8 @@ class PointSeekBar : RelativeLayout {
             : OnSeekBarPointClickListener? = null
     private var mIsChangePointViews // 打点信息是否更新过
             = false
+    private val rectF = RectF()
+    private val pRecf = RectF()
 
     constructor(context: Context?) : super(context) {
         init(null)
@@ -99,11 +97,7 @@ class PointSeekBar : RelativeLayout {
     ) {
         init(attrs)
     }
-    /**
-     * 获取seekbar进度值
-     *
-     * @return
-     */
+
     /**
      * 设置seekbar进度值
      *
@@ -128,8 +122,10 @@ class PointSeekBar : RelativeLayout {
 
     private fun init(attrs: AttributeSet?) {
         setWillNotDraw(false)
-        var progressColor = ContextCompat.getColor(context,R.color.superplayer_default_progress_color)
-        var backgroundColor =ContextCompat.getColor(context,R.color.superplayer_default_progress_background_color)
+        var progressColor =
+            ContextCompat.getColor(context, R.color.superplayer_default_progress_color)
+        var backgroundColor =
+            ContextCompat.getColor(context, R.color.superplayer_default_progress_background_color)
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.SuperPlayerTCPointSeekBar)
             mThumbDrawable =
@@ -216,7 +212,7 @@ class PointSeekBar : RelativeLayout {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         //draw  bg
-        val rectF = RectF()
+
         rectF.left = mSeekBarLeft.toFloat()
         rectF.right = mSeekBarRight.toFloat()
         rectF.top = mBgTop.toFloat()
@@ -224,7 +220,7 @@ class PointSeekBar : RelativeLayout {
         canvas.drawRoundRect(rectF, mRoundSize.toFloat(), mRoundSize.toFloat(), mNormalPaint!!)
 
         //draw progress
-        val pRecf = RectF()
+
         pRecf.left = mSeekBarLeft.toFloat()
         pRecf.top = mBgTop.toFloat()
         pRecf.right = mThumbRight - mHalfDrawableWidth
@@ -276,8 +272,6 @@ class PointSeekBar : RelativeLayout {
     }
 
     private fun handleUpEvent(event: MotionEvent): Boolean {
-        val x = event.x
-        val y = event.y
         if (mIsOnDrag) {
             mIsOnDrag = false
             if (mListener != null) {
@@ -343,7 +337,7 @@ class PointSeekBar : RelativeLayout {
         val x = event.x
         val y = event.y
 //        if (x >= mThumbLeft - 100 && x <= mThumbRight + 100) {
-            if (mListener != null) mListener!!.onStartTrackingTouch(this)
+        if (mListener != null) mListener!!.onStartTrackingTouch(this)
 //            mIsOnDrag = true
 //            mLastX = x
 //            return true
@@ -369,6 +363,7 @@ class PointSeekBar : RelativeLayout {
     }
 
     private var mListener: OnSeekBarChangeListener? = null
+
     fun setOnSeekBarChangeListener(listener: OnSeekBarChangeListener?) {
         mListener = listener
     }
@@ -490,10 +485,8 @@ class PointSeekBar : RelativeLayout {
         context: Context?, // thumb图片
         private val mThumbDrawable: Drawable?
     ) : View(context) {
-        private val mPaint // 画笔
-                : Paint
-        private val mRect // 位置信息(矩形)
-                : Rect
+        private val mPaint: Paint = Paint()
+        private val mRect = Rect()
 
         override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
             super.onSizeChanged(w, h, oldw, oldh)
@@ -510,9 +503,7 @@ class PointSeekBar : RelativeLayout {
         }
 
         init {
-            mPaint = Paint()
             mPaint.isAntiAlias = true
-            mRect = Rect()
         }
     }
 }

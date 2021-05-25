@@ -245,9 +245,14 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
 
     override fun setUIConfig(uiConfig: UIConfig) {
         super.setUIConfig(uiConfig)
-        mIvTV?.isVisible = uiConfig.showTV
         mSpeedHelper?.setUIConfig(uiConfig)
-        mSpeedHelper?.getSpeedView()?.isVisible = uiConfig.showSpeed
+        uiConfig.let {
+            mIvTV?.isVisible = uiConfig.showTV
+            mLayoutTop?.isVisible = uiConfig.showTop
+            mLayoutBottom?.isVisible = uiConfig.showBottom
+            mSpeedHelper?.getSpeedView()?.isVisible = uiConfig.showSpeed
+            isShowing = uiConfig.showTop||uiConfig.showBottom
+        }
     }
 
     override fun setPlayConfig(config: PlayerConfig) {
@@ -367,7 +372,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         postDelayed(mHideViewRunnable, 7000)
     }
 
-    fun isShowControl(isShow: Boolean) {
+    private fun isShowControl(isShow: Boolean) {
         if (mPlayType == PlayerType.LIVE_SHIFT) {
             mTvBackToLive!!.isVisible = isShow
         }
@@ -375,29 +380,31 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
             if (mLayoutTop!!.visibility != View.VISIBLE) {
                 if (uiConfig.showTop) {
                     mLayoutTop?.animation = AnimationUtils.loadAnimation(context, R.anim.push_top_in)
+                    mLayoutTop?.isVisible = isShow
                 }
             }
             if (mLayoutBottom!!.visibility != View.VISIBLE) {
                 if (uiConfig.showBottom) {
                     mLayoutBottom?.animation =
                             AnimationUtils.loadAnimation(context, R.anim.push_bottom_in)
+                    mLayoutBottom?.isVisible = isShow
                 }
             }
         } else {
             if (mLayoutTop!!.visibility == View.VISIBLE) {
                 if (uiConfig.showTop) {
                     mLayoutTop?.animation = AnimationUtils.loadAnimation(context, R.anim.push_top_out)
+                    mLayoutTop?.isVisible = isShow
                 }
             }
             if (mLayoutBottom!!.visibility == View.VISIBLE) {
                 if (uiConfig.showBottom) {
                     mLayoutBottom?.animation =
                             AnimationUtils.loadAnimation(context, R.anim.push_bottom_out)
+                    mLayoutBottom?.isVisible = isShow
                 }
             }
         }
-        mLayoutTop?.isVisible = isShow
-        mLayoutBottom?.isVisible = isShow
     }
 
     /**

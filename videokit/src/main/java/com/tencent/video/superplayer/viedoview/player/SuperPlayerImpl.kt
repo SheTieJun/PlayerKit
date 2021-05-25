@@ -269,13 +269,13 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
             setCacheMp4ExtName(GlobalConfig.cacheMp4ExtName)
             setHeaders(playerConfig.header)
             setAutoRotate(true)
-            setMaxCacheItems(playerConfig.maxCacheItem)
+            setMaxCacheItems(GlobalConfig.maxCacheItem)
         }
-        mVodPlayer!!.setRate(playerConfig.speed)
+        mVodPlayer!!.setRate(GlobalConfig.speed)
         mVodPlayer!!.setConfig(mVodPlayConfig)
         mVodPlayer!!.setRenderMode(playerConfig.renderMode)
         mVodPlayer!!.setVodListener(this)
-        mVodPlayer!!.enableHardwareDecode(playerConfig.enableHWAcceleration)
+        mVodPlayer!!.enableHardwareDecode(GlobalConfig.enableHWAcceleration)
     }
 
     /**
@@ -290,7 +290,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         mLivePlayer!!.setRenderMode(playerConfig.liveRenderMode)
         mLivePlayer!!.setRenderRotation(RENDER_ROTATION_PORTRAIT)
         mLivePlayer!!.setPlayListener(this)
-        mLivePlayer!!.enableHardwareDecode(playerConfig.enableHWAcceleration)
+        mLivePlayer!!.enableHardwareDecode(GlobalConfig.enableHWAcceleration)
     }
 
     override fun changeRenderMode(renderMode: Int) {

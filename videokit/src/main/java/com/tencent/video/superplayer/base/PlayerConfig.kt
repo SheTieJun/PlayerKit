@@ -1,19 +1,15 @@
 package com.tencent.video.superplayer.base
 
-import com.tencent.liteav.basic.log.TXCLog
 import com.tencent.rtmp.TXLiveConstants
 
 
 class PlayerConfig private constructor(
-    var renderMode: Int,
-    var liveRenderMode: Int,
-    var enableHWAcceleration: Boolean,
-    var floatViewRect: TXRect,
-    var playShiftDomain: String,
-    var maxCacheItem: Int,
-    var speed: Float,
-    var enableFloatWindow: Boolean,
-    var header: HashMap<String, String>,
+    val renderMode: Int,
+    val liveRenderMode: Int,
+    val floatViewRect: TXRect,
+    val playShiftDomain: String,
+    val header: HashMap<String, String>,
+    val userCache :Boolean
 ) {
     companion object {
 
@@ -39,26 +35,13 @@ class PlayerConfig private constructor(
         var liveRenderMode = TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN
         var floatViewRect = TXRect(0, 0, 810, 540)
         var playShiftDomain = "liteavapp.timeshift.qcloud.com"
-        var maxCacheItem = GlobalConfig.maxCacheItem
-            set(value) {
-                GlobalConfig.maxCacheItem = value
-                field = value
-            }
-        var speed: Float =  GlobalConfig.speed
-            set(value) {
-                GlobalConfig.speed = value
-                field = value
-            }
-        var enableHWAcceleration = true
-        var enableFloatWindow: Boolean = true
         var header = HashMap<String, String>()
-
+        var userCache:Boolean = false
 
         fun build(): PlayerConfig {
             return PlayerConfig(
-                renderMode, liveRenderMode, enableHWAcceleration,
-                floatViewRect, playShiftDomain, maxCacheItem,
-                speed, enableFloatWindow, header
+                renderMode, liveRenderMode,
+                floatViewRect, playShiftDomain, header,userCache
             )
         }
 
@@ -66,12 +49,9 @@ class PlayerConfig private constructor(
             return Builder().apply {
                 this.renderMode = builder.renderMode
                 this.liveRenderMode = builder.liveRenderMode
-                this.enableHWAcceleration = builder.enableHWAcceleration
                 this.floatViewRect = builder.floatViewRect
                 this.playShiftDomain = builder.playShiftDomain
-                this.maxCacheItem = builder.maxCacheItem
-                this.speed = builder.speed
-                this.enableFloatWindow = builder.enableFloatWindow
+                this.userCache = builder.userCache
             }.apply(block)
         }
     }

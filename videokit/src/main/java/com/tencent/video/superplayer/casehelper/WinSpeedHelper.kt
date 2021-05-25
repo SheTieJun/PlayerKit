@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tencent.liteav.superplayer.R
 import com.tencent.video.superplayer.base.ConfigInterface
+import com.tencent.video.superplayer.base.GlobalConfig
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.casehelper.adaper.VideoSmallSpeedListAdapter
@@ -36,12 +37,12 @@ class WinSpeedHelper(private val windowPlayer: WindowPlayer): ConfigInterface {
     private fun initSpeed() {
         val speedList = arrayListOf(1.0f, 1.25f, 1.5f, 1.75f, 2.0f)
         speedAdapter = VideoSmallSpeedListAdapter(speedList)
-        speedAdapter.setCurSpeed(playerConfig.speed)
-        val i = speedList.indexOf(playerConfig.speed)
-        speedAdapter.setOnItemClickListener { adapter1, view, position ->
-            val speedRate = adapter1.getItem(position) as Float
-            if (speedRate != playerConfig.speed) {
-                playerConfig.speed = speedRate
+        speedAdapter.setCurSpeed(GlobalConfig.speed)
+        val i = speedList.indexOf(GlobalConfig.speed)
+        speedAdapter.setOnItemClickListener { _, _, position ->
+            val speedRate = speedAdapter.getItem(position)
+            if (speedRate != GlobalConfig.speed) {
+                GlobalConfig.speed = speedRate
                 windowPlayer.onSpeedChange(speedRate)
                 speedAdapter.setCurSpeed(speedRate)
                 speedAdapter.notifyDataSetChanged()
@@ -70,12 +71,12 @@ class WinSpeedHelper(private val windowPlayer: WindowPlayer): ConfigInterface {
     }
 
     private fun updateSpeed(){
-        speedAdapter.setCurSpeed(playerConfig.speed)
+        speedAdapter.setCurSpeed(GlobalConfig.speed)
     }
 
     fun showSpeedImage() {
         updateSpeed()
-        showSpeedImage(playerConfig,mIvSpeed)
+        showSpeedImage(GlobalConfig.speed,mIvSpeed)
     }
 
     fun getSpeedView(): ImageView {
@@ -83,8 +84,8 @@ class WinSpeedHelper(private val windowPlayer: WindowPlayer): ConfigInterface {
     }
 
     companion object{
-        fun showSpeedImage(config: PlayerConfig,mIvSpeed: ImageView) {
-            when (config.speed) {
+        fun showSpeedImage(speed: Float,mIvSpeed: ImageView) {
+            when (speed) {
                 1.0f -> mIvSpeed.setImageResource(R.drawable.superplayer_1_0_speed)
                 1.25f -> mIvSpeed.setImageResource(R.drawable.superplayer_1_25_speed)
                 1.5f -> mIvSpeed.setImageResource(R.drawable.superplayer_1_5_speed)

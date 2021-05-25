@@ -1,12 +1,10 @@
 package me.shetj.playerkitdemo
 
-import androidx.lifecycle.Lifecycle
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.base.VideoViewCallbackBuilder
 import com.tencent.video.superplayer.kit.PlayerKit
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef
 import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
-import me.shetj.base.ktx.isAtLeast
 import me.shetj.base.ktx.logi
 import me.shetj.base.ktx.showToast
 import me.shetj.base.mvvm.BaseBindingActivity
@@ -18,6 +16,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     private var isTv: Boolean = false
     private var iskey: Boolean = false
     protected var isAuto:Boolean = false
+    protected var isHide:Boolean = false
     override fun onActivityCreate() {
         super.onActivityCreate()
         ArmsUtils.statuInScreen2(this)
@@ -25,6 +24,11 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     }
 
     private fun initVideoInfo() {
+        val uiConfig = UIConfig.build {
+            this.showTop = !isHide
+            this.showBottom = !isHide
+            this.showLock = !isHide
+        }
         mViewBinding.superVodPlayerView.apply {
             val model = SuperPlayerModel()
             model.url =
@@ -107,6 +111,14 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                     "onError:$message".logi()
                 }
             })
+            mViewBinding.btnHide.setOnClickListener {
+                mViewBinding.superVodPlayerView.setUIConfig(uiConfig.apply {
+                    this.showTop = !isHide
+                    this.showBottom = !isHide
+                    this.showLock = !isHide
+                })
+                isHide = !isHide
+            }
         }
     }
 

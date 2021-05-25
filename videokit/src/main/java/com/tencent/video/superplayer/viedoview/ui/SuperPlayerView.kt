@@ -683,7 +683,7 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                 mFloatPlayer!!.hide()
                 if (playMode == PlayerMode.FULLSCREEN) {
                     if (showInFullView == null) {
-                        showToast("设置全屏失败，请先设置全屏显示的 window 或者viewGroup")
+                        showToast("设置全屏失败，请先设置全屏显示的 window 或者viewGroup:setFullInWindow")
                         return
                     }
                     onPlayerCallback?.onStartFullScreenPlay()
@@ -720,7 +720,7 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                         exitFullPlayer()
                     }
                 } else if (playMode == PlayerMode.FLOAT) { //请求悬浮窗模式
-                    if (!playerConfig.enableFloatWindow) {
+                    if (!GlobalConfig.enableFloatWindow) {
                         return
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 6.0动态申请悬浮窗权限

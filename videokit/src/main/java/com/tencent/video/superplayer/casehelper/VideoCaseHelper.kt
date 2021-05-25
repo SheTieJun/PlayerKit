@@ -9,10 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tencent.liteav.superplayer.R
-import com.tencent.video.superplayer.base.BaseKitAdapter
-import com.tencent.video.superplayer.base.ConfigInterface
-import com.tencent.video.superplayer.base.PlayerConfig
-import com.tencent.video.superplayer.base.UIConfig
+import com.tencent.video.superplayer.base.*
 import com.tencent.video.superplayer.casehelper.adaper.VideoFullPlayModeListAdapter
 import com.tencent.video.superplayer.casehelper.adaper.VideoFullSpeedListAdapter
 import com.tencent.video.superplayer.casehelper.adaper.VideoFullTimeTypeListAdapter
@@ -111,12 +108,12 @@ class VideoCaseHelper(private val mVodMoreView: VodMoreView): TimerConfigure.Cal
     private fun initSpeed() {
         val speedList = arrayListOf(1.0f, 1.25f, 1.5f, 1.75f, 2.0f)
         adapter = VideoFullSpeedListAdapter(speedList)
-        adapter?.setCurSpeed(playerConfig.speed)
+        adapter?.setCurSpeed(GlobalConfig.speed)
         iRecyclerViewSpeed?.layoutManager = GridLayoutManager(context, 5)
         adapter?.setOnItemClickListener { adapter1, _, position ->
             val speedRate = adapter1.getItem(position) as Float
-            if (speedRate != playerConfig.speed) {
-                playerConfig.speed = speedRate
+            if (speedRate != GlobalConfig.speed) {
+                GlobalConfig.speed = speedRate
                 mVodMoreView.onCheckedChanged(speedRate)
                 setCurSpeed(speedRate)
                 showCase(false)

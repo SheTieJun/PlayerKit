@@ -155,13 +155,26 @@ player.setKeyList("测试列表",
 player.autoPlay(true)
 ```
 
-#### 15. 界面控制
+#### 15. 界面control控制以及播放配置控制
 ```kotlin
 //后期可能会修改
-player. setPlayConfig( PlayerConfig)
-player.setUIConfig(UIConfig.build {
-                    this.showTV = false
+player.setPlayConfig( PlayerConfig)
+player.superVodPlayerView.setUIConfig(uiConfig.apply {
+                    this.showTop = !isHide
+                    this.showBottom = !isHide
+                    this.showLock = !isHide
                 })
+isHide = !isHide
+```
+```
+//全局配置相关
+object GlobalConfig {
+    var speed: Float = 1.0f //倍数
+    var maxCacheItem = 5 //缓存数量
+    var cacheMp4ExtName = "mp4" //缓存扩展名称
+    var enableHWAcceleration = true //是否开启硬件加速
+    var enableFloatWindow: Boolean = true //是否开启悬浮窗
+ }
 ```
 
 #### 16.播放回调
