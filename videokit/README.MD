@@ -1,5 +1,5 @@
 ## 腾讯的超级播放器
-> 对他的demo 进行2次封装，优化和添加一下新的功能
+> 对demo进行2次封装，优化和添加一下新的功能,因为是KPI,所以主要是为了自己的业务添加的功能做的优化实现
 
 具备播放器基本功能，以及
 1. 竖屏切换
@@ -10,13 +10,14 @@
 6. 镜像播放
 7. 手势控制
 8. 支持直播与点播
-9. 功能缓存
+9. 缓存播放
 10. 截屏
 11. 设置播放起始位置
 12. 定时播放功能
 13. 自动下一集功能
 14. 自动开始播放
 15. 界面控制
+16. 播放回调
 
 #### 基础功能播放
 ```
@@ -24,15 +25,15 @@
 
     play(url: String?)
 
-    play(appId: Int, url: String?)//是腾讯云直播url,需要腾讯云的appid
+    play(appId: Int, url: String?)//使用腾讯云直播时移功能则需要填写appId
 
-    play(appId: Int, fileId: String?, psign: String?)  //需要腾讯云的appid
+    play(appId: Int, fileId: String?, psign: String?)  //需要腾讯云的appid,fileid
 
     play(
         appId: Int,
         superPlayerURLS: List<SuperPlayerModel.SuperPlayerURL?>?,
         defaultIndex: Int
-    )//如果播放的url 是腾讯云的url,需要腾讯云的appid否则可以所有填写
+    )//如果使用腾讯云直播时移功能则需要填写appId
 
 ```
 
