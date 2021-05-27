@@ -3,6 +3,8 @@ package com.tencent.video.superplayer.base.timer
 import android.content.Context
 import android.os.CountDownTimer
 import androidx.annotation.IntDef
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import java.util.*
 
 
@@ -57,14 +59,14 @@ class TimerConfigure private constructor(){
     }
 
     /**
-     * 开始计时
+     * 开始计时,不是结束课程的开始
      */
-    fun startTime(isCourseTimer: Boolean = false,duration:Long = 0L){
-        cancel(false)
-        this.isCourseTimer = isCourseTimer
+    fun startTime(duration:Long = 0L){
+        this.cancel(false)
+        this.isCourseTimer = false
         this.duration = duration
-        start(duration)
-        stateChange(STATE_START)
+        this.start(duration)
+        this.stateChange(STATE_START)
     }
 
     /**
@@ -73,7 +75,6 @@ class TimerConfigure private constructor(){
     fun setRepeatMode(@RepeatMode repeatMode: Int){
         if (this.repeatMode != repeatMode) {
             this.repeatMode = repeatMode
-
             timeListenerList?.forEach {
                     it.onChangeModel(repeatMode)
             }
@@ -106,11 +107,11 @@ class TimerConfigure private constructor(){
 
     fun setTimeType(item: TimeType, position: Int) {
         this.position = position
-        when (item.name) {
-            "不开启" -> {
+        when {
+            item.duration == 0L && !item.isCourseTimer -> {
                 cancel(true)
             }
-            "播放完当前课程" ,"播放当前","当前课"-> {
+            item.isCourseTimer -> {
                 finishByLecture()
             }
             else -> {
@@ -126,8 +127,6 @@ class TimerConfigure private constructor(){
     }
 
     fun getCurrentState() = currentState
-
-    fun getDuration() = duration
 
     /**
      * 取消计时
@@ -164,7 +163,7 @@ class TimerConfigure private constructor(){
     /**
      * 状态变更
      */
-    fun stateChange(state: Int){
+    internal fun stateChange(state: Int){
         this.currentState = state
         when(state){
             STATE_CLOSE ->{
@@ -179,7 +178,7 @@ class TimerConfigure private constructor(){
         }
     }
 
-    fun getTimeTypePosition():Int{
+    internal fun getTimeTypePosition():Int{
         return position
     }
 

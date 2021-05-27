@@ -917,17 +917,17 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
     }
 
 
-    override fun setPlayConfig(config: PlayerConfig) {
-        super.setPlayConfig(config)
+    override fun updatePlayConfig(config: PlayerConfig) {
+        super.updatePlayConfig(config)
         this.playerConfig = config
         WinSpeedHelper.showSpeedImage(GlobalConfig.speed, mViewBinding.ivSpeed)
-        mViewBinding.superplayerVodMore.setPlayConfig(config)
+        mViewBinding.superplayerVodMore.updatePlayConfig(config)
     }
 
-    override fun setUIConfig(uiConfig: UIConfig) {
-        super.setUIConfig(uiConfig)
+    override fun updateUIConfig(uiConfig: UIConfig) {
+        super.updateUIConfig(uiConfig)
         mViewBinding.apply {
-            superplayerVodMore.setUIConfig(uiConfig)
+            superplayerVodMore.updateUIConfig(uiConfig)
             ivTv.isVisible = uiConfig.showTV
             ivSpeed.isVisible = uiConfig.showSpeed
             topShare.isVisible = uiConfig.showShare

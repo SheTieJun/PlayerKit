@@ -174,14 +174,14 @@ class VideoCaseHelper(private val mVodMoreView: VodMoreView): TimerConfigure.Cal
         TimerConfigure.instance.removeCallBack(this)
     }
 
-    override fun setPlayConfig(config: PlayerConfig) {
+    override fun updatePlayConfig(config: PlayerConfig) {
          this.playerConfig  = config
         initSpeed()
         initTime()
         initPlayMode()
     }
 
-    override fun setUIConfig(uiConfig: UIConfig) {
+    override fun updateUIConfig(uiConfig: UIConfig) {
         this.uiConfig = uiConfig
     }
 }

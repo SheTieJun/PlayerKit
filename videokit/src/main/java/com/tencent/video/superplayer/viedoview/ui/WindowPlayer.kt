@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.text.TextUtils
-import android.transition.TransitionManager
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
@@ -14,7 +13,6 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.view.isVisible
 import com.tencent.liteav.superplayer.*
-import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.casehelper.WinSpeedHelper
@@ -22,7 +20,6 @@ import com.tencent.video.superplayer.model.entity.VideoQuality
 import com.tencent.video.superplayer.kit.VideoGestureDetector
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.casehelper.KeyListListener
-import com.tencent.video.superplayer.casehelper.onNext
 import com.tencent.video.superplayer.ui.view.*
 import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
 import kotlin.math.roundToInt
@@ -243,9 +240,9 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
     fun isLive() = (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT)
 
 
-    override fun setUIConfig(uiConfig: UIConfig) {
-        super.setUIConfig(uiConfig)
-        mSpeedHelper?.setUIConfig(uiConfig)
+    override fun updateUIConfig(uiConfig: UIConfig) {
+        super.updateUIConfig(uiConfig)
+        mSpeedHelper?.updateUIConfig(uiConfig)
         uiConfig.let {
             mIvTV?.isVisible = uiConfig.showTV
             mLayoutTop?.isVisible = uiConfig.showTop
@@ -255,9 +252,9 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         }
     }
 
-    override fun setPlayConfig(config: PlayerConfig) {
-        super.setPlayConfig(config)
-        mSpeedHelper?.setPlayConfig(config)
+    override fun updatePlayConfig(config: PlayerConfig) {
+        super.updatePlayConfig(config)
+        mSpeedHelper?.updatePlayConfig(config)
     }
 
     /**

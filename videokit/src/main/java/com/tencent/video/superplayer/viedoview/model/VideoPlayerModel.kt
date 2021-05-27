@@ -10,7 +10,7 @@ package com.tencent.video.superplayer.viedoview.model
  * 3. 多码率视频播放
  * 是URL播放方式扩展，可同时传入多条URL，用于进行码率切换
  */
-class SuperPlayerModel {
+class VideoPlayerModel {
     var appId  = 0
 
     /**

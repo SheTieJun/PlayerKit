@@ -11,7 +11,7 @@ import com.tencent.rtmp.ui.TXCloudVideoView
 import com.tencent.video.superplayer.base.GlobalConfig
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerCode
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
-import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
+import com.tencent.video.superplayer.viedoview.model.VideoPlayerModel
 import com.tencent.video.superplayer.viedoview.model.SuperPlayerVideoId
 import com.tencent.video.superplayer.base.PlayerConfig
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
@@ -42,7 +42,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
     private var mLivePlayConfig // 直播播放器配置
             : TXLivePlayConfig? = null
     private var mCurrentModel // 当前播放的model
-            : SuperPlayerModel? = null
+            : VideoPlayerModel? = null
     private var mObserver: SuperPlayerObserver? = null
     private var mVideoQuality: VideoQuality? = null
     override var playerType = PlayerType.VOD // 当前播放类型
@@ -303,7 +303,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
      *
      * @param model
      */
-    private fun playWithModel(model: SuperPlayerModel?) {
+    private fun playWithModel(model: VideoPlayerModel?) {
         mCurrentModel = model
         if (PlayerState.END != playerState) {
             stop()
@@ -327,7 +327,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
                     autoPlay(isAutoPlay)
                     updatePlayerType(PlayerType.VOD)
                     updatePlayProgress(0, 0)
-                    updateVideoImageSpriteAndKeyFrame(
+                    updateImageSpriteAndKeyFrame(
                         mCurrentProtocol!!.imageSpriteInfo,
                         mCurrentProtocol!!.keyFrameDescInfo
                     )
@@ -412,7 +412,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
      *
      * @param model
      */
-    private fun playModeVideo(model: SuperPlayerModel?) {
+    private fun playModeVideo(model: VideoPlayerModel?) {
         if (model!!.multiURLs != null && !model.multiURLs!!.isEmpty()) { // 多码率URL播放
             for (i in model.multiURLs!!.indices) {
                 if (i == model.playDefaultIndex) {
@@ -583,7 +583,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         }
     }
 
-    private fun updateVideoImageSpriteAndKeyFrame(
+     override fun updateImageSpriteAndKeyFrame(
         info: PlayImageSpriteInfo?,
         list: ArrayList<PlayKeyFrameDescInfo>?
     ) {
@@ -631,13 +631,13 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
     }
 
     override fun play(url: String?) {
-        val model = SuperPlayerModel()
+        val model = VideoPlayerModel()
         model.url = url!!
         playWithModel(model)
     }
 
     override fun play(appId: Int, url: String?) {
-        val model = SuperPlayerModel()
+        val model = VideoPlayerModel()
         model.appId = appId
         model.url = url!!
         playWithModel(model)
@@ -647,7 +647,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         val videoId = SuperPlayerVideoId()
         videoId.fileId = fileId
         videoId.pSign = psign
-        val model = SuperPlayerModel()
+        val model = VideoPlayerModel()
         model.appId = appId
         model.videoId = videoId
         playWithModel(model)
@@ -655,10 +655,10 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
 
     override fun play(
         appId: Int,
-        superPlayerURLS: List<SuperPlayerModel.SuperPlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.SuperPlayerURL?>?,
         defaultIndex: Int
     ) {
-        val model = SuperPlayerModel()
+        val model = VideoPlayerModel()
         model.appId = appId
         model.multiURLs = superPlayerURLS
         model.playDefaultIndex = defaultIndex

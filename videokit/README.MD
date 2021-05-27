@@ -112,7 +112,8 @@ player.setMirror(false)
 ```
 
 #### 9. 功能缓存
-SDK 自带的缓存
+1.  默认使用了腾讯云SDK 自带的缓存，
+2.  可以用[videoCache](https://github.com/danikula/AndroidVideoCache)
 
 #### 10. 截屏
 ```kotlin
@@ -125,10 +126,10 @@ player.setPlayToSeek(10)
 ```
 
 #### 12. 定时播放功能
-1. 更多菜单里面
+1. 更多菜单里面点击设置
 2. 通过代码设置
 ```
-TimerConfigure.instance.startTime(10*60*1000)
+TimerConfigure.instance.showTimePick(this@MainActivity)
 ```
 
 #### 13. 自动下一集功能
@@ -151,16 +152,21 @@ player.setKeyList("测试列表",
  player.nextOneKey()//下一集，触发 onNext
 ```
 
-#### 14. 自动开始播放
+#### 14. 自动开始播放 和循环播放
+需要在设置播放url:`play`方法之前设置，否则无效
 ```kotlin
 player.autoPlay(true)
+```
+循环播放需要在播放结束之前设置才有效
+```
+player.isLoop = true
 ```
 
 #### 15. 界面control控制以及播放配置控制
 ```kotlin
 //后期可能会修改
-player.setPlayConfig( PlayerConfig)
-player.superVodPlayerView.setUIConfig(uiConfig.apply {
+player.updatePlayConfig( PlayerConfig)
+player.superVodPlayerView.updateUIConfig(uiConfig.apply {
                     this.showTop = !isHide
                     this.showBottom = !isHide
                     this.showLock = !isHide
@@ -172,7 +178,7 @@ isHide = !isHide
 object GlobalConfig {
     var speed: Float = 1.0f //倍数
     var maxCacheItem = 5 //缓存数量
-    var cacheMp4ExtName = "mp4" //缓存扩展名称
+    var cacheMp4ExtName = "mp4" //缓存扩展名称，如果不想被手机扫描到视频可以改成其他,比如：XML
     var enableHWAcceleration = true //是否开启硬件加速
     var enableFloatWindow: Boolean = true //是否开启悬浮窗
  }
@@ -196,3 +202,7 @@ object GlobalConfig {
                 //...其他
             })
 ```
+
+#### 17.雪碧图和视频关键点功能
+1. 腾讯云自带，用fileId播放，设置`SuperPlayerHttpClient`
+2. `updateImageSpriteAndKeyFrame` 通过该方法设置

@@ -97,11 +97,11 @@ abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerCon
         return value
     }
 
-    override fun setPlayConfig(config: PlayerConfig) {
+    override fun updatePlayConfig(config: PlayerConfig) {
         this.playerConfig = config
     }
 
-    override fun setUIConfig(uiConfig: UIConfig) {
+    override fun updateUIConfig(uiConfig: UIConfig) {
         this.uiConfig = uiConfig
     }
 

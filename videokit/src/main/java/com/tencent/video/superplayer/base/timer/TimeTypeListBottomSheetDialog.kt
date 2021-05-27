@@ -10,15 +10,16 @@ import com.tencent.liteav.superplayer.R
 import com.tencent.video.superplayer.base.OnItemClickListener
 import com.tencent.video.superplayer.base.timer.TimeType.Companion.getTimeTypeList3
 
-class TimeTypeListBottomSheetDialog(private val context: Context, var position: Int)  {
+class TimeTypeListBottomSheetDialog(private val context: Context, var position: Int) {
     private val bottomSheetDialog: BottomSheetDialog?
     private var onItemClickListener: OnItemClickListener? = null
     private var mAdapter: TimeTypeListAdapter? = null
     private fun buildBottomSheetDialog(): BottomSheetDialog {
-        val mBottomSheetDialog = BottomSheetDialog(context, R.style.transparent_bottom_dialog_fragment_style)
+        val mBottomSheetDialog =
+            BottomSheetDialog(context, R.style.transparent_bottom_dialog_fragment_style)
         val rootView = LayoutInflater.from(context).inflate(R.layout.dialog_time_type_list, null)
         val recyclerView: RecyclerView = rootView.findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = GridLayoutManager(context,2)
+        recyclerView.layoutManager = GridLayoutManager(context, 2)
         mAdapter = TimeTypeListAdapter(getTimeTypeList3())
         mAdapter!!.setPosition(position)
         mAdapter!!.setOnItemClickListener { _, _, position ->
@@ -27,6 +28,9 @@ class TimeTypeListBottomSheetDialog(private val context: Context, var position: 
         recyclerView.adapter = mAdapter
         if (position != -1) {
             recyclerView.scrollToPosition(position)
+        }
+        rootView.findViewById<View>(R.id.no_use_text).setOnClickListener {
+            dismissBottomSheet()
         }
         val lectureClose = rootView.findViewById<View>(R.id.cancel)
         lectureClose.setOnClickListener { v: View? -> dismissBottomSheet() }

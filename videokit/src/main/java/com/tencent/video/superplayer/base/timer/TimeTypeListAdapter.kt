@@ -22,8 +22,8 @@ class TimeTypeListAdapter(data: MutableList<TimeType>) : BaseKitAdapter<TimeType
         }
     }
 
-    override fun convert(holder: BaseViewHolder, item: TimeType) {
-        holder.setText(R.id.name, item.name)
+    override fun convert(holder: BaseViewHolder, data: TimeType) {
+        holder.setText(R.id.name, data.name)
         holder.setTextColor(R.id.name, if (position == holder.adapterPosition )
             ContextCompat.getColor(holder.itemView.context, R.color.superplayer_orange)
         else ContextCompat.getColor(holder.itemView.context, R.color.superplayer_black))

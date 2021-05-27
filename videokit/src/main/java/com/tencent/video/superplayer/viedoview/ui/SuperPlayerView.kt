@@ -31,7 +31,7 @@ import com.tencent.video.superplayer.model.entity.VideoQuality
 import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.viedoview.base.UIPlayer
-import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
+import com.tencent.video.superplayer.viedoview.model.VideoPlayerModel
 import com.tencent.video.superplayer.viedoview.player.OnPlayerCallback
 import com.tencent.video.superplayer.viedoview.player.SuperPlayer
 import com.tencent.video.superplayer.viedoview.player.SuperPlayerImpl
@@ -82,7 +82,7 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
     protected val uiPlayerList = ArrayList<AbBaseUIPlayer>()
     protected var onPlayerCallback: OnPlayerCallback? = null
 
-    //释放循环播放
+    //循环播放
     var isLoop = false
 
 
@@ -158,8 +158,8 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
             }
         }
         setUICallback(mControllerCallback)
-        setPlayConfig(playerConfig)
-        setUIConfig(uiConfig)
+        updatePlayConfig(playerConfig)
+        updateUIConfig(uiConfig)
     }
 
     //初始话播放器
@@ -216,7 +216,7 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
     }
 
-    open fun playWithModel(model: SuperPlayerModel) {
+    open fun playWithModel(model: VideoPlayerModel) {
         if (model.videoId != null) {
             mSuperPlayer.play(model.appId, model.videoId!!.fileId, model.videoId!!.pSign)
         } else if (model.multiURLs != null && model.multiURLs!!.isNotEmpty()) {
@@ -240,7 +240,7 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
 
     override fun play(
         appId: Int,
-        superPlayerURLS: List<SuperPlayerModel.SuperPlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.SuperPlayerURL?>?,
         defaultIndex: Int
     ) {
         mSuperPlayer.play(appId, superPlayerURLS, defaultIndex)
@@ -355,6 +355,13 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
 
     override fun getPosition(): Long {
         return mSuperPlayer.getPosition()
+    }
+
+    override fun updateImageSpriteAndKeyFrame(
+        info: PlayImageSpriteInfo?,
+        list: ArrayList<PlayKeyFrameDescInfo>?
+    ) {
+        mSuperPlayer.updateImageSpriteAndKeyFrame(info, list)
     }
 
     override fun setUICallback(callback: UIPlayer.VideoViewCallback?) {
@@ -902,17 +909,17 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         }
     }
 
-    override fun setPlayConfig(config: PlayerConfig) {
+    override fun updatePlayConfig(config: PlayerConfig) {
         this.playerConfig = config
         uiPlayerList.forEach {
-            it.setPlayConfig(config)
+            it.updatePlayConfig(config)
         }
     }
 
-    override fun setUIConfig(uiConfig: UIConfig) {
+    override fun updateUIConfig(uiConfig: UIConfig) {
         this.uiConfig = uiConfig
         uiPlayerList.forEach {
-            it.setUIConfig(uiConfig)
+            it.updateUIConfig(uiConfig)
         }
     }
 }

@@ -95,13 +95,13 @@ class WinSpeedHelper(private val windowPlayer: WindowPlayer): ConfigInterface {
         }
     }
 
-    override fun setPlayConfig(config: PlayerConfig) {
+    override fun updatePlayConfig(config: PlayerConfig) {
         this.playerConfig = config
         initSpeed()
         showSpeedImage()
     }
 
-    override fun setUIConfig(uiConfig: UIConfig) {
+    override fun updateUIConfig(uiConfig: UIConfig) {
         this.uiConfig = uiConfig
     }
 }

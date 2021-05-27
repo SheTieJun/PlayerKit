@@ -44,16 +44,16 @@ class VodMoreView : FrameLayout, CompoundButton.OnCheckedChangeListener, ConfigI
         mCaseHelper = VideoCaseHelper(this)
     }
 
-    override fun setPlayConfig(config: PlayerConfig) {
+    override fun updatePlayConfig(config: PlayerConfig) {
         this.playerConfig = config
         mCaseHelper?.setCurSpeed(GlobalConfig.speed)
-        mCaseHelper?.setPlayConfig(config)
+        mCaseHelper?.updatePlayConfig(config)
         mViewBinding.superplayerSwitchAccelerate.isChecked = GlobalConfig.enableHWAcceleration
         mViewBinding.superplayerSwitchAccelerate.setOnCheckedChangeListener(this)
         mViewBinding.superplayerSwitchMirror.setOnCheckedChangeListener(this)
     }
 
-    override fun setUIConfig(uiConfig: UIConfig) {
+    override fun updateUIConfig(uiConfig: UIConfig) {
         this.uiConfig = uiConfig
         mViewBinding.apply {
             llTimeStyle.isVisible = uiConfig.isShowTimeStyle
@@ -65,7 +65,7 @@ class VodMoreView : FrameLayout, CompoundButton.OnCheckedChangeListener, ConfigI
             superplayerSwitchAccelerate.isVisible = uiConfig.isShowAccelerate
             superplayerLlMirror.isVisible = uiConfig.isShowMirror
         }
-        mCaseHelper?.setUIConfig(uiConfig)
+        mCaseHelper?.updateUIConfig(uiConfig)
     }
 
 

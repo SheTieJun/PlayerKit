@@ -23,7 +23,7 @@ class UIConfig private constructor(
 
     companion object {
 
-        val uiConfig = ofDef()
+        val uiConfig :UIConfig by lazy { ofDef()}
 
         /**
          * 带接收者的函数类型,这意味着我们需要向函数传递一个Builder类型的实例

@@ -8,12 +8,11 @@ class PlayerConfig private constructor(
     val liveRenderMode: Int,
     val floatViewRect: TXRect,
     val playShiftDomain: String,
-    val header: HashMap<String, String>,
-    val userCache :Boolean
+    val header: HashMap<String, String>
 ) {
     companion object {
 
-        val playerConfig = ofDef()
+        val playerConfig :PlayerConfig by lazy { ofDef()}
 
         const val OP_SYSTEM_ALERT_WINDOW = 24 // 支持TYPE_TOAST悬浮窗的最高API版本
 
@@ -36,12 +35,11 @@ class PlayerConfig private constructor(
         var floatViewRect = TXRect(0, 0, 810, 540)
         var playShiftDomain = "liteavapp.timeshift.qcloud.com"
         var header = HashMap<String, String>()
-        var userCache:Boolean = false
 
         fun build(): PlayerConfig {
             return PlayerConfig(
                 renderMode, liveRenderMode,
-                floatViewRect, playShiftDomain, header,userCache
+                floatViewRect, playShiftDomain, header
             )
         }
 
@@ -51,7 +49,6 @@ class PlayerConfig private constructor(
                 this.liveRenderMode = builder.liveRenderMode
                 this.floatViewRect = builder.floatViewRect
                 this.playShiftDomain = builder.playShiftDomain
-                this.userCache = builder.userCache
             }.apply(block)
         }
     }

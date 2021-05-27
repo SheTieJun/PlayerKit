@@ -2,8 +2,10 @@ package com.tencent.video.superplayer.viedoview.player
 
 import com.tencent.rtmp.TXLivePlayer
 import com.tencent.rtmp.ui.TXCloudVideoView
+import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
+import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
-import com.tencent.video.superplayer.viedoview.model.SuperPlayerModel
+import com.tencent.video.superplayer.viedoview.model.VideoPlayerModel
 import com.tencent.video.superplayer.model.entity.VideoQuality
 
 interface SuperPlayer {
@@ -37,7 +39,7 @@ interface SuperPlayer {
      * @param superPlayerURLS   不同分辨率数据
      * @param defaultIndex      默认播放Index
      */
-    fun play(appId: Int, superPlayerURLS: List<SuperPlayerModel.SuperPlayerURL?>?, defaultIndex: Int)
+    fun play(appId: Int, superPlayerURLS: List<VideoPlayerModel.SuperPlayerURL?>?, defaultIndex: Int)
 
     /**
      * 重播
@@ -136,4 +138,9 @@ interface SuperPlayer {
     fun getDuration():Long
 
     fun getPosition():Long
+
+    fun updateImageSpriteAndKeyFrame(
+        info: PlayImageSpriteInfo?,
+        list: ArrayList<PlayKeyFrameDescInfo>?
+    )
 }
