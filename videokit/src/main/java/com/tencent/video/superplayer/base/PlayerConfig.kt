@@ -32,7 +32,7 @@ class PlayerConfig private constructor(
     class Builder {
         var renderMode = TXLiveConstants.RENDER_MODE_ADJUST_RESOLUTION
         var liveRenderMode = TXLiveConstants.RENDER_MODE_FULL_FILL_SCREEN
-        var floatViewRect = TXRect(0, 0, 810, 540)
+        var floatViewRect = TXRect(0, 0, 800, 450)
         var playShiftDomain = "liteavapp.timeshift.qcloud.com"
         var header = HashMap<String, String>()
 

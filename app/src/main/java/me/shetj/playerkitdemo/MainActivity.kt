@@ -16,7 +16,7 @@ import me.shetj.playerkitdemo.databinding.ActivityMainBinding
 class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     private var isTv: Boolean = false
     private var iskey: Boolean = false
-    protected var isAuto:Boolean = false
+    protected var isAuto:Boolean = false //自定播放
     protected var isHide:Boolean = false
     override fun onActivityCreate() {
         super.onActivityCreate()
@@ -25,11 +25,6 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     }
 
     private fun initVideoInfo() {
-//        val uiConfig = UIConfig.build {
-//            this.showTop = !isHide
-//            this.showBottom = !isHide
-//            this.showLock = !isHide
-//        }
 
         val uiConfig = UIConfig.uiConfig
 
@@ -43,7 +38,6 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             mViewBinding.superVodPlayerView.isLoop = true
             mViewBinding.btnFloatView.setOnClickListener {
                 mViewBinding.superVodPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.FLOAT)
-                finish()
             }
 
             mViewBinding.btnUrl.setOnClickListener {

@@ -48,8 +48,6 @@ import kotlin.math.roundToInt
  * 3、进度条滑动事件监听[.onProgressChanged]
  * [.onStartTrackingTouch][.onStopTrackingTouch]
  *
- * 4、进度条打点信息点击监听[.onSeekBarPointClick]
- *
  * 5、切换画质监听[.onQualitySelect]
  *
  * 6、倍速播放监听[.onSpeedChange]
@@ -790,7 +788,6 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
                 val position = (mDuration * percentage).toInt()
                 if (mControllerCallback != null) {
                     mControllerCallback!!.onSeekTo(position)
-//                    mControllerCallback!!.onResume()
                 }
             }
             PlayerType.LIVE, PlayerType.LIVE_SHIFT -> {

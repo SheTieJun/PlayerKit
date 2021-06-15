@@ -12,6 +12,9 @@ import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.viedoview.ui.FullScreenPlayer
 
 
+/**
+ * 触发下一个视频
+ */
 typealias onNext = (Any) -> Unit
 
 interface KeyListListener{
@@ -91,9 +94,7 @@ class PlayKeyListHelper(private val fullScreenPlayer: FullScreenPlayer) :
         this.mAdapter = adapter
         this.onNext = onNext
         mTvKey.isVisible = adapter != null
-        if (position != 0) {
-            this.position = position
-        }
+        this.position = position
         updateListPosition(this.position)
         adapter?.setOnItemClickListener { _, _, pos ->
             (mRecycleView.adapter as? BaseKitAdapter<*>)?.getItem(pos)?.apply {

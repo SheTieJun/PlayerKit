@@ -1,6 +1,7 @@
 package com.tencent.video.superplayer.viedoview.ui
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -47,8 +48,8 @@ import com.tencent.video.superplayer.viedoview.player.SuperPlayerObserver
 open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, UIPlayer,
     ConfigInterface, SuperPlayerObserver, KeyListListener {
 
-    protected var parentViewGroup: ViewGroup? = null
-    protected var showInFullView: ViewGroup? = null
+    protected var parentViewGroup: ViewGroup? = null //播放器原容器
+    protected var fullContainer: ViewGroup? = null //点击全屏按钮时，播放器相关内容会放到这个容器
     protected var playerConfig: PlayerConfig = PlayerConfig.playerConfig
     protected var uiConfig: UIConfig = UIConfig.uiConfig
     protected val playKeyListConfig: PlayKeyListConfig by lazy { PlayKeyListConfig.ofDef() }
@@ -81,8 +82,9 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
 
     protected val uiPlayerList = ArrayList<AbBaseUIPlayer>()
     protected var onPlayerCallback: OnPlayerCallback? = null
+    protected val activityManager: ActivityManager by lazy { getActivityManagerService() }
 
-    //循环播放
+    //循环播放，必须在播放之前设置
     var isLoop = false
 
 
@@ -175,6 +177,9 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         }
     }
 
+    /**
+     * 设置播放回调
+     */
     fun setPlayerCallback(onPlayerCallback: OnPlayerCallback) {
         this.onPlayerCallback = onPlayerCallback
     }
@@ -183,28 +188,35 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
      * 设置全屏展示的window
      */
     fun setFullInWindow(window: Window) {
-        showInFullView = window.decorView.findViewById(android.R.id.content)
+        fullContainer = window.decorView.findViewById(android.R.id.content)
     }
 
+    /**
+     * 设置全屏展示viewGroup
+     */
     fun setFullInWindow(view: ViewGroup) {
-        showInFullView = view
+        fullContainer = view
     }
 
+    /**
+     * 定时倒计事件
+     */
     override fun onTick(progress: Long) {
+
     }
 
+    /**
+     * 状态切换
+     * 0 ： 开启定时  ； 1 ：关闭/取消定时 ；2 ：完成定时complete； 3：切换到课程计时
+     */
     override fun onStateChange(state: Int) {
+
     }
 
+    /**
+     * 播放模式切换
+     */
     override fun onChangeModel(repeatMode: Int) {
-        if (repeatMode == TimerConfigure.REPEAT_MODE_ALL) {
-            showMsg("已切换为顺序播放", "顺序播放")
-        } else {
-            showMsg("已切换为单课循环", "单课循环")
-        }
-    }
-
-    open fun showMsg(text: String?, hideText: String?) {
 
     }
 
@@ -620,9 +632,6 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
     }
 
     override fun onError(code: Int, message: String?) {
-        if (message != null) {
-            showMsg(message, "")
-        }
         onPlayerCallback?.onError(code, message)
     }
 
@@ -689,8 +698,8 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                 mWindowPlayer!!.hide()
                 mFloatPlayer!!.hide()
                 if (playMode == PlayerMode.FULLSCREEN) {
-                    if (showInFullView == null) {
-                        showToast("设置全屏失败，请先设置全屏显示的 window 或者viewGroup:setFullInWindow")
+                    if (fullContainer == null) {
+                        showToast("设置全屏失败，请先设置全屏显示的 window 或者 viewGroup:setFullInWindow")
                         return
                     }
                     onPlayerCallback?.onStartFullScreenPlay()
@@ -703,19 +712,19 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                     // 当前是悬浮窗
                     if (mSuperPlayer.playerMode == PlayerMode.FLOAT) {
                         try {
-                            val viewContext = context
-                            val intent: Intent? = if (viewContext is Activity) {
-                                Intent(viewContext, viewContext.javaClass)
-                            } else {
-                                showToast(R.string.superplayer_float_play_fail)
-                                return
-                            }
-                            mContext!!.startActivity(intent)
                             mSuperPlayer.pause()
                             mWindowManager!!.removeView(mFloatPlayer)
                             mSuperPlayer.setPlayerView(mTXCloudVideoView)
                             mSuperPlayer.resume()
                             onPlayerCallback?.onStopFloatWindow()
+                            val viewContext = context
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                activityManager.appTasks?.first {
+                                    it.taskInfo.baseIntent.component?.packageName == viewContext.packageName
+                                }?.apply {
+                                    moveToFront()
+                                }
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -787,6 +796,8 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                         onPlayerCallback?.onClickSmallReturnBtn()
                     }
                     PlayerMode.FLOAT -> {
+                        mSuperPlayer.setPlayerView(mTXCloudVideoView)
+                        mSuperPlayer.pause()
                         mWindowManager!!.removeView(mFloatPlayer)
                         onPlayerCallback?.onClickFloatCloseBtn()
                     }
@@ -842,12 +853,12 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                 mFullScreenPlayer!!.updateVideoQuality(quality)
                 mWindowPlayer!!.updateVideoQuality(quality)
                 mSuperPlayer.switchStream(quality)
-                showMsg("已切换为${quality.title}播放", "${quality.title}")
+                showToast("已切换为${quality.title}播放")
             }
 
             override fun onSpeedChange(speedLevel: Float) {
                 updateSpeedChange(speedLevel)
-                showMsg("当前列表已切换为${speedLevel}倍速度播放", "$speedLevel")
+                showToast("当前列表已切换为${speedLevel}倍速度播放")
             }
 
             override fun onMirrorToggle(isMirror: Boolean) {
@@ -863,6 +874,13 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
             }
         }
 
+    private fun getActivityManagerService(): ActivityManager {
+        return context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    }
+
+    /**
+     * 获取视频的横竖屏状态
+     */
     private fun getVideoOrientation(): Orientation {
         val videoRotation = getVideoRotation()
         return if (mSuperPlayer.getVideoHeight() >= mSuperPlayer.getVideoWidth()) {
@@ -880,26 +898,35 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         }
     }
 
+    /**
+     * 展示全屏
+     */
     private fun showFullPlayer() {
-        if (showInFullView != null) {
+        if (fullContainer != null) {
             parentViewGroup = this.parent as ViewGroup
             parentViewGroup?.removeView(this)
-            showInFullView!!.addView(
+            fullContainer!!.addView(
                 this,
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             )
             return
         }
-        Log.e("SuperPlayerView","showInFullView is null ,please set setFullInWindow")
+        Log.e("SuperPlayerView", "showInFullView is null ,please set setFullInWindow")
     }
 
+    /**
+     * 退出全屏
+     */
     private fun exitFullPlayer() {
-        if (showInFullView != null) {
-            showInFullView!!.removeView(this)
+        if (fullContainer != null) {
+            fullContainer!!.removeView(this)
             parentViewGroup?.addView(this, mLayoutParamWindowMode)
         }
     }
 
+    /**
+     * 设置全屏
+     */
     private fun rotateScreenOrientation(orientation: Orientation) {
         when (orientation) {
             Orientation.LANDSCAPE -> (mContext as? Activity)?.requestedOrientation =
@@ -909,6 +936,9 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         }
     }
 
+    /**
+     * 更新播放的配置
+     */
     override fun updatePlayConfig(config: PlayerConfig) {
         this.playerConfig = config
         uiPlayerList.forEach {
@@ -916,6 +946,9 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         }
     }
 
+    /**
+     * 更新UI的配置
+     */
     override fun updateUIConfig(uiConfig: UIConfig) {
         this.uiConfig = uiConfig
         uiPlayerList.forEach {

@@ -20,41 +20,6 @@ class APP : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        SuperPlayerHttpClient.instance.setHttpClient(object : PlayerHttpClient {
-            override fun doGet(url: String?, callBack: SuperPlayerHttpClient.OnHttpCallback?) {
-                if (url != null) {
-                    RxHttp.get(url).executeCus(object : SimpleNetCallBack<String>(this@APP) {
-                        override fun onSuccess(data: String) {
-                            super.onSuccess(data)
-                            callBack?.onSuccess(data)
-                        }
-
-                        override fun onError(e: Exception) {
-                            super.onError(e)
-                            callBack?.onError()
-                        }
-                    })
-                }
-            }
-
-            override fun doPost(url: String?, json: String?, callBack: SuperPlayerHttpClient.OnHttpCallback?) {
-                url?.let {
-                    RxHttp.post(it).apply {
-                        upJson(json)
-                    }.executeCus(object : SimpleNetCallBack<String>(this@APP) {
-                        override fun onSuccess(data: String) {
-                            super.onSuccess(data)
-                            callBack?.onSuccess(data)
-                        }
-
-                        override fun onError(e: Exception) {
-                            super.onError(e)
-                            callBack?.onError()
-                        }
-                    })
-                }
-            }
-        })
     }
 
     override fun attachBaseContext(base: Context?) {
