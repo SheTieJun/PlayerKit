@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
  * [.onStartTrackingTouch]
  * [.onStopTrackingTouch]
  */
-class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
+class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDrag,
     VodMoreView.Callback,
     VodQualityView.Callback,
     PointSeekBar.OnSeekBarChangeListener, KeyListListener {
@@ -122,9 +122,9 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         initialize(context)
     }
@@ -134,53 +134,54 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
      */
     private fun initialize(context: Context?) {
         initView(context)
-        mGestureDetector = GestureDetector(getContext(), object : GestureDetector.SimpleOnGestureListener() {
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
-                if (isLive()) return false  //直播双击不做处理
-                togglePlayState()
-                show()
-                removeCallbacks(mHideViewRunnable)
-                postDelayed(mHideViewRunnable, 7000)
-                return true
-            }
-
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                if (isLive()) {
-                    mControllerCallback?.onControlViewToggle(!isShowing)
-                    return false
+        mGestureDetector =
+            GestureDetector(getContext(), object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent?): Boolean {
+                    if (isLive()) return false  //直播双击不做处理
+                    togglePlayState()
+                    show()
+                    removeCallbacks(mHideViewRunnable)
+                    postDelayed(mHideViewRunnable, 7000)
+                    return true
                 }
-                toggle()
-                return true
-            }
 
-            override fun onScroll(
+                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                    if (isLive()) {
+                        mControllerCallback?.onControlViewToggle(!isShowing)
+                        return false
+                    }
+                    toggle()
+                    return true
+                }
+
+                override fun onScroll(
                     downEvent: MotionEvent?,
                     moveEvent: MotionEvent?,
                     distanceX: Float,
                     distanceY: Float
-            ): Boolean {
-                if (downEvent == null || moveEvent == null) {
-                    return false
-                }
-                if (mVideoGestureDetector != null && mGestureVolumeBrightnessProgressLayout != null) {
-                    mVideoGestureDetector!!.check(
+                ): Boolean {
+                    if (downEvent == null || moveEvent == null) {
+                        return false
+                    }
+                    if (mVideoGestureDetector != null && mGestureVolumeBrightnessProgressLayout != null) {
+                        mVideoGestureDetector!!.check(
                             mGestureVolumeBrightnessProgressLayout!!.height,
                             downEvent,
                             moveEvent,
                             distanceX,
                             distanceY
-                    )
+                        )
+                    }
+                    return true
                 }
-                return true
-            }
 
-            override fun onDown(e: MotionEvent?): Boolean {
-                if (mVideoGestureDetector != null) {
-                    mVideoGestureDetector!!.reset(width, mSeekBarProgress!!.progress)
+                override fun onDown(e: MotionEvent?): Boolean {
+                    if (mVideoGestureDetector != null) {
+                        mVideoGestureDetector!!.reset(width, mSeekBarProgress!!.progress)
+                    }
+                    return true
                 }
-                return true
-            }
-        })
+            })
         mGestureDetector!!.setIsLongpressEnabled(false)
         mVideoGestureDetector = VideoGestureDetector(getContext())
         mVideoGestureDetector!!.setVideoGestureListener(object :
@@ -225,9 +226,9 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
                         mGestureVideoProgressLayout!!.setTimeText(formattedTime(currentTime.toLong()))
                     } else {
                         mGestureVideoProgressLayout!!.setTimeText(
-                                formattedTime(currentTime.toLong()) + " / " + formattedTime(
-                                        mDuration
-                                )
+                            formattedTime(currentTime.toLong()) + " / " + formattedTime(
+                                mDuration
+                            )
                         )
                         updateVideoProgress(currentTime.toLong(), mDuration)
                     }
@@ -248,7 +249,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
             mLayoutTop?.isVisible = uiConfig.showTop
             mLayoutBottom?.isVisible = uiConfig.showBottom
             mSpeedHelper?.getSpeedView()?.isVisible = uiConfig.showSpeed
-            isShowing = uiConfig.showTop||uiConfig.showBottom
+            isShowing = uiConfig.showTop || uiConfig.showBottom
         }
     }
 
@@ -282,9 +283,9 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         mLayoutTop!!.setOnClickListener(this)
         mSeekBarProgress!!.setOnSeekBarChangeListener(this)
         mGestureVolumeBrightnessProgressLayout =
-                findViewById<View>(R.id.superplayer_gesture_progress) as VolumeBrightnessProgressLayout
+            findViewById<View>(R.id.superplayer_gesture_progress) as VolumeBrightnessProgressLayout
         mGestureVideoProgressLayout =
-                findViewById<View>(R.id.superplayer_video_progress_layout) as VideoProgressLayout
+            findViewById<View>(R.id.superplayer_video_progress_layout) as VideoProgressLayout
         mBackground = findViewById<View>(R.id.superplayer_small_iv_background) as ImageView
         setBackground(mBackgroundBmp)
         mIvWatermark = findViewById<View>(R.id.superplayer_small_iv_water_mark) as ImageView
@@ -300,7 +301,8 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         mTvQuality!!.setOnClickListener(this)
     }
 
-    override fun isDrag() =  mSeekBarProgress?.mIsOnDrag == true
+    override fun isDrag() = mSeekBarProgress?.mIsOnDrag == true
+
     /**
      * 切换播放状态
      *
@@ -376,28 +378,30 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
         if (isShow) {
             if (mLayoutTop!!.visibility != View.VISIBLE) {
                 if (uiConfig.showTop) {
-                    mLayoutTop?.animation = AnimationUtils.loadAnimation(context, R.anim.push_top_in)
+                    mLayoutTop?.animation =
+                        AnimationUtils.loadAnimation(context, R.anim.push_top_in)
                     mLayoutTop?.isVisible = isShow
                 }
             }
             if (mLayoutBottom!!.visibility != View.VISIBLE) {
                 if (uiConfig.showBottom) {
                     mLayoutBottom?.animation =
-                            AnimationUtils.loadAnimation(context, R.anim.push_bottom_in)
+                        AnimationUtils.loadAnimation(context, R.anim.push_bottom_in)
                     mLayoutBottom?.isVisible = isShow
                 }
             }
         } else {
             if (mLayoutTop!!.visibility == View.VISIBLE) {
                 if (uiConfig.showTop) {
-                    mLayoutTop?.animation = AnimationUtils.loadAnimation(context, R.anim.push_top_out)
+                    mLayoutTop?.animation =
+                        AnimationUtils.loadAnimation(context, R.anim.push_top_out)
                     mLayoutTop?.isVisible = isShow
                 }
             }
             if (mLayoutBottom!!.visibility == View.VISIBLE) {
                 if (uiConfig.showBottom) {
                     mLayoutBottom?.animation =
-                            AnimationUtils.loadAnimation(context, R.anim.push_bottom_out)
+                        AnimationUtils.loadAnimation(context, R.anim.push_bottom_out)
                     mLayoutBottom?.isVisible = isShow
                 }
             }
@@ -460,7 +464,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
             mLivePushDuration = if (mLivePushDuration > mProgress) mLivePushDuration else mProgress
             val leftTime = mDuration - mProgress
             mDuration =
-                    if (mDuration > MAX_SHIFT_TIME) MAX_SHIFT_TIME.toLong() else mDuration
+                if (mDuration > MAX_SHIFT_TIME) MAX_SHIFT_TIME.toLong() else mDuration
             percentage = 1 - leftTime.toFloat() / mDuration.toFloat()
         }
         if (0.0 <= percentage && percentage <= 1.0) {
@@ -568,13 +572,12 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
     }
 
 
-
     /**
      * 重写触摸事件监听，实现手势调节亮度、音量以及播放进度
      */
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (mGestureDetector != null) mGestureDetector!!.onTouchEvent(event)
-        if ((event?.action == MotionEvent.ACTION_CANCEL||event?.action == MotionEvent.ACTION_UP) && mVideoGestureDetector != null && mVideoGestureDetector!!.isVideoProgressModel) {
+        if ((event?.action == MotionEvent.ACTION_CANCEL || event?.action == MotionEvent.ACTION_UP) && mVideoGestureDetector != null && mVideoGestureDetector!!.isVideoProgressModel) {
             var progress = mVideoGestureDetector!!.videoProgress
             if (progress > mSeekBarProgress!!.max) {
                 progress = mSeekBarProgress!!.max
@@ -598,7 +601,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
             if (mControllerCallback != null) {
                 mControllerCallback!!.onSeekTo(seekTime)
             }
-            Log.i("onTouchEvent","seekTime:$seekTime ,progress:$progress")
+            Log.i("onTouchEvent", "seekTime:$seekTime ,progress:$progress")
             mIsChangingSeekBarProgress = false
         }
         if (event?.action == MotionEvent.ACTION_DOWN) {
@@ -654,8 +657,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
             if (mControllerCallback != null) {
                 mControllerCallback!!.onSwitchPlayMode(PlayerMode.FULLSCREEN)
             }
-        }
-        else if (id == R.id.superplayer_tv_back_to_live) { //返回直播按钮
+        } else if (id == R.id.superplayer_tv_back_to_live) { //返回直播按钮
             if (mControllerCallback != null) {
                 mControllerCallback!!.onResumeLive()
             }
@@ -687,9 +689,9 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
                 mGestureVideoProgressLayout!!.setTimeText(formattedTime(currentTime.toLong()))
             } else {
                 mGestureVideoProgressLayout!!.setTimeText(
-                        formattedTime(currentTime.toLong()) + " / " + formattedTime(
-                                mDuration
-                        )
+                    formattedTime(currentTime.toLong()) + " / " + formattedTime(
+                        mDuration
+                    )
                 )
                 updateVideoProgress(currentTime.toLong(), mDuration)
             }
@@ -718,7 +720,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
                 var seekTime = (mLivePushDuration * curProgress * 1.0f / maxProgress).toInt()
                 if (mLivePushDuration > MAX_SHIFT_TIME) {
                     seekTime =
-                            (mLivePushDuration - MAX_SHIFT_TIME * (maxProgress - curProgress) * 1.0f / maxProgress) as Int
+                        (mLivePushDuration - MAX_SHIFT_TIME * (maxProgress - curProgress) * 1.0f / maxProgress) as Int
                 }
                 if (mControllerCallback != null) {
                     mControllerCallback!!.onSeekTo(seekTime)
@@ -740,12 +742,14 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
             isShowControl(false)
             if (mVodQualityView?.visibility == View.GONE) {
                 mVodQualityView?.visibility = View.VISIBLE
-                mVodQualityView?.animation = AnimationUtils.loadAnimation(context, R.anim.slide_right_in)
+                mVodQualityView?.animation =
+                    AnimationUtils.loadAnimation(context, R.anim.slide_right_in)
             }
         } else {
             if (mVodQualityView?.visibility == View.VISIBLE) {
                 mVodQualityView?.visibility = View.GONE
-                mVodQualityView?.animation = AnimationUtils.loadAnimation(context, R.anim.slide_right_exit)
+                mVodQualityView?.animation =
+                    AnimationUtils.loadAnimation(context, R.anim.slide_right_exit)
             }
         }
     }
@@ -799,7 +803,8 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener,
             return
         }
         if (mVideoQualityList!!.size == 1
-            && (TextUtils.isEmpty(mVideoQualityList!![0].title))) {
+            && (TextUtils.isEmpty(mVideoQualityList!![0].title))
+        ) {
             return
         }
         // 设置默认显示分辨率文字

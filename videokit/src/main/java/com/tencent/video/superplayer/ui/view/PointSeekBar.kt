@@ -19,66 +19,37 @@ import com.tencent.video.superplayer.ui.view.PointSeekBar.*
  * 3、打点view[TCPointView]
  */
 class PointSeekBar : RelativeLayout {
-    private var mWidth // 自身宽度
-            = 0
-    private var mHeight // 自身高度
-            = 0
-    private var mSeekBarLeft // SeekBar的起点位置
-            = 0
-    private var mSeekBarRight // SeekBar的终点位置
-            = 0
-    private var mBgTop // 进度条距离父布局上边界的距离
-            = 0
-    private var mBgBottom // 进度条距离父布局下边界的距离
-            = 0
-    private var mRoundSize // 进度条圆角大小
-            = 0
-    private var mViewEnd // 自身的右边界
-            = 0
-    private var mNormalPaint // seekbar背景画笔
-            : Paint? = null
-    private var mProgressPaint // seekbar进度条画笔
-            : Paint? = null
-    private var mPointerPaint // 打点view画笔
-            : Paint? = null
-    private var mThumbDrawable // 拖动块图片
-            : Drawable? = null
-    private var mHalfDrawableWidth // Thumb图片宽度的一半
-            = 0
+    private var mWidth = 0// 自身宽度
+    private var mHeight = 0// 自身高度
+    private var mSeekBarLeft = 0 // SeekBar的起点位置
+    private var mSeekBarRight = 0 // SeekBar的终点位置
+    private var mBgTop = 0 // 进度条距离父布局上边界的距离
+    private var mBgBottom = 0// 进度条距离父布局下边界的距离
+    private var mRoundSize = 0 // 进度条圆角大小
+    private var mViewEnd = 0 // 自身的右边界
+
+    private var mNormalPaint: Paint? = null// seekbar背景画笔
+    private var mProgressPaint: Paint? = null// seekbar进度条画笔
+    private var mPointerPaint: Paint? = null// 打点view画笔
+    private var mThumbDrawable: Drawable? = null// 拖动块图片
+    private var mHalfDrawableWidth = 0// Thumb图片宽度的一半
 
     // Thumb距父布局中的位置
-    private var mThumbLeft // thumb的marginLeft值
-            = 0f
-    private var mThumbRight // thumb的marginRight值
-            = 0f
-    private var mThumbTop // thumb的marginTop值
-            = 0f
-    private var mThumbBottom // thumb的marginBottom值
-            = 0f
-    var mIsOnDrag // 是否处于拖动状态
-            = false
-        private set
+    private var mThumbLeft = 0f// thumb的marginLeft值
+    private var mThumbRight = 0f// thumb的marginRight值
+    private var mThumbTop = 0f// thumb的marginTop值
+    private var mThumbBottom = 0f// thumb的marginBottom值
+    private var mIsOnDrag = false// 是否处于拖动状态
     private var mCurrentLeftOffset = 0f // thumb距离打点view的偏移量
-    private var mLastX // 上一次点击事件的横坐标，用于计算偏移量
-            = 0f
-    private var mCurrentProgress // 当前seekbar的数值
-            = 0
-
-    /**
-     * 设置seekbar最大值
-     *
-     * @param max
-     */
-    var max = 100 // seekbar最大数值
+    private var mLastX = 0f// 上一次点击事件的横坐标，用于计算偏移量
+    private var mCurrentProgress = 0 // 当前seekbar的数值
+    private var max = 100 // seekbar最大数值
     private var mBarHeightPx = 0f // seekbar的高度大小 px
-    private var mThumbView // 滑动ThumbView
-            : TCThumbView? = null
-    private var mPointList // 打点信息的列表
-            : List<PointParams>? = null
-    private var mPointClickListener // 打点view点击回调
-            : OnSeekBarPointClickListener? = null
-    private var mIsChangePointViews // 打点信息是否更新过
-            = false
+    private var mThumbView: TCThumbView? = null// 滑动ThumbView
+    private var mPointList: List<PointParams>? = null// 打点信息的列表
+    private var mPointClickListener: OnSeekBarPointClickListener? = null// 打点view点击回调
+    private var mIsChangePointViews = false // 打点信息是否更新过
+
     private val rectF = RectF()
     private val pRecf = RectF()
 
@@ -101,22 +72,21 @@ class PointSeekBar : RelativeLayout {
     /**
      * 设置seekbar进度值
      *
-     * @param progress
      */
     var progress: Int
         get() = mCurrentProgress
         set(progress) {
-            var progress = progress
-            if (progress < 0) {
-                progress = 0
+            var progressTemp = progress
+            if (progressTemp < 0) {
+                progressTemp = 0
             }
-            if (progress > max) {
-                progress = max
+            if (progressTemp > max) {
+                progressTemp = max
             }
             if (!mIsOnDrag) {
-                mCurrentProgress = progress
+                mCurrentProgress = progressTemp
                 invalidate()
-                callbackProgressInternal(progress, false)
+                callbackProgressInternal(progressTemp, false)
             }
         }
 
@@ -127,20 +97,20 @@ class PointSeekBar : RelativeLayout {
         var backgroundColor =
             ContextCompat.getColor(context, R.color.superplayer_default_progress_background_color)
         if (attrs != null) {
-            val a = context.obtainStyledAttributes(attrs, R.styleable.SuperPlayerTCPointSeekBar)
+            val a = context.obtainStyledAttributes(attrs, R.styleable.PointSeekBarStyleable)
             mThumbDrawable =
-                a.getDrawable(R.styleable.SuperPlayerTCPointSeekBar_psb_thumbBackground)
+                a.getDrawable(R.styleable.PointSeekBarStyleable_psb_thumbBackground)
             mHalfDrawableWidth = mThumbDrawable!!.intrinsicWidth / 2
             progressColor =
-                a.getColor(R.styleable.SuperPlayerTCPointSeekBar_psb_progressColor, progressColor)
+                a.getColor(R.styleable.PointSeekBarStyleable_psb_progressColor, progressColor)
             backgroundColor = a.getColor(
-                R.styleable.SuperPlayerTCPointSeekBar_psb_backgroundColor,
+                R.styleable.PointSeekBarStyleable_psb_backgroundColor,
                 backgroundColor
             )
-            mCurrentProgress = a.getInt(R.styleable.SuperPlayerTCPointSeekBar_psb_progress, 0)
-            max = a.getInt(R.styleable.SuperPlayerTCPointSeekBar_psb_max, 100)
+            mCurrentProgress = a.getInt(R.styleable.PointSeekBarStyleable_psb_progress, 0)
+            max = a.getInt(R.styleable.PointSeekBarStyleable_psb_max, 100)
             mBarHeightPx =
-                a.getDimension(R.styleable.SuperPlayerTCPointSeekBar_psb_progressHeight, 40f)
+                a.getDimension(R.styleable.PointSeekBarStyleable_psb_progressHeight, 40f)
             a.recycle()
         }
         mNormalPaint = Paint()
@@ -284,7 +254,6 @@ class PointSeekBar : RelativeLayout {
 
     private fun handleMoveEvent(event: MotionEvent): Boolean {
         val x = event.x
-        val y = event.y
         if (mIsOnDrag) {
             mCurrentLeftOffset = x - mLastX
             //计算出标尺的Rect
@@ -334,8 +303,8 @@ class PointSeekBar : RelativeLayout {
     }
 
     private fun handleDownEvent(event: MotionEvent): Boolean {
-        val x = event.x
-        val y = event.y
+//        val x = event.x
+//        val y = event.y
 //        if (x >= mThumbLeft - 100 && x <= mThumbRight + 100) {
         if (mListener != null) mListener!!.onStartTrackingTouch(this)
 //            mIsOnDrag = true
@@ -505,5 +474,9 @@ class PointSeekBar : RelativeLayout {
         init {
             mPaint.isAntiAlias = true
         }
+    }
+
+    interface PointDrag {
+        fun isDrag(): Boolean
     }
 }

@@ -29,8 +29,6 @@ interface UIPlayer {
      */
     fun setWatermark(bmp: Bitmap?, x: Float, y: Float)
 
-    fun isDrag():Boolean
-
     /**
      * 加载中
      */

@@ -122,9 +122,6 @@ class FloatPlayer : AbBaseUIPlayer, View.OnClickListener {
     override fun hideLoading() {
     }
 
-    override fun isDrag(): Boolean {
-        return false
-    }
     /**
      * 获取系统状态栏高度
      */

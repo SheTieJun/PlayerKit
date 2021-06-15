@@ -115,11 +115,6 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
         initPlayer()
     }
 
-    //ignore
-    override fun isDrag(): Boolean {
-        return false
-    }
-
     /**
      * 初始化view
      */

@@ -9,7 +9,7 @@ class SuperPlayerHttpClient:PlayerHttpClient{
     private var client : PlayerHttpClient ?= null
 
     companion object   Holder {
-        val instance = SuperPlayerHttpClient()
+        val instance by lazy { SuperPlayerHttpClient()  }
     }
 
     fun setHttpClient(client: PlayerHttpClient?){
@@ -18,7 +18,7 @@ class SuperPlayerHttpClient:PlayerHttpClient{
 
     override fun doGet(url: String?, callBack: OnHttpCallback?) {
         if (client == null){
-            Log.e("SuperPlayerView","client is null,please set httpclient ")
+            Log.e("SuperPlayerView","client is null,please set SuperPlayerHttpClient：SuperPlayerHttpClient.instance.setHttpClient ")
             return
         }
         client!!.doGet(url,callBack)
@@ -26,7 +26,7 @@ class SuperPlayerHttpClient:PlayerHttpClient{
 
     override fun doPost(url: String?, json: String?, callBack: OnHttpCallback?) {
         if (client == null){
-            Log.e("SuperPlayerView","client is null,please set httpclient ")
+            Log.e("SuperPlayerView","client is null,please set SuperPlayerHttpClient :SuperPlayerHttpClient.instance.setHttpClient")
             return
         }
         client!!.doPost(url,json,callBack)

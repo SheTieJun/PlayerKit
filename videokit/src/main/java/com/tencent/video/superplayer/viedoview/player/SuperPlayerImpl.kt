@@ -22,52 +22,42 @@ import com.tencent.video.superplayer.kit.VideoQualityUtils
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,val playerConfig: PlayerConfig = PlayerConfig.playerConfig) : SuperPlayer,
+internal class SuperPlayerImpl(
+    context: Context?,
+    videoView: TXCloudVideoView?,
+    val playerConfig: PlayerConfig = PlayerConfig.playerConfig
+) : SuperPlayer,
     ITXVodPlayListener, ITXLivePlayListener {
     private var mRotation: Int = 0
     private var isAutoPlay: Boolean = true
     private var mWidth: Int = -1
     private var mHeight: Int = -1
     private var mContext: Context? = null
-    private var mVideoView // 腾讯云视频播放view
-            : TXCloudVideoView? = null
-    private var mCurrentProtocol // 当前视频信息协议类
-            : IPlayInfoProtocol? = null
-    private var mVodPlayer // 点播播放器
-            : TXVodPlayer? = null
-    private var mVodPlayConfig // 点播播放器配置
-            : TXVodPlayConfig? = null
-    private var mLivePlayer // 直播播放器
-            : TXLivePlayer? = null
-    private var mLivePlayConfig // 直播播放器配置
-            : TXLivePlayConfig? = null
-    private var mCurrentModel // 当前播放的model
-            : VideoPlayerModel? = null
+    private var mVideoView: TXCloudVideoView? = null// 腾讯云视频播放view
+    private var mCurrentProtocol: IPlayInfoProtocol? = null // 当前视频信息协议类
+    private var mVodPlayer: TXVodPlayer? = null// 点播播放器
+    private var mVodPlayConfig: TXVodPlayConfig? = null// 点播播放器配置
+    private var mLivePlayer: TXLivePlayer? = null // 直播播放器
+    private var mLivePlayConfig: TXLivePlayConfig? = null// 直播播放器配置
+    private var mCurrentModel: VideoPlayerModel? = null// 当前播放的model
     private var mObserver: SuperPlayerObserver? = null
     private var mVideoQuality: VideoQuality? = null
     override var playerType = PlayerType.VOD // 当前播放类型
     override var playerMode = PlayerMode.WINDOW // 当前播放模式
     override var playerState = PlayerState.END // 当前播放状态
-    override var playURL // 当前播放的URL
-            : String? = null
-    private var mSeekPos // 记录切换硬解时的播放时间
-            = 0
-    private var mPlaySeekPos // 开始播放直接到对应位置
-            = 0
+    override var playURL: String? = null// 当前播放的URL
+    private var mSeekPos = 0 // 记录切换硬解时的播放时间
+    private var mPlaySeekPos = 0// 开始播放直接到对应位置
     private var mReportLiveStartTime: Long = -1 // 直播开始时间，用于上报使用时长
     private var mReportVodStartTime: Long = -1 // 点播开始时间，用于上报使用时长
-    private var mMaxLiveProgressTime // 观看直播的最大时长
-            : Long = 0
-    private var mIsMultiBitrateStream // 是否是多码流url播放
-            = false
-    private var mIsPlayWithFileId // 是否是腾讯云fileId播放
-            = false
-    private var mDefaultQualitySet // 标记播放多码流url时是否设置过默认画质
-            = false
-    private var mChangeHWAcceleration // 切换硬解后接收到第一个关键帧前的标记位
-            = false
+    private var mMaxLiveProgressTime: Long = 0// 观看直播的最大时长
+    private var mIsMultiBitrateStream = false// 是否是多码流url播放
+    private var mIsPlayWithFileId = false // 是否是腾讯云fileId播放
+    private var mDefaultQualitySet = false // 标记播放多码流url时是否设置过默认画质
+    private var mChangeHWAcceleration = false// 切换硬解后接收到第一个关键帧前的标记位
     private var currentPosition: Long = 0L
     private var duration: Long = 0L
+
     /**
      * 直播播放器事件回调
      *
@@ -97,7 +87,8 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
                 } else {
                     onError(
                         SuperPlayerCode.LIVE_PLAY_END,
-                        param.getString(EVT_DESCRIPTION) )
+                        param.getString(EVT_DESCRIPTION)
+                    )
                 }
             }
             PLAY_EVT_PLAY_LOADING ->
@@ -164,7 +155,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
                     if (bitrateItems == null || bitrateItems.isEmpty()) {
                         return
                     }
-                    Collections.sort(bitrateItems) //masterPlaylist多清晰度，按照码率排序，从低到高
+                    bitrateItems.sorted()
                     val videoQualities: ArrayList<VideoQuality> = ArrayList()
                     val size = bitrateItems.size
                     val resolutionNames =
@@ -314,10 +305,10 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
             params.fileId = model.videoId!!.fileId
             params.videoId = model.videoId
             mCurrentProtocol = PlayInfoProtocolV4(params)
-        }  else {
+        } else {
             mCurrentProtocol = null // 当前播放的是非v2和v4协议视频，将其置空
         }
-        if (model.videoId != null ) { // 根据FileId播放
+        if (model.videoId != null) { // 根据FileId播放
             mCurrentProtocol!!.sendRequest(object : IPlayInfoRequestCallback {
                 override fun onSuccess(protocol: IPlayInfoProtocol?, param: PlayInfoParams) {
                     TXCLog.i(TAG, "onSuccess: protocol params = $param")
@@ -583,7 +574,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         }
     }
 
-     override fun updateImageSpriteAndKeyFrame(
+    override fun updateImageSpriteAndKeyFrame(
         info: PlayImageSpriteInfo?,
         list: ArrayList<PlayKeyFrameDescInfo>?
     ) {
@@ -598,7 +589,7 @@ internal class SuperPlayerImpl(context: Context?, videoView: TXCloudVideoView?,v
         }
     }
 
-    private val playName: String?
+    protected val playName: String?
         get() {
             var title: String? = ""
             if (mCurrentModel != null && !TextUtils.isEmpty(mCurrentModel!!.title)) {

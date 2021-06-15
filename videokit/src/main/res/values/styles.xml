@@ -6,7 +6,7 @@
         <item name="android:progressDrawable">@drawable/superplayer_layer_list_progress_bar</item>
     </style>
 
-    <declare-styleable name="SuperPlayerTCPointSeekBar">
+    <declare-styleable name="PointSeekBarStyleable">
         <attr name="psb_thumbBackground" format="reference" />
         <attr name="psb_backgroundColor" format="color" />
         <attr name="psb_progressColor" format="color" />

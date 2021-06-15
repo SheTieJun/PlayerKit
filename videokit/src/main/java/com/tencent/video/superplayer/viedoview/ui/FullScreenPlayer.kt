@@ -58,7 +58,7 @@ import kotlin.math.roundToInt
  *
  */
 class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callback,
-    VodQualityView.Callback, PointSeekBar.OnSeekBarChangeListener,
+    VodQualityView.Callback, PointSeekBar.OnSeekBarChangeListener, PointSeekBar.PointDrag,
     PointSeekBar.OnSeekBarPointClickListener, KeyListListener {
 
     private lateinit var mViewBinding: SuperplayerVodPlayerFullscreenBinding
