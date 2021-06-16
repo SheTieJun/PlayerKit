@@ -39,11 +39,13 @@ class PointSeekBar : RelativeLayout {
     private var mThumbRight = 0f// thumb的marginRight值
     private var mThumbTop = 0f// thumb的marginTop值
     private var mThumbBottom = 0f// thumb的marginBottom值
-    private var mIsOnDrag = false// 是否处于拖动状态
+
     private var mCurrentLeftOffset = 0f // thumb距离打点view的偏移量
     private var mLastX = 0f// 上一次点击事件的横坐标，用于计算偏移量
     private var mCurrentProgress = 0 // 当前seekbar的数值
-    private var max = 100 // seekbar最大数值
+    var mIsOnDrag = false// 是否处于拖动状态
+        private set
+    var max = 100 // seekbar最大数值
     private var mBarHeightPx = 0f // seekbar的高度大小 px
     private var mThumbView: TCThumbView? = null// 滑动ThumbView
     private var mPointList: List<PointParams>? = null// 打点信息的列表

@@ -707,19 +707,27 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                     // 当前是悬浮窗
                     if (mSuperPlayer.playerMode == PlayerMode.FLOAT) {
                         try {
-                            mSuperPlayer.pause()
-                            mWindowManager!!.removeView(mFloatPlayer)
-                            mSuperPlayer.setPlayerView(mTXCloudVideoView)
-                            mSuperPlayer.resume()
-                            onPlayerCallback?.onStopFloatWindow()
                             val viewContext = context
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                activityManager.appTasks?.first {
-                                    it.taskInfo.baseIntent.component?.packageName == viewContext.packageName
-                                }?.apply {
-                                    moveToFront()
+                            if (viewContext is Activity && !viewContext.isDestroyed) {
+                                val intent: Intent =
+                                    Intent(viewContext, viewContext.javaClass).apply {
+                                        flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                                    }
+                                viewContext.startActivity(intent)
+                                mSuperPlayer.pause()
+                                mSuperPlayer.setPlayerView(mTXCloudVideoView)
+                                mSuperPlayer.resume()
+                                mWindowManager?.removeView(mFloatPlayer)
+                            } else {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    activityManager.appTasks?.first {
+                                        it.taskInfo.baseIntent.component?.packageName == viewContext.packageName
+                                    }?.apply {
+                                        moveToFront()
+                                    }
                                 }
                             }
+                            onPlayerCallback?.onStopFloatWindow()
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }

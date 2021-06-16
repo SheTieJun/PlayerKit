@@ -1,5 +1,6 @@
 package me.shetj.playerkitdemo
 
+import android.content.Intent
 import com.tencent.video.superplayer.base.UIConfig
 import com.tencent.video.superplayer.base.VideoViewCallbackBuilder
 import com.tencent.video.superplayer.base.timer.TimerConfigure
@@ -8,6 +9,7 @@ import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef
 import com.tencent.video.superplayer.viedoview.model.VideoPlayerModel
 import me.shetj.base.ktx.logi
 import me.shetj.base.ktx.showToast
+import me.shetj.base.ktx.start
 import me.shetj.base.mvvm.BaseBindingActivity
 import me.shetj.base.mvvm.BaseViewModel
 import me.shetj.base.tools.app.ArmsUtils
@@ -22,6 +24,9 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
         super.onActivityCreate()
         ArmsUtils.statuInScreen2(this)
         initVideoInfo()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
     }
 
     private fun initVideoInfo() {
@@ -120,6 +125,9 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             mViewBinding.btnShowSpeed.setOnClickListener {
                 TimerConfigure.instance.showTimePick(this@MainActivity)
             }
+            mViewBinding.btnTestGo.setOnClickListener {
+                start<SplashActivity>()
+            }
         }
     }
 
@@ -136,12 +144,9 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
 
     override fun onResume() {
         super.onResume()
-        // 重新开始播放
-        if (mViewBinding.superVodPlayerView.playerState == SuperPlayerDef.PlayerState.PLAYING) {
+        "onResume".logi()
+        if (mViewBinding.superVodPlayerView.playerState != SuperPlayerDef.PlayerState.PLAYING) {
             mViewBinding.superVodPlayerView.resume()
-            if (mViewBinding.superVodPlayerView.playerMode == SuperPlayerDef.PlayerMode.FLOAT) {
-                mViewBinding.superVodPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.WINDOW)
-            }
         }
     }
 
@@ -149,6 +154,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     override fun onPause() {
         super.onPause()
         // 停止播放
+        "onPause".logi()
         if (mViewBinding.superVodPlayerView.playerMode != SuperPlayerDef.PlayerMode.FLOAT) {
             mViewBinding.superVodPlayerView.pause()
         }
