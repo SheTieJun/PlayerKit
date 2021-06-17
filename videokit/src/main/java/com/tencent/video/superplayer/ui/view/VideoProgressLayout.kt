@@ -12,14 +12,10 @@ import com.tencent.liteav.superplayer.*
  * 滑动手势控制播放进度时显示的进度提示view
  */
 class VideoProgressLayout : FrameLayout {
-    private var mIvThumbnail // 视频缩略图
-            : ImageView? = null
-    private var mTvTime // 视频进度文本
-            : TextView? = null
-    private var mProgressBar // 进度条
-            : ProgressBar? = null
-    private var mHideRunnable // 隐藏自身的线程
-            : HideRunnable? = null
+    private var mIvThumbnail : ImageView? = null// 视频缩略图
+    private var mTvTime   : TextView? = null// 视频进度文本
+    private var mProgressBar  : ProgressBar? = null// 进度条
+    private var mHideRunnable  : HideRunnable? = null// 隐藏自身的线程
     private var duration = 1000 // 自身消失的延迟事件ms
 
     constructor(context: Context) : super(context) {

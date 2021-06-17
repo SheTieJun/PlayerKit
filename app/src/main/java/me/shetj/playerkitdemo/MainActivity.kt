@@ -20,13 +20,11 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     private var iskey: Boolean = false
     protected var isAuto:Boolean = false //自定播放
     protected var isHide:Boolean = false
+    private var isActivityPause = false
     override fun onActivityCreate() {
         super.onActivityCreate()
         ArmsUtils.statuInScreen2(this)
         initVideoInfo()
-    }
-
-    override fun onNewIntent(intent: Intent?) {
     }
 
     private fun initVideoInfo() {
@@ -51,7 +49,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                     val url =
                         "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
                     multiURLs = ArrayList<VideoPlayerModel.SuperPlayerURL>().apply {
-                        add(VideoPlayerModel.SuperPlayerURL(url, "流程"))
+                        add(VideoPlayerModel.SuperPlayerURL(url, "流畅"))
                         add(VideoPlayerModel.SuperPlayerURL(url, "标清"))
                         add(VideoPlayerModel.SuperPlayerURL(url, "高清"))
                     }
@@ -128,6 +126,12 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             mViewBinding.btnTestGo.setOnClickListener {
                 start<SplashActivity>()
             }
+            mViewBinding.btnTestHideFull.setOnClickListener {
+                mViewBinding.superVodPlayerView.updateUIConfig(uiConfig.apply {
+                    this.showFull = !isHide
+                })
+                isHide = !isHide
+            }
         }
     }
 
@@ -145,7 +149,8 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     override fun onResume() {
         super.onResume()
         "onResume".logi()
-        if (mViewBinding.superVodPlayerView.playerState != SuperPlayerDef.PlayerState.PLAYING) {
+        if (mViewBinding.superVodPlayerView.playerState != SuperPlayerDef.PlayerState.PLAYING && isActivityPause) {
+            isActivityPause = false
             mViewBinding.superVodPlayerView.resume()
         }
     }
@@ -156,6 +161,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
         // 停止播放
         "onPause".logi()
         if (mViewBinding.superVodPlayerView.playerMode != SuperPlayerDef.PlayerMode.FLOAT) {
+            isActivityPause = true
             mViewBinding.superVodPlayerView.pause()
         }
     }

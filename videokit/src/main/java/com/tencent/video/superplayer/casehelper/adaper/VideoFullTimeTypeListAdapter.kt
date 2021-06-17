@@ -25,8 +25,11 @@ class VideoFullTimeTypeListAdapter(data: ArrayList<TimeType>) :
         }
     }
 
-    override fun convert(holder: BaseViewHolder, item: TimeType) {
-        holder.setText(R.id.name, item.name)
+    override fun convert(
+        holder: BaseViewHolder,
+        data: TimeType
+    ) {
+        holder.setText(R.id.name, data.name)
         holder.setTextColor(
             R.id.name, if (position == holder.adapterPosition)
                 getColor(
@@ -36,9 +39,9 @@ class VideoFullTimeTypeListAdapter(data: ArrayList<TimeType>) :
         )
         holder.getView<TextView>(R.id.name).apply {
             typeface = if (position == holder.adapterPosition) {
-                Typeface.defaultFromStyle(Typeface.BOLD);
+                Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
-                Typeface.defaultFromStyle(Typeface.NORMAL);
+                Typeface.defaultFromStyle(Typeface.NORMAL)
             }
         }
     }

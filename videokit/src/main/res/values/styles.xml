@@ -22,8 +22,8 @@
 
     <style name="transparent_dialog_fragment_style" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowSoftInputMode">adjustPan</item>
-        <item name="android:windowBackground">@color/transparent_70</item>
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 </resources>

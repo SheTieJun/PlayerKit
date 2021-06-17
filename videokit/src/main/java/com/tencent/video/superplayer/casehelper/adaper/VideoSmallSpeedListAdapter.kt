@@ -10,20 +10,23 @@ import com.tencent.video.superplayer.base.BaseViewHolder
 class VideoSmallSpeedListAdapter(data: ArrayList<Float>) :
     BaseKitAdapter<Float>(R.layout.superplayer_item_video_full_speed_2, data) {
     private var curSpeed = 0f
-    override fun convert(holder: BaseViewHolder, item: Float) {
-        holder.setText(R.id.content, item.toString() + "倍")
+    override fun convert(
+        holder: BaseViewHolder,
+        data: Float
+    ) {
+        holder.setText(R.id.content, data.toString() + "倍")
         holder.setTextColor(
             R.id.content,
-            if (curSpeed == item) ContextCompat.getColor(
+            if (curSpeed == data) ContextCompat.getColor(
                 holder.itemView.context,
                 R.color.superplayer_orange
             ) else ContextCompat.getColor(holder.itemView.context, R.color.superplayer_white)
         )
         holder.getView<TextView>(R.id.content).apply {
-            typeface = if (curSpeed == item) {
-                Typeface.defaultFromStyle(Typeface.BOLD);
+            typeface = if (curSpeed == data) {
+                Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
-                Typeface.defaultFromStyle(Typeface.NORMAL);
+                Typeface.defaultFromStyle(Typeface.NORMAL)
             }
         }
     }

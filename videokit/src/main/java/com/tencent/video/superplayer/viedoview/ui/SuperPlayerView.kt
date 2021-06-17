@@ -707,26 +707,7 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
                     // 当前是悬浮窗
                     if (mSuperPlayer.playerMode == PlayerMode.FLOAT) {
                         try {
-                            val viewContext = context
-                            if (viewContext is Activity && !viewContext.isDestroyed) {
-                                val intent: Intent =
-                                    Intent(viewContext, viewContext.javaClass).apply {
-                                        flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                                    }
-                                viewContext.startActivity(intent)
-                                mSuperPlayer.pause()
-                                mSuperPlayer.setPlayerView(mTXCloudVideoView)
-                                mSuperPlayer.resume()
-                                mWindowManager?.removeView(mFloatPlayer)
-                            } else {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    activityManager.appTasks?.first {
-                                        it.taskInfo.baseIntent.component?.packageName == viewContext.packageName
-                                    }?.apply {
-                                        moveToFront()
-                                    }
-                                }
-                            }
+                            processStopFloatWindow()
                             onPlayerCallback?.onStopFloatWindow()
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -791,21 +772,9 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
 
 
             override fun onBackPressed(playMode: PlayerMode) {
-                when (playMode) {
-                    PlayerMode.FULLSCREEN -> {
-                        onSwitchPlayMode(PlayerMode.WINDOW)
-                    }
-                    PlayerMode.WINDOW -> {
-                        onPlayerCallback?.onClickSmallReturnBtn()
-                    }
-                    PlayerMode.FLOAT -> {
-                        mSuperPlayer.setPlayerView(mTXCloudVideoView)
-                        mSuperPlayer.pause()
-                        mWindowManager!!.removeView(mFloatPlayer)
-                        onPlayerCallback?.onClickFloatCloseBtn()
-                    }
-                }
+                processOnBackPressed(playMode)
             }
+
 
             override fun onShare() {
                 onPlayerCallback?.onClickShare()
@@ -876,6 +845,54 @@ open class SuperPlayerView : FrameLayout, TimerConfigure.CallBack, SuperPlayer, 
 
             }
         }
+
+    /**
+     * 处理退出悬浮模式，可以继承后修改处理方式
+     */
+    open fun processStopFloatWindow() {
+        val viewContext = context
+        if (viewContext is Activity && !viewContext.isDestroyed) {
+            //让该类型的Activity 会到前台
+            val intent: Intent =
+                Intent(viewContext, viewContext.javaClass).apply {
+                    flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                }
+            viewContext.startActivity(intent)
+            mSuperPlayer.pause()
+            mSuperPlayer.setPlayerView(mTXCloudVideoView)
+            mSuperPlayer.resume()
+            mWindowManager?.removeView(mFloatPlayer)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                activityManager.appTasks?.first {
+                    it.taskInfo.baseIntent.component?.packageName == viewContext.packageName
+                }?.apply {
+                    moveToFront()
+                }
+            }
+        }
+    }
+
+    /**
+     * 处理不同模式的关闭按钮事件
+     * 可以继承后修改处理方式
+     */
+    open fun processOnBackPressed(playMode: PlayerMode) {
+        when (playMode) {
+            PlayerMode.FULLSCREEN -> {
+                mControllerCallback.onSwitchPlayMode(PlayerMode.WINDOW)
+            }
+            PlayerMode.WINDOW -> {
+                onPlayerCallback?.onClickSmallReturnBtn()
+            }
+            PlayerMode.FLOAT -> {
+                mSuperPlayer.setPlayerView(mTXCloudVideoView)
+                mSuperPlayer.pause()
+                mWindowManager!!.removeView(mFloatPlayer)
+                onPlayerCallback?.onClickFloatCloseBtn()
+            }
+        }
+    }
 
     private fun getActivityManagerService(): ActivityManager {
         return context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager

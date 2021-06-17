@@ -10,8 +10,11 @@ import java.util.*
 
 /**
  * 定时器管理
+ *
  * 1.课程定时（获取课程时间）
+ *
  * 2.时间定时 {1.自定义  2.固定时间 }
+ *
  * 3.课程播放模式 （循环 和 列表）
  */
 class TimerConfigure private constructor(){

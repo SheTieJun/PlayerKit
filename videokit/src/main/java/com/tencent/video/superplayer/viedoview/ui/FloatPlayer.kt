@@ -6,12 +6,10 @@ import android.view.*
 import android.widget.*
 import com.tencent.liteav.superplayer.*
 import com.tencent.rtmp.ui.TXCloudVideoView
-import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.PlayerMode
 import com.tencent.video.superplayer.base.PlayerConfig
-import com.tencent.video.superplayer.casehelper.KeyListListener
-import com.tencent.video.superplayer.casehelper.onNext
 import com.tencent.video.superplayer.viedoview.base.AbBaseUIPlayer
+import com.tencent.video.superplayer.viedoview.base.UIPlayer
 
 /**
  * 悬浮窗模式播放控件
@@ -26,23 +24,16 @@ class FloatPlayer : AbBaseUIPlayer, View.OnClickListener {
     /**
      * 获取悬浮窗中的视频播放view
      */
-    var floatVideoView // 悬浮窗中的视频播放view
-            : TXCloudVideoView? = null
+    var floatVideoView: TXCloudVideoView? = null// 悬浮窗中的视频播放view
         private set
-    private var mStatusBarHeight // 系统状态栏的高度
-            = 0
-    private var mXDownInScreen // 按下事件距离屏幕左边界的距离
-            = 0f
-    private var mYDownInScreen // 按下事件距离屏幕上边界的距离
-            = 0f
-    private var mXInScreen // 滑动事件距离屏幕左边界的距离
-            = 0f
-    private var mYInScreen // 滑动事件距离屏幕上边界的距离
-            = 0f
-    private var mXInView // 滑动事件距离自身左边界的距离
-            = 0f
-    private var mYInView // 滑动事件距离自身上边界的距离
-            = 0f
+    private var mStatusBarHeight = 0 // 系统状态栏的高度
+    private var mXDownInScreen = 0f// 按下事件距离屏幕左边界的距离
+    private var mYDownInScreen = 0f // 按下事件距离屏幕上边界的距离
+    private var mXInScreen = 0f// 滑动事件距离屏幕左边界的距离
+    private var mYInScreen = 0f // 滑动事件距离屏幕上边界的距离
+    private var mXInView = 0f// 滑动事件距离自身左边界的距离
+    private var mYInView = 0f// 滑动事件距离自身上边界的距离
+
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -126,13 +117,13 @@ class FloatPlayer : AbBaseUIPlayer, View.OnClickListener {
      * 获取系统状态栏高度
      */
     private val statusBarHeight: Int
-        private get() {
+        get() {
             if (mStatusBarHeight == 0) {
                 try {
                     val c = Class.forName("com.android.internal.R\$dimen")
                     val o = c.newInstance()
-                    val field = c.getField("status_bar_height")
-                    val x = field[o] as Int
+                    val fields = c.getField("status_bar_height")
+                    val x = fields[o] as Int
                     mStatusBarHeight = resources.getDimensionPixelSize(x)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -142,7 +133,7 @@ class FloatPlayer : AbBaseUIPlayer, View.OnClickListener {
         }
 
     /**
-     * 更新悬浮窗的位置信息，在回调[Callback.onFloatPositionChange]中实现悬浮窗移动
+     * 更新悬浮窗的位置信息，在回调[UIPlayer.VideoViewCallback.onFloatPositionChange]中实现悬浮窗移动
      */
     private fun updateViewPosition() {
         val x = (mXInScreen - mXInView).toInt()

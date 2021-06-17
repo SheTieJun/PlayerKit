@@ -22,12 +22,12 @@ import kotlin.collections.ArrayList
  */
 class VodQualityView : FrameLayout {
     private var mContext: Context? = null
-    private var mCallback // 回调
-            : Callback? = null
-    private var mListView // 画质listView
-            : RecyclerView? = null
-    private var mAdapter // 画质列表适配器
-            : QualityAdapter? = null
+    private var mCallback: Callback? = null// 回调
+
+    private var mListView: RecyclerView? = null// 画质listView
+
+    private var mAdapter: QualityAdapter? = null// 画质列表适配器
+
     private var mClickPos = -1 // 当前的画质下表
     private var title: View? = null
 
@@ -40,9 +40,9 @@ class VodQualityView : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         init(context)
     }
@@ -101,7 +101,7 @@ class VodQualityView : FrameLayout {
                 animation = AnimationUtils.loadAnimation(context, R.anim.slide_right_in)
             }
         } else {
-            if ( isVisible) {
+            if (isVisible) {
                 isVisible = false
                 animation = AnimationUtils.loadAnimation(context, R.anim.slide_right_exit)
             }

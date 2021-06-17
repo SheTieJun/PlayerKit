@@ -21,19 +21,38 @@
 
 #### 基础功能播放
 ```
-    playWithModel(model: SuperPlayerModel)
+     /**
+       * 开始播放
+       *
+       * @param url 视频地址
+       */
+      fun play(url: String?)
 
-    play(url: String?)
+      /**
+       * 开始播放
+       *
+       * @param appId 腾讯云视频appId
+       * @param url   直播播放地址
+       */
+      fun play(appId: Int, url: String?)
 
-    play(appId: Int, url: String?)//使用腾讯云直播时移功能则需要填写appId
+      /**
+       * 开始播放
+       *
+       * @param appId  腾讯云视频appId
+       * @param fileId 腾讯云视频fileId
+       * @param psign  防盗链签名，开启防盗链的视频必填，非防盗链视频可不填
+       */
+      fun play(appId: Int, fileId: String?, psign: String?)
 
-    play(appId: Int, fileId: String?, psign: String?)  //需要腾讯云的appid,fileid
+      /**
+       * 多分辨率播放
+       * @param appId             腾讯云视频appId
+       * @param superPlayerURLS   不同分辨率数据
+       * @param defaultIndex      默认播放Index
+       */
+      fun play(appId: Int, superPlayerURLS: List<VideoPlayerModel.SuperPlayerURL?>?, defaultIndex: Int)
 
-    play(
-        appId: Int,
-        superPlayerURLS: List<SuperPlayerModel.SuperPlayerURL?>?,
-        defaultIndex: Int
-    )//如果使用腾讯云直播时移功能则需要填写appId
 
 ```
 

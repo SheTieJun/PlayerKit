@@ -5,6 +5,7 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.*
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.tencent.liteav.superplayer.*
@@ -18,7 +19,7 @@ import com.tencent.video.superplayer.ui.view.PointSeekBar.*
  *
  * 3、打点view[TCPointView]
  */
-class PointSeekBar : RelativeLayout {
+class PointSeekBar : FrameLayout {
     private var mWidth = 0// 自身宽度
     private var mHeight = 0// 自身高度
     private var mSeekBarLeft = 0 // SeekBar的起点位置
@@ -55,15 +56,15 @@ class PointSeekBar : RelativeLayout {
     private val rectF = RectF()
     private val pRecf = RectF()
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         init(null)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr

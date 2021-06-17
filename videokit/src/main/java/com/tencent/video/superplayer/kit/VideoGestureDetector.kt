@@ -41,12 +41,9 @@ class VideoGestureDetector(context: Context) {
      * @return
      */
     // 视频进度相关
-    var videoProgress // 记录滑动后的进度，在回调中抛出
-            = 0
+    var videoProgress  = 0 // 记录滑动后的进度，在回调中抛出
         private set
-    private var mDownProgress // 滑动开始时的视频播放进度
-            = 0
-
+    private var mDownProgress     = 0 // 滑动开始时的视频播放进度
     /**
      * 手势临界值，当两滑动事件坐标的水平差值>20时判定为[.VIDEO_PROGRESS], 否则判定为[.VOLUME]或者[.BRIGHTNESS]
      */
@@ -163,7 +160,7 @@ class VideoGestureDetector(context: Context) {
      * @return
      */
     private val brightness: Int
-        private get() = if (mResolver != null) {
+        get() = if (mResolver != null) {
             Settings.System.getInt(
                 mResolver,
                 Settings.System.SCREEN_BRIGHTNESS,

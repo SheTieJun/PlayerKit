@@ -1,11 +1,10 @@
 package com.tencent.video.superplayer.viedoview.base
 
 import android.graphics.Bitmap
-import android.widget.ImageView
-import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 import com.tencent.video.superplayer.model.entity.PlayImageSpriteInfo
 import com.tencent.video.superplayer.model.entity.PlayKeyFrameDescInfo
 import com.tencent.video.superplayer.model.entity.VideoQuality
+import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef.*
 
 /**
  * 播放控制接口
@@ -155,7 +154,7 @@ interface UIPlayer {
          * 全屏模式      [SuperPlayerDef.PlayerMode.FULLSCREEN]
          * 悬浮窗模式    [SuperPlayerDef.PlayerMode.FLOAT]
          */
-        fun onSwitchPlayMode(playMode: SuperPlayerDef.PlayerMode)
+        fun onSwitchPlayMode(playMode: PlayerMode)
 
 
         /**
@@ -166,7 +165,7 @@ interface UIPlayer {
          * 全屏模式      [SuperPlayerDef.PlayerMode.FULLSCREEN]
          * 悬浮窗模式    [SuperPlayerDef.PlayerMode.FLOAT]
          */
-        fun onBackPressed(playMode: SuperPlayerDef.PlayerMode)
+        fun onBackPressed(playMode: PlayerMode)
 
         /**
          * 悬浮窗位置更新回调

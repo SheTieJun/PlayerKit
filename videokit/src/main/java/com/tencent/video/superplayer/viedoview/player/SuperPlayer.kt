@@ -84,9 +84,9 @@ interface SuperPlayer {
     /**
      * 切换播放器模式
      *
-     * @param playerMode [SuperPlayerDef.PlayerMode.WINDOW]          窗口模式
-     * [SuperPlayerDef.PlayerMode.FULLSCREEN]      全屏模式
-     * [SuperPlayerDef.PlayerMode.FLOAT]           悬浮窗模式
+     * @param playerMode [PlayerMode.WINDOW]          窗口模式
+     * [PlayerMode.FULLSCREEN]      全屏模式
+     * [PlayerMode.FLOAT]           悬浮窗模式
      */
     fun switchPlayMode(playerMode: PlayerMode)
     fun enableHardwareDecode(enable: Boolean)
@@ -103,28 +103,28 @@ interface SuperPlayer {
     /**
      * 获取当前播放器模式
      *
-     * @return [SuperPlayerDef.PlayerMode.WINDOW]          窗口模式
-     * [SuperPlayerDef.PlayerMode.FULLSCREEN]              全屏模式
-     * [SuperPlayerDef.PlayerMode.FLOAT]                   悬浮窗模式
+     * @return [PlayerMode.WINDOW]          窗口模式
+     * [PlayerMode.FULLSCREEN]              全屏模式
+     * [PlayerMode.FLOAT]                   悬浮窗模式
      */
     val playerMode: PlayerMode
 
     /**
      * 获取当前播放器状态
      *
-     * @return [SuperPlayerDef.PlayerState.PLAYING]     播放中
-     * [SuperPlayerDef.PlayerState.PAUSE]               暂停中
-     * [SuperPlayerDef.PlayerState.LOADING]             缓冲中
-     * [SuperPlayerDef.PlayerState.END]                 结束播放
+     * @return [PlayerState.PLAYING]     播放中
+     * [PlayerState.PAUSE]               暂停中
+     * [PlayerState.LOADING]             缓冲中
+     * [PlayerState.END]                 结束播放
      */
     val playerState: PlayerState
 
     /**
      * 获取当前播放器类型
      *
-     * @return [SuperPlayerDef.PlayerType.LIVE]     直播
-     * [SuperPlayerDef.PlayerType.LIVE_SHIFT]       直播时移
-     * [SuperPlayerDef.PlayerType.VOD]              点播
+     * @return [PlayerType.LIVE]     直播
+     * [PlayerType.LIVE_SHIFT]       直播时移
+     * [PlayerType.VOD]              点播
      */
     val playerType: PlayerType
 

@@ -404,7 +404,7 @@ internal class SuperPlayerImpl(
      * @param model
      */
     private fun playModeVideo(model: VideoPlayerModel?) {
-        if (model!!.multiURLs != null && !model.multiURLs!!.isEmpty()) { // 多码率URL播放
+        if (model!!.multiURLs != null && model.multiURLs!!.isNotEmpty()) { // 多码率URL播放
             for (i in model.multiURLs!!.indices) {
                 if (i == model.playDefaultIndex) {
                     playVodURL(model.multiURLs!![i]!!.url)
@@ -662,7 +662,7 @@ internal class SuperPlayerImpl(
                 playLiveURL(playURL, TXLivePlayer.PLAY_TYPE_LIVE_RTMP)
             } else if (isFLVPlay(playURL)) {
                 playTimeShiftLiveURL(mCurrentModel!!.appId, playURL)
-                if (mCurrentModel!!.multiURLs != null && !mCurrentModel!!.multiURLs!!.isEmpty()) {
+                if (mCurrentModel!!.multiURLs != null && mCurrentModel!!.multiURLs!!.isNotEmpty()) {
                     startMultiStreamLiveURL(playURL)
                 }
             }

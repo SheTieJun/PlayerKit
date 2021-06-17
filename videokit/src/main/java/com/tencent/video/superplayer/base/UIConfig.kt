@@ -18,12 +18,13 @@ class UIConfig private constructor(
     var isShowPlayStyle: Boolean,//展示播放模式
     var isShowTimeStyle: Boolean, //展示定时
     var isShowMirror: Boolean,//镜像功能
+    var showFull: Boolean,//全屏按钮
 ) {
 
 
     companion object {
 
-        val uiConfig :UIConfig by lazy { ofDef()}
+        val uiConfig: UIConfig by lazy { ofDef() }
 
         /**
          * 带接收者的函数类型,这意味着我们需要向函数传递一个Builder类型的实例
@@ -54,13 +55,14 @@ class UIConfig private constructor(
         var isShowPlayStyle: Boolean = true
         var isShowTimeStyle: Boolean = true
         var isShowMirror = false
+        var showFull = true
 
         fun build(): UIConfig {
 
             return UIConfig(
                 showTV, showShare, showTop, showBottom, showSpeed, showMore,
                 showLock, keepTop, keepBottom, isShowAccelerate, isShowPlayStyle,
-                isShowTimeStyle,isShowMirror
+                isShowTimeStyle, isShowMirror,showFull
             )
         }
     }

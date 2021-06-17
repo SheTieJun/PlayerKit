@@ -24,5 +24,7 @@
 
     <color name="superplayer_default_progress_color">#FF4081</color>
     <color name="superplayer_default_progress_background_color">#BBBBBB</color>
+    <color name="transparent">#00000000</color>
     <color name="transparent_70">#B3000000</color>
+
 </resources>

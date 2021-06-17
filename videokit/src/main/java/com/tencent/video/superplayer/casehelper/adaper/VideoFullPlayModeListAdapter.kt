@@ -16,20 +16,20 @@ class VideoFullPlayModeListAdapter(data: ArrayList<String>) :
         notifyDataSetChanged()
     }
 
-    override fun convert(holder: BaseViewHolder, item: String) {
-        holder.setText(R.id.content, item)
+    override fun convert(holder: BaseViewHolder, data: String) {
+        holder.setText(R.id.content, data)
         holder.setTextColor(
             R.id.content,
-            if (curModel == item) getColor(holder.itemView.context, R.color.superplayer_orange) else getColor(
+            if (curModel == data) getColor(holder.itemView.context, R.color.superplayer_orange) else getColor(
                 holder.itemView.context,
                 R.color.superplayer_white
             )
         )
-        holder.getView<TextView>(R.id.content)?.apply {
-            typeface = if (curModel == item) {
-                Typeface.defaultFromStyle(Typeface.BOLD);
+        holder.getView<TextView>(R.id.content).apply {
+            typeface = if (curModel == data) {
+                Typeface.defaultFromStyle(Typeface.BOLD)
             } else {
-                Typeface.defaultFromStyle(Typeface.NORMAL);
+                Typeface.defaultFromStyle(Typeface.NORMAL)
             }
         }
     }

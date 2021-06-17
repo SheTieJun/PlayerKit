@@ -1,13 +1,12 @@
 package com.tencent.video.superplayer.viedoview.ui
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -42,75 +41,56 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
     VodQualityView.Callback,
     PointSeekBar.OnSeekBarChangeListener, KeyListListener {
     // UI控件
-    private var mLayoutTop // 顶部标题栏布局
-            : View? = null
-    private var mLayoutBottom // 底部进度条所在布局
-            : LinearLayout? = null
-    private var mIvPause // 暂停播放按钮
-            : ImageView? = null
-    private var mIvFullScreen // 全屏按钮
-            : ImageView? = null
-    private var mTvTitle // 视频名称文本
-            : TextView? = null
-    private var mTvBackToLive // 返回直播文本
-            : TextView? = null
-    private var mBackground // 背景
-            : ImageView? = null
-    private var mIvWatermark // 水印
-            : ImageView? = null
-    private var mTvCurrent // 当前进度文本
-            : TextView? = null
-    private var mTvDuration // 总时长文本
-            : TextView? = null
-    private var mSeekBarProgress // 播放进度条
-            : PointSeekBar? = null
-    private var mPbLiveLoading // 加载圈
-            : ProgressBar? = null
-    private var mGestureVolumeBrightnessProgressLayout // 音量亮度调节布局
-            : VolumeBrightnessProgressLayout? = null
-    private var mGestureVideoProgressLayout // 手势快进提示布局
-            : VideoProgressLayout? = null
-    private var mGestureDetector // 手势检测监听器
-            : GestureDetector? = null
-    private var mVideoGestureDetector // 手势控制工具
-            : VideoGestureDetector? = null
-    private var isShowing // 自身是否可见
-            = false
-    private var mIsChangingSeekBarProgress // 进度条是否正在拖动，避免SeekBar由于视频播放的update而跳动
-            = false
-    private var mPlayType // 当前播放视频类型
-            : PlayerType? = null
+    private var mLayoutTop: View? = null // 顶部标题栏布局
+
+    private var mLayoutBottom: LinearLayout? = null// 底部进度条所在布局
+
+    private var mIvPause: ImageView? = null // 暂停播放按钮
+
+    private var mIvFullScreen: ImageView? = null// 全屏按钮
+
+    private var mTvTitle: TextView? = null// 视频名称文本
+
+    private var mTvBackToLive: TextView? = null // 返回直播文本
+
+    private var mBackground: ImageView? = null// 背景
+
+    private var mIvWatermark: ImageView? = null// 水印
+
+    private var mTvCurrent: TextView? = null// 当前进度文本
+
+    private var mTvDuration: TextView? = null// 总时长文本
+
+    private var mSeekBarProgress: PointSeekBar? = null// 播放进度条
+
+    private var mPbLiveLoading: ProgressBar? = null// 加载圈
+
+    private var mGestureVolumeProgress: VolumeBrightnessProgressLayout? = null// 音量亮度调节布局
+
+    private var mGestureVideoProgressLayout: VideoProgressLayout? = null// 手势快进提示布局
+
+    private var mGestureDetector: GestureDetector? = null // 手势检测监听器
+
+    private var mVideoGestureDetector: VideoGestureDetector? = null// 手势控制工具
+
+    private var isShowing = false // 自身是否可见
+    private var mIsChangingSeekBarProgress = false// 进度条是否正在拖动，避免SeekBar由于视频播放的update而跳动
+    private var mPlayType: PlayerType? = null// 当前播放视频类型
     private var mCurrentPlayState: PlayerState? = PlayerState.END // 当前播放状态
-    private var mDuration // 视频总时长
-            : Long = 0
-    private var mLivePushDuration // 直播推流总时长
-            : Long = 0
-    private var mProgress // 当前播放进度
-            : Long = 0
-    private var mBackgroundBmp // 背景图
-            : Bitmap? = null
-    private var mWaterMarkBmp // 水印图
-            : Bitmap? = null
-    private var mWaterMarkBmpX // 水印x坐标
-            = 0f
-    private var mWaterMarkBmpY // 水印y坐标
-            = 0f
-    private var mLastClickTime // 上次点击事件的时间
-            : Long = 0
+    private var mDuration: Long = 0 // 视频总时长
+    private var mLivePushDuration: Long = 0 // 直播推流总时长
+    private var mProgress: Long = 0 // 当前播放进度
+    private var mBackgroundBmp: Bitmap? = null// 背景图
+    private var mWaterMarkBmp: Bitmap? = null// 水印图
+    private var mWaterMarkBmpX = 0f// 水印x坐标
+    private var mWaterMarkBmpY = 0f// 水印y坐标
+    private var mLastClickTime: Long = 0 // 上次点击事件的时间
     private var mSpeedHelper: WinSpeedHelper? = null
-    private var mVodQualityView // 画质列表弹窗
-            : VodQualityView? = null
-
-    private var mDefaultVideoQuality // 默认画质
-            : VideoQuality? = null
-    private var mVideoQualityList // 画质列表
-            : ArrayList<VideoQuality>? = null
-
+    private var mVodQualityView: VodQualityView? = null// 画质列表弹窗
+    private var mDefaultVideoQuality: VideoQuality? = null// 默认画质
+    private var mVideoQualityList: ArrayList<VideoQuality>? = null // 画质列表
     private var mTvQuality: TextView? = null
-
-    private var mFirstShowQuality // 是都是首次显示画质信息
-            = false
-
+    private var mFirstShowQuality = false // 是都是首次显示画质信息
     private var mIvTV: View? = null
 
     constructor(context: Context) : super(context) {
@@ -140,8 +120,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
                     if (isLive()) return false  //直播双击不做处理
                     togglePlayState()
                     show()
-                    removeCallbacks(mHideViewRunnable)
-                    postDelayed(mHideViewRunnable, 7000)
+                    delayHide()
                     return true
                 }
 
@@ -163,9 +142,9 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
                     if (downEvent == null || moveEvent == null) {
                         return false
                     }
-                    if (mVideoGestureDetector != null && mGestureVolumeBrightnessProgressLayout != null) {
+                    if (mVideoGestureDetector != null && mGestureVolumeProgress != null) {
                         mVideoGestureDetector!!.check(
-                            mGestureVolumeBrightnessProgressLayout!!.height,
+                            mGestureVolumeProgress!!.height,
                             downEvent,
                             moveEvent,
                             distanceX,
@@ -187,35 +166,35 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
         mVideoGestureDetector!!.setVideoGestureListener(object :
             VideoGestureDetector.VideoGestureListener {
             override fun onBrightnessGesture(newBrightness: Float) {
-                if (mGestureVolumeBrightnessProgressLayout != null) {
-                    mGestureVolumeBrightnessProgressLayout!!.setProgress((newBrightness * 100).toInt())
-                    mGestureVolumeBrightnessProgressLayout!!.setImageResource(R.drawable.superplayer_ic_light_max)
-                    mGestureVolumeBrightnessProgressLayout!!.show()
+                if (mGestureVolumeProgress != null) {
+                    mGestureVolumeProgress!!.setProgress((newBrightness * 100).toInt())
+                    mGestureVolumeProgress!!.setImageResource(R.drawable.superplayer_ic_light_max)
+                    mGestureVolumeProgress!!.show()
                 }
             }
 
             override fun onVolumeGesture(volumeProgress: Float) {
-                if (mGestureVolumeBrightnessProgressLayout != null) {
-                    mGestureVolumeBrightnessProgressLayout!!.setImageResource(R.drawable.superplayer_ic_volume_max)
-                    mGestureVolumeBrightnessProgressLayout!!.setProgress(volumeProgress.toInt())
-                    mGestureVolumeBrightnessProgressLayout!!.show()
+                if (mGestureVolumeProgress != null) {
+                    mGestureVolumeProgress!!.setImageResource(R.drawable.superplayer_ic_volume_max)
+                    mGestureVolumeProgress!!.setProgress(volumeProgress.toInt())
+                    mGestureVolumeProgress!!.show()
                 }
             }
 
-            override fun onSeekGesture(progress: Int) {
+            override fun onSeekGesture(seekProgress: Int) {
                 if (isLive()) return
-                var progress = progress
+                var progressTemp = seekProgress
                 mIsChangingSeekBarProgress = true
                 if (mGestureVideoProgressLayout != null) {
-                    if (progress > mSeekBarProgress!!.max) {
-                        progress = mSeekBarProgress!!.max
+                    if (progressTemp > mSeekBarProgress!!.max) {
+                        progressTemp = mSeekBarProgress!!.max
                     }
-                    if (progress < 0) {
-                        progress = 0
+                    if (progressTemp < 0) {
+                        progressTemp = 0
                     }
-                    mGestureVideoProgressLayout!!.setProgress(progress)
+                    mGestureVideoProgressLayout!!.setProgress(progressTemp)
                     mGestureVideoProgressLayout!!.show()
-                    val percentage = progress.toFloat() / mSeekBarProgress!!.max
+                    val percentage = progressTemp.toFloat() / mSeekBarProgress!!.max
                     var currentTime = mDuration * percentage
                     if (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT) {
                         currentTime = if (mLivePushDuration > MAX_SHIFT_TIME) {
@@ -233,7 +212,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
                         updateVideoProgress(currentTime.toLong(), mDuration)
                     }
                 }
-                if (mSeekBarProgress != null) mSeekBarProgress!!.progress = (progress)
+                if (mSeekBarProgress != null) mSeekBarProgress!!.progress = (progressTemp)
             }
         })
     }
@@ -250,6 +229,8 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
             mLayoutBottom?.isVisible = uiConfig.showBottom
             mSpeedHelper?.getSpeedView()?.isVisible = uiConfig.showSpeed
             isShowing = uiConfig.showTop || uiConfig.showBottom
+            mIvFullScreen?.isVisible = uiConfig.showFull
+            delayHide()
         }
     }
 
@@ -282,7 +263,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
         mIvFullScreen!!.setOnClickListener(this)
         mLayoutTop!!.setOnClickListener(this)
         mSeekBarProgress!!.setOnSeekBarChangeListener(this)
-        mGestureVolumeBrightnessProgressLayout =
+        mGestureVolumeProgress =
             findViewById<View>(R.id.superplayer_gesture_progress) as VolumeBrightnessProgressLayout
         mGestureVideoProgressLayout =
             findViewById<View>(R.id.superplayer_video_progress_layout) as VideoProgressLayout
@@ -349,10 +330,10 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
             post {
                 val width = this@WindowPlayer.width
                 val height = this@WindowPlayer.height
-                val x = (width * mWaterMarkBmpX).toInt() - bmp.width / 2
-                val y = (height * mWaterMarkBmpY).toInt() - bmp.height / 2
-                mIvWatermark!!.x = x.toFloat()
-                mIvWatermark!!.y = y.toFloat()
+                val xTemp = (width * mWaterMarkBmpX).toInt() - bmp.width / 2
+                val yTemp = (height * mWaterMarkBmpY).toInt() - bmp.height / 2
+                mIvWatermark!!.x = xTemp.toFloat()
+                mIvWatermark!!.y = yTemp.toFloat()
                 mIvWatermark!!.visibility = VISIBLE
                 setBitmap(mIvWatermark, bmp)
             }
@@ -367,6 +348,10 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
     override fun show() {
         isShowing = true
         isShowControl(true)
+        delayHide()
+    }
+
+    private fun delayHide() {
         removeCallbacks(mHideViewRunnable)
         postDelayed(mHideViewRunnable, 7000)
     }
@@ -467,7 +452,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
                 if (mDuration > MAX_SHIFT_TIME) MAX_SHIFT_TIME.toLong() else mDuration
             percentage = 1 - leftTime.toFloat() / mDuration.toFloat()
         }
-        if (0.0 <= percentage && percentage <= 1.0) {
+        if (percentage in 0.0..1.0) {
             val progress = (percentage * mSeekBarProgress!!.max).roundToInt()
             if (!mIsChangingSeekBarProgress) {
                 if (mPlayType == PlayerType.LIVE) {
@@ -520,19 +505,8 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
      */
     private fun setBitmap(view: ImageView?, bitmap: Bitmap?) {
         if (view == null || bitmap == null) return
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            view.background = BitmapDrawable(context.resources, bitmap)
-        } else {
-            view.setBackgroundDrawable(BitmapDrawable(context.resources, bitmap))
-        }
+        view.background = BitmapDrawable(context.resources, bitmap)
     }
-
-    fun showFullAction(isShow: Boolean = false) {
-        mIvFullScreen?.isVisible = isShow
-    }
-
-
-    fun getFullBut() = mIvFullScreen
 
     /**
      * 显示背景
@@ -570,11 +544,12 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
             alpha.start()
         })
     }
-
+    private var seekTime: Int = 0
 
     /**
      * 重写触摸事件监听，实现手势调节亮度、音量以及播放进度
      */
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (mGestureDetector != null) mGestureDetector!!.onTouchEvent(event)
         if ((event?.action == MotionEvent.ACTION_CANCEL || event?.action == MotionEvent.ACTION_UP) && mVideoGestureDetector != null && mVideoGestureDetector!!.isVideoProgressModel) {
@@ -586,12 +561,11 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
                 progress = 0
             }
             mSeekBarProgress!!.progress = (progress)
-            var seekTime: Int
             val percentage = progress * 1.0f / mSeekBarProgress!!.max
 
             seekTime = if (mPlayType == PlayerType.LIVE || mPlayType == PlayerType.LIVE_SHIFT) {
                 if (mLivePushDuration > Companion.MAX_SHIFT_TIME) {
-                    (mLivePushDuration - Companion.MAX_SHIFT_TIME * (1 - percentage)) as Int
+                    (mLivePushDuration - Companion.MAX_SHIFT_TIME * (1 - percentage)).toInt()
                 } else {
                     (mLivePushDuration * percentage).toInt()
                 }
@@ -601,7 +575,6 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
             if (mControllerCallback != null) {
                 mControllerCallback!!.onSeekTo(seekTime)
             }
-            Log.i("onTouchEvent", "seekTime:$seekTime ,progress:$progress")
             mIsChangingSeekBarProgress = false
         }
         if (event?.action == MotionEvent.ACTION_DOWN) {
@@ -720,7 +693,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
                 var seekTime = (mLivePushDuration * curProgress * 1.0f / maxProgress).toInt()
                 if (mLivePushDuration > MAX_SHIFT_TIME) {
                     seekTime =
-                        (mLivePushDuration - MAX_SHIFT_TIME * (maxProgress - curProgress) * 1.0f / maxProgress) as Int
+                        (mLivePushDuration - MAX_SHIFT_TIME * (maxProgress - curProgress) * 1.0f / maxProgress).toInt()
                 }
                 if (mControllerCallback != null) {
                     mControllerCallback!!.onSeekTo(seekTime)
@@ -765,7 +738,7 @@ class WindowPlayer : AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDra
     /**
      * 设置视频画质信息
      *
-     * @param ArrayList 画质列表
+     * @param list 画质列表
      */
     override fun setVideoQualityList(list: ArrayList<VideoQuality>?) {
 

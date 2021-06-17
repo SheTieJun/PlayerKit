@@ -62,14 +62,11 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
     PointSeekBar.OnSeekBarPointClickListener, KeyListListener {
 
     private lateinit var mViewBinding: SuperplayerVodPlayerFullscreenBinding
-
     // 隐藏锁屏按钮子线程
     private var mHideLockViewRunnable: HideLockViewRunnable? = null
-
     // 手势检测监听器
     private var mGestureDetector: GestureDetector? = null
     // 手势控制工具
-
     private var mVideoGestureDetector: VideoGestureDetector? = null
     private var isShowing = false
 
@@ -77,31 +74,20 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
     private var mIsChangingSeekBarProgress = false
     private var mPlayType: PlayerType? = null
     private var mCurrentPlayState: PlayerState? = PlayerState.END // 当前播放状态
-    private var mDuration // 视频总时长
-            : Long = 0
-    private var mLivePushDuration // 直播推流总时长
-            : Long = 0
-    private var mProgress // 当前播放进度
-            : Long = 0
-    private var mWaterMarkBmp // 水印图
-            : Bitmap? = null
-    private var mWaterMarkBmpX // 水印x坐标
-            = 0f
-    private var mWaterMarkBmpY // 水印y坐标
-            = 0f
-    private var mLockScreen // 是否锁屏
-            = false
-    private var mTXImageSprite // 雪碧图信息
-            : TXImageSprite? = null
-    private var mTXPlayKeyFrameDescInfoList // 关键帧信息
-            : ArrayList<PlayKeyFrameDescInfo>? = null
+    private var mDuration  : Long = 0// 视频总时长
+    private var mLivePushDuration    : Long = 0// 直播推流总时长
+    private var mProgress        : Long = 0// 当前播放进度
+    private var mWaterMarkBmp : Bitmap? = null// 水印图
+    private var mWaterMarkBmpX   = 0f// 水印x坐标
+    private var mWaterMarkBmpY = 0f // 水印y坐标
+
+    private var mLockScreen = false// 是否锁屏
+    private var mTXImageSprite: TXImageSprite? = null// 雪碧图信息
+    private var mTXPlayKeyFrameDescInfoList: ArrayList<PlayKeyFrameDescInfo>? = null // 关键帧信息
     private var mSelectedPos = -1 // 点击的关键帧时间点
-    private var mDefaultVideoQuality // 默认画质
-            : VideoQuality? = null
-    private var mVideoQualityList // 画质列表
-            : ArrayList<VideoQuality>? = null
-    private var mFirstShowQuality // 是都是首次显示画质信息
-            = false
+    private var mDefaultVideoQuality: VideoQuality? = null // 默认画质
+    private var mVideoQualityList: ArrayList<VideoQuality>? = null// 画质列表
+    private var mFirstShowQuality = false // 是都是首次显示画质信息
     private val keyListHelper: PlayKeyListHelper by lazy { PlayKeyListHelper(this) }
 
     constructor(context: Context) : super(context) {
@@ -289,8 +275,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
         } else {
             mViewBinding.superplayerIvLock.visibility = VISIBLE
             if (mHideLockViewRunnable != null) {
-                removeCallbacks(mHideLockViewRunnable)
-                postDelayed(mHideLockViewRunnable, 7000)
+                delayHide()
             }
         }
         moreView(false)
@@ -639,8 +624,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
             showQualityView()
         } else if (i == R.id.superplayer_iv_lock) {             //锁屏按钮
             toggleLockState()
-        }
-        else if (i == R.id.superplayer_tv_back_to_live) {     //返回直播按钮
+        } else if (i == R.id.superplayer_tv_back_to_live) {     //返回直播按钮
             if (mControllerCallback != null) {
                 mControllerCallback!!.onResumeLive()
             }
@@ -711,8 +695,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
     private fun toggleLockState() {
         mLockScreen = !mLockScreen
         if (mHideLockViewRunnable != null) {
-            removeCallbacks(mHideLockViewRunnable)
-            postDelayed(mHideLockViewRunnable, 7000)
+            delayHide()
         }
         if (mLockScreen) {
             mViewBinding.superplayerIvLock.setImageResource(R.drawable.superplayer_ic_player_lock)
@@ -722,6 +705,11 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
             mViewBinding.superplayerIvLock.setImageResource(R.drawable.superplayer_ic_player_unlock)
             show()
         }
+    }
+
+    private fun delayHide() {
+        removeCallbacks(mHideLockViewRunnable)
+        postDelayed(mHideLockViewRunnable, 7000)
     }
 
     /**
@@ -932,7 +920,8 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
             mViewBinding.superplayerIvLock.isVisible = uiConfig.showLock
             mViewBinding.superplayerRlTop.isVisible = uiConfig.showTop || uiConfig.keepTop
             mViewBinding.superplayerLlBottom.isVisible = uiConfig.showBottom || uiConfig.keepBottom
-            isShowing = uiConfig.showTop||uiConfig.showBottom
+            isShowing = uiConfig.showTop || uiConfig.showBottom
+            delayHide()
         }
     }
 

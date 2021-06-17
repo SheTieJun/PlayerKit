@@ -1,6 +1,7 @@
 package com.tencent.video.superplayer.casehelper.adaper
 
 import android.widget.TextView
+import androidx.annotation.IntRange
 import com.tencent.liteav.superplayer.R
 import com.tencent.video.superplayer.base.BaseKitAdapter
 import com.tencent.video.superplayer.base.BaseViewHolder
