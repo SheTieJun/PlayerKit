@@ -33,7 +33,7 @@ interface OnPlayerCallback {
     fun onStartFloatWindowPlay()
 
     /**
-     *
+     * 结束悬浮播放
      */
     fun onStopFloatWindow()
     /**

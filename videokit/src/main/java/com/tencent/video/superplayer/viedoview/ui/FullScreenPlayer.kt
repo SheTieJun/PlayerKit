@@ -898,6 +898,7 @@ class FullScreenPlayer : AbBaseUIPlayer, View.OnClickListener, VodMoreView.Callb
 
     override fun onDestroy() {
         super.onDestroy()
+        removeCallbacks(mHideViewRunnable)
         onDestroyCallBack()
     }
 

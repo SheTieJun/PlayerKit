@@ -41,7 +41,7 @@ class VideoPlayerModel {
      * ------------------------------------------------------------------
      */
     var videoId: SuperPlayerVideoId? = null
-    var title = "" // 视频文件名 （用于显示在UI层);使用file id播放，若未指定title，则使用FileId返回的Title；使用url播放需要指定title，否则title显示为空
+    var title = ""
 
     class SuperPlayerURL {
         constructor(url: String, qualityName: String) {

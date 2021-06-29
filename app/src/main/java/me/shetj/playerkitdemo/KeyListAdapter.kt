@@ -15,9 +15,8 @@ import com.tencent.video.superplayer.base.BaseViewHolder
 class KeyListAdapter(data: ArrayList<String>) :
         BaseKitAdapter<String>(R.layout.superplayer_item_new_vod, data) {
 
-    override fun convert(holder: BaseViewHolder, item: String) {
-        holder.setText(R.id.superplayer_tv,item)
+    override fun convert(holder: BaseViewHolder, data: String) {
+        holder.setText(R.id.superplayer_tv,data)
     }
-
 
 }

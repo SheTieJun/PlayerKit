@@ -49,7 +49,6 @@ class VideoGestureDetector(context: Context) {
      */
     private val offsetX = 20
 
-    //手势灵敏度 0.0~1.0
     private val mSensitivity = 0.3f // 调节音量、亮度的灵敏度
 
     /**
@@ -117,7 +116,7 @@ class VideoGestureDetector(context: Context) {
                     }
                 }
             VOLUME -> {
-                val value = height / mMaxVolume
+                val value = 10
                 val newVolume =
                     ((downEvent.y - moveEvent.y) / value * mSensitivity + mOldVolume).toInt()
                 mAudioManager.setStreamVolume(

@@ -9,9 +9,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
- * Created by yuejiaoli on 2018/7/6.
- *
  * 清晰度转换工具
+ * tip: 因为用的是腾讯云的接口，所有这里可能需要自行修改配置，如果腾讯云的接口有更新
  */
 object VideoQualityUtils {
     private const val TAG = "TCVideoQualityUtil"

@@ -46,6 +46,9 @@ object PlayerKit {
         return true
     }
 
+    /**
+     * 用来隐藏状态栏
+     */
     fun onWindowFocusChanged(window: Window,hasFocus: Boolean) {
         if (hasFocus && Build.VERSION.SDK_INT >= 19) {
             if (Build.VERSION.SDK_INT < 30) {
