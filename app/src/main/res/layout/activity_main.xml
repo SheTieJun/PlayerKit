@@ -8,7 +8,7 @@
 
 
 
-    <com.tencent.video.superplayer.viedoview.ui.SuperPlayerView
+    <com.tencent.video.superplayer.viedoview.ui.BasePlayerView
         android:id="@+id/superVodPlayerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

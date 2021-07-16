@@ -1,3 +1,5 @@
 rootProject.name = "PlayerKit"
 include ':app'
-include ':videokit'
+include ':videokit-ui'
+include ':videoKit-tencent'
+include ':videoKit-core'

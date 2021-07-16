@@ -1,12 +1,10 @@
 package me.shetj.playerkitdemo
 
-import android.content.Intent
-import com.tencent.video.superplayer.base.UIConfig
-import com.tencent.video.superplayer.base.VideoViewCallbackBuilder
-import com.tencent.video.superplayer.base.timer.TimerConfigure
+import me.shetj.sdk.video.base.UIConfig
+import me.shetj.sdk.video.base.VideoViewCallbackBuilder
+import me.shetj.sdk.video.base.timer.TimerConfigure
 import com.tencent.video.superplayer.kit.PlayerKit
-import com.tencent.video.superplayer.viedoview.base.SuperPlayerDef
-import com.tencent.video.superplayer.viedoview.model.VideoPlayerModel
+import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.base.ktx.logi
 import me.shetj.base.ktx.showToast
 import me.shetj.base.ktx.start
@@ -14,6 +12,7 @@ import me.shetj.base.mvvm.BaseBindingActivity
 import me.shetj.base.mvvm.BaseViewModel
 import me.shetj.base.tools.app.ArmsUtils
 import me.shetj.playerkitdemo.databinding.ActivityMainBinding
+import me.shetj.sdk.video.SuperPlayerDef
 
 class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     private var isTv: Boolean = false
@@ -38,7 +37,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             mViewBinding.superVodPlayerView.autoPlay(isAuto)
             mViewBinding.superVodPlayerView.setPlayToSeek(10)
             mViewBinding.superVodPlayerView.play(model.url)
-            mViewBinding.superVodPlayerView.isLoop = true
+            mViewBinding.superVodPlayerView.setLoopPlay(true)
             mViewBinding.btnFloatView.setOnClickListener {
                 mViewBinding.superVodPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.FLOAT)
             }
@@ -111,6 +110,9 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 onError ={ _, message ->
                     "onError:$message".logi()
                 }
+                onComplete = {
+                    "onComplete".logi()
+                }
             })
             mViewBinding.btnHide.setOnClickListener {
                 mViewBinding.superVodPlayerView.updateUIConfig(uiConfig.apply {
@@ -149,7 +151,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     override fun onResume() {
         super.onResume()
         "onResume".logi()
-        if (mViewBinding.superVodPlayerView.playerState != SuperPlayerDef.PlayerState.PLAYING && isActivityPause) {
+        if (mViewBinding.superVodPlayerView.playerState !=  SuperPlayerDef.PlayerState.PLAYING && isActivityPause) {
             isActivityPause = false
             mViewBinding.superVodPlayerView.resume()
         }
@@ -160,7 +162,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
         super.onPause()
         // 停止播放
         "onPause".logi()
-        if (mViewBinding.superVodPlayerView.playerMode != SuperPlayerDef.PlayerMode.FLOAT) {
+        if (mViewBinding.superVodPlayerView.playerMode !=  SuperPlayerDef.PlayerMode.FLOAT) {
             isActivityPause = true
             mViewBinding.superVodPlayerView.pause()
         }
@@ -169,7 +171,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mViewBinding.superVodPlayerView.playerMode != SuperPlayerDef.PlayerMode.FLOAT) {
+        if (mViewBinding.superVodPlayerView.playerMode !=  SuperPlayerDef.PlayerMode.FLOAT) {
             mViewBinding.superVodPlayerView.destroy()
             mViewBinding.superVodPlayerView.release()
         }

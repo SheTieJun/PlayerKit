@@ -3,11 +3,11 @@ package me.shetj.playerkitdemo
 import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
-import com.tencent.video.superplayer.model.net.PlayerHttpClient
-import com.tencent.video.superplayer.model.net.SuperPlayerHttpClient
 import me.shetj.base.S
 import me.shetj.base.network.RxHttp
 import me.shetj.base.network.callBack.SimpleNetCallBack
+import me.shetj.sdk.video.net.PlayerHttpClient
+import me.shetj.sdk.video.net.SuperPlayerHttpClient
 
 
 class BaseInitialize:Initializer<Unit> {

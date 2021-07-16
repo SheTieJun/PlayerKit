@@ -2,10 +2,6 @@ package me.shetj.playerkitdemo
 
 import android.app.Application
 import android.content.Context
-import com.tencent.video.superplayer.model.net.PlayerHttpClient
-import com.tencent.video.superplayer.model.net.SuperPlayerHttpClient
-import me.shetj.base.network.RxHttp
-import me.shetj.base.network.callBack.SimpleNetCallBack
 
 /**
  *

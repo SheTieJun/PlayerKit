@@ -1,7 +1,7 @@
 package me.shetj.playerkitdemo
 
-import com.tencent.video.superplayer.base.BaseKitAdapter
-import com.tencent.video.superplayer.base.BaseViewHolder
+import me.shetj.sdk.video.base.BaseKitAdapter
+import me.shetj.sdk.video.base.BaseViewHolder
 
 
 /**

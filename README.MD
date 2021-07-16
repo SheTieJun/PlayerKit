@@ -1,8 +1,5 @@
 ## PlayerKit
 
-1. [VideoKit使用文档](https://github.com/SheTieJun/PlayerKit/wiki/VideoKit%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3)
-> 因为是KPI,所以主要是为了自己的业务添加的功能做的优化实现
-
 具备播放器基本功能，以及
 1. 竖屏切换
 2. 悬浮窗播放
