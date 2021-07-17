@@ -6,16 +6,17 @@ import androidx.startup.Initializer
 import me.shetj.base.S
 import me.shetj.base.network.RxHttp
 import me.shetj.base.network.callBack.SimpleNetCallBack
-import me.shetj.sdk.video.net.PlayerHttpClient
-import me.shetj.sdk.video.net.SuperPlayerHttpClient
+import me.shetj.sdk.video.net.TXPlayerHttp
+import me.shetj.sdk.video.net.TXPlayerHttpClient
 
 
 class BaseInitialize:Initializer<Unit> {
 
     override fun create(context: Context) {
         S.init(context.applicationContext as Application, false, "https://xxxx.com")
-        SuperPlayerHttpClient.instance.setHttpClient(object : PlayerHttpClient {
-            override fun doGet(url: String?, callBack: SuperPlayerHttpClient.OnHttpCallback?) {
+        TXPlayerHttpClient.instance.setHttpClient(object :
+            TXPlayerHttp {
+            override fun doGet(url: String?, callBack: TXPlayerHttpClient.OnHttpCallback?) {
                 if (url != null) {
                     RxHttp.get(url).executeCus(object : SimpleNetCallBack<String>(context) {
                         override fun onSuccess(data: String) {
@@ -31,7 +32,7 @@ class BaseInitialize:Initializer<Unit> {
                 }
             }
 
-            override fun doPost(url: String?, json: String?, callBack: SuperPlayerHttpClient.OnHttpCallback?) {
+            override fun doPost(url: String?, json: String?, callBack: TXPlayerHttpClient.OnHttpCallback?) {
                 url?.let {
                     RxHttp.post(it).apply {
                         upJson(json)

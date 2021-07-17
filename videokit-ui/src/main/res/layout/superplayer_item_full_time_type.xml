@@ -10,6 +10,6 @@
     android:gravity="left|center_vertical"
     android:lines="1"
     android:paddingStart="15dp"
-    android:textColor="@color/superplayer_white"
+    android:textColor="@color/s_player_white"
     android:textSize="14sp"
     tools:text="让你年轻如少女" />

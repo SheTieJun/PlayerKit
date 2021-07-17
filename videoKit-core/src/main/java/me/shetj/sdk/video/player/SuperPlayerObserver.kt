@@ -1,6 +1,6 @@
 package me.shetj.sdk.video.player
 
-import me.shetj.sdk.video.SuperPlayerDef
+import me.shetj.sdk.video.PlayerDef
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoQuality
@@ -51,13 +51,13 @@ interface SuperPlayerObserver {
 
     fun onSeek(position: Int)
 
-    fun onSwitchStreamStart(success: Boolean, playerType: SuperPlayerDef.PlayerType, quality: VideoQuality)
+    fun onSwitchStreamStart(success: Boolean, playerType: PlayerDef.PlayerType, quality: VideoQuality)
 
-    fun onSwitchStreamEnd(success: Boolean, playerType: SuperPlayerDef.PlayerType, quality: VideoQuality?)
+    fun onSwitchStreamEnd(success: Boolean, playerType: PlayerDef.PlayerType, quality: VideoQuality?)
 
     fun onError(code: Int, message: String?)
 
-    fun onPlayerTypeChange(playType: SuperPlayerDef.PlayerType?)
+    fun onPlayerTypeChange(playType: PlayerDef.PlayerType?)
 
     fun onPlayTimeShiftLive(player: SuperPlayer?, url: String?)
 

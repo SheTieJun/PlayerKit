@@ -1,13 +1,13 @@
 package me.shetj.sdk.video.player
 
-import me.shetj.sdk.video.SuperPlayerDef
-import me.shetj.sdk.video.base.VideoPlayerView
+import me.shetj.sdk.video.PlayerDef
+import me.shetj.sdk.video.base.IPlayerView
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.sdk.video.model.VideoQuality
 
-interface SuperPlayer <T>{
+interface SuperPlayer{
     /**
      * 开始播放
      *
@@ -94,12 +94,12 @@ interface SuperPlayer <T>{
      * [PlayerMode.FULLSCREEN]      全屏模式
      * [PlayerMode.FLOAT]           悬浮窗模式
      */
-    fun switchPlayMode(playerMode: SuperPlayerDef.PlayerMode)
+    fun switchPlayMode(playerMode: PlayerDef.PlayerMode)
     fun enableHardwareDecode(enable: Boolean)
-    fun setPlayerView(videoView: VideoPlayerView<T>)
+    fun setPlayerView(videoView: IPlayerView)
     fun seek(position: Int,isCallback:Boolean = true)
     fun setPlayToSeek(position: Int)
-    fun snapshot(listener: ITXSnapshotListener)
+    fun snapshot(listener: ISnapshotListener)
     fun setPlaySpeed(speedLevel: Float)
     fun setMirror(isMirror: Boolean)
     fun switchStream(quality: VideoQuality)
@@ -113,7 +113,7 @@ interface SuperPlayer <T>{
      * [PlayerMode.FULLSCREEN]              全屏模式
      * [PlayerMode.FLOAT]                   悬浮窗模式
      */
-    val playerMode: SuperPlayerDef.PlayerMode
+    val playerMode: PlayerDef.PlayerMode
 
     /**
      * 获取当前播放器状态
@@ -123,7 +123,7 @@ interface SuperPlayer <T>{
      * [PlayerState.LOADING]             缓冲中
      * [PlayerState.END]                 结束播放
      */
-    val playerState: SuperPlayerDef.PlayerState
+    val playerState: PlayerDef.PlayerState
 
     /**
      * 获取当前播放器类型
@@ -132,7 +132,7 @@ interface SuperPlayer <T>{
      * [PlayerType.LIVE_SHIFT]       直播时移
      * [PlayerType.VOD]              点播
      */
-    val playerType: SuperPlayerDef.PlayerType
+    val playerType: PlayerDef.PlayerType
 
     /**
      * 设置播放器状态回调

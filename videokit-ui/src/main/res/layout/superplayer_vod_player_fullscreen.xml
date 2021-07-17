@@ -136,7 +136,7 @@
             android:textColor="@android:color/white"
             android:textSize="12.0sp" />
 
-        <com.tencent.video.superplayer.ui.view.PointSeekBar
+        <com.shetj.sdk.video.ui.view.PointSeekBar
             android:id="@+id/superplayer_seekbar_progress"
             android:layout_width="0.0dip"
             android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
             android:gravity="center"
             android:background="@drawable/weike_bg_video_list"
             android:layout_marginEnd="15dp"
-            android:textColor="@color/superplayer_white"
+            android:textColor="@color/s_player_white"
             android:includeFontPadding="false"
             android:textSize="10sp"/>
 
@@ -212,7 +212,7 @@
             android:visibility="gone"
             android:background="@drawable/weike_bg_video_list"
             android:layout_marginEnd="30dp"
-            android:textColor="@color/superplayer_white"
+            android:textColor="@color/s_player_white"
             android:includeFontPadding="false"
             android:textSize="10sp"/>
 
@@ -231,18 +231,18 @@
         android:paddingRight="10dp"
         android:paddingBottom="5dp"
         android:text=""
-        android:textColor="@color/superplayer_white"
+        android:textColor="@color/s_player_white"
         android:textSize="14sp"
         android:visibility="gone" />
 
-    <com.tencent.video.superplayer.ui.view.VodQualityView
+    <com.shetj.sdk.video.ui.view.VodQualityView
         android:id="@+id/superplayer_vod_quality"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:visibility="gone" />
 
-    <com.tencent.video.superplayer.ui.view.VodMoreView
+    <com.shetj.sdk.video.ui.view.VodMoreView
         android:id="@+id/superplayer_vod_more"
         android:layout_width="300dp"
         android:layout_height="match_parent"
@@ -250,13 +250,6 @@
         android:layout_marginRight="-1dp"
         android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/superplayer_iv_lock"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
-        android:src="@drawable/superplayer_ic_player_unlock" />
 
 
     <TextView
@@ -277,7 +270,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-    <com.tencent.video.superplayer.ui.view.VolumeBrightnessProgressLayout
+    <com.shetj.sdk.video.ui.view.VolumeBrightnessProgressLayout
         android:id="@+id/superplayer_gesture_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -285,7 +278,7 @@
         android:gravity="center" />
 
 
-    <com.tencent.video.superplayer.ui.view.VideoProgressLayout
+    <com.shetj.sdk.video.ui.view.VideoProgressLayout
         android:id="@+id/superplayer_video_progress_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -300,4 +293,12 @@
         android:visibility="gone" />
 
     <include layout="@layout/superplayer_data_list"/>
+
+    <ImageView
+        android:id="@+id/superplayer_iv_lock"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"
+        android:src="@drawable/superplayer_ic_player_unlock" />
 </RelativeLayout>

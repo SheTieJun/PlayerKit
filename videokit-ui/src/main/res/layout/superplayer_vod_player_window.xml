@@ -50,7 +50,7 @@
             android:includeFontPadding="false"
             android:padding="4dp"
             android:text="高清"
-            android:textColor="@color/superplayer_white"
+            android:textColor="@color/s_player_white"
             android:textSize="10sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -106,7 +106,7 @@
             android:textColor="@android:color/white"
             android:textSize="10dp" />
 
-        <com.tencent.video.superplayer.ui.view.PointSeekBar
+        <com.shetj.sdk.video.ui.view.PointSeekBar
             android:id="@+id/superplayer_seekbar_progress"
             android:layout_width="0.0dip"
             android:layout_height="wrap_content"
@@ -171,13 +171,13 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-    <com.tencent.video.superplayer.ui.view.VolumeBrightnessProgressLayout
+    <com.shetj.sdk.video.ui.view.VolumeBrightnessProgressLayout
         android:id="@+id/superplayer_gesture_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <com.tencent.video.superplayer.ui.view.VideoProgressLayout
+    <com.shetj.sdk.video.ui.view.VideoProgressLayout
         android:id="@+id/superplayer_video_progress_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
 
     <include layout="@layout/superplayer_vod_speedlist" />
 
-    <com.tencent.video.superplayer.ui.view.VodQualityView
+    <com.shetj.sdk.video.ui.view.VodQualityView
         android:id="@+id/superplayer_vod_quality"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

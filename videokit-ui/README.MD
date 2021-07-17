@@ -19,8 +19,17 @@
 15. 界面控制
 16. 播放回调
 
-#### 基础功能播放
+
+### 初始化重要
+```kotlin
+updatePlayer(playerImpl) //设置播放器 (必须)
+setPlayerView(playerImpl.playView) //设置播放的view(必须)
+updateFloatView(TXVideoFactory.getTXFloatView(this@MainActivity)) // 设置悬浮窗（可选）
 ```
+
+
+#### 基础功能播放
+```kotlin
      /**
        * 开始播放
        *
@@ -106,7 +115,7 @@ player.setMirror(false)
 #### 8. 支持直播与点播
 设置播放后
 内部通过播放url 判断是否是直播
-```
+```kotlin
     /**
      * 是否是RTMP协议
      *
@@ -147,12 +156,12 @@ player.setPlayToSeek(10)
 #### 12. 定时播放功能
 1. 更多菜单里面点击设置
 2. 通过代码设置
-```
+```kotlin
 TimerConfigure.instance.showTimePick(this@MainActivity)
 ```
 
 #### 13. 自动下一集功能
-```
+```kotlin
 player.setKeyList("测试列表",
                 KeyListAdapter(ArrayList<String>().apply {
                             repeat(10) {
@@ -177,7 +186,7 @@ player.setKeyList("测试列表",
 player.autoPlay(true)
 ```
 循环播放需要在播放结束之前设置才有效
-```
+```kotlin
 player.isLoop = true
 ```
 
@@ -192,7 +201,7 @@ player.superVodPlayerView.updateUIConfig(uiConfig.apply {
                 })
 isHide = !isHide
 ```
-```
+```kotlin
 //全局配置相关
 object GlobalConfig {
     var speed: Float = 1.0f //倍数
@@ -204,7 +213,7 @@ object GlobalConfig {
 ```
 
 #### 16.播放回调
-```
+```kotlin
    mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallbackBuilder.build{
                 onStart = {
                     "onStart".logi()

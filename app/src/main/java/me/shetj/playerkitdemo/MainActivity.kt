@@ -3,7 +3,7 @@ package me.shetj.playerkitdemo
 import me.shetj.sdk.video.base.UIConfig
 import me.shetj.sdk.video.base.VideoViewCallbackBuilder
 import me.shetj.sdk.video.base.timer.TimerConfigure
-import com.tencent.video.superplayer.kit.PlayerKit
+import com.shetj.sdk.video.kit.PlayerKit
 import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.base.ktx.logi
 import me.shetj.base.ktx.showToast
@@ -12,12 +12,13 @@ import me.shetj.base.mvvm.BaseBindingActivity
 import me.shetj.base.mvvm.BaseViewModel
 import me.shetj.base.tools.app.ArmsUtils
 import me.shetj.playerkitdemo.databinding.ActivityMainBinding
-import me.shetj.sdk.video.SuperPlayerDef
+import me.shetj.sdk.video.PlayerDef
+import me.shetj.sdk.video.TXVideoFactory
 
 class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     private var isTv: Boolean = false
     private var iskey: Boolean = false
-    protected var isAuto:Boolean = false //自定播放
+    protected var isAuto:Boolean = true //自定播放
     protected var isHide:Boolean = false
     private var isActivityPause = false
     override fun onActivityCreate() {
@@ -31,6 +32,11 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
         val uiConfig = UIConfig.uiConfig
 
         mViewBinding.superVodPlayerView.apply {
+            val playerImpl = TXVideoFactory.getTXPlayer(this@MainActivity)
+            updatePlayer(playerImpl) //设置播放器
+            setPlayerView(playerImpl.playView) //设置播放的view
+            updateFloatView(TXVideoFactory.getTXFloatView(this@MainActivity)) // 设置悬浮窗
+
             val model = VideoPlayerModel()
             model.url =
                 "http://200024424.vod.myqcloud.com/200024424_709ae516bdf811e6ad39991f76a4df69.f20.mp4"
@@ -39,7 +45,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             mViewBinding.superVodPlayerView.play(model.url)
             mViewBinding.superVodPlayerView.setLoopPlay(true)
             mViewBinding.btnFloatView.setOnClickListener {
-                mViewBinding.superVodPlayerView.switchPlayMode(SuperPlayerDef.PlayerMode.FLOAT)
+                mViewBinding.superVodPlayerView.switchPlayMode(PlayerDef.PlayerMode.FLOAT)
             }
 
             mViewBinding.btnUrl.setOnClickListener {
@@ -151,7 +157,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     override fun onResume() {
         super.onResume()
         "onResume".logi()
-        if (mViewBinding.superVodPlayerView.playerState !=  SuperPlayerDef.PlayerState.PLAYING && isActivityPause) {
+        if (mViewBinding.superVodPlayerView.playerState !=  PlayerDef.PlayerState.PLAYING && isActivityPause) {
             isActivityPause = false
             mViewBinding.superVodPlayerView.resume()
         }
@@ -162,7 +168,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
         super.onPause()
         // 停止播放
         "onPause".logi()
-        if (mViewBinding.superVodPlayerView.playerMode !=  SuperPlayerDef.PlayerMode.FLOAT) {
+        if (mViewBinding.superVodPlayerView.playerMode !=  PlayerDef.PlayerMode.FLOAT) {
             isActivityPause = true
             mViewBinding.superVodPlayerView.pause()
         }
@@ -171,7 +177,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mViewBinding.superVodPlayerView.playerMode !=  SuperPlayerDef.PlayerMode.FLOAT) {
+        if (mViewBinding.superVodPlayerView.playerMode !=  PlayerDef.PlayerMode.FLOAT) {
             mViewBinding.superVodPlayerView.destroy()
             mViewBinding.superVodPlayerView.release()
         }

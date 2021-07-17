@@ -16,7 +16,7 @@ interface UIPlayer {
      */
     fun setUICallback(callback: VideoViewCallback?)
 
-    val playerMode: SuperPlayerDef.PlayerMode
+    val playerMode: PlayerDef.PlayerMode
 
     /**
      * 设置水印
@@ -55,12 +55,12 @@ interface UIPlayer {
     /**
      * 更新播放状态
      *
-     * @param playState 正在播放[SuperPlayerDef.PlayerState.PLAYING]
-     * 正在加载[SuperPlayerDef.PlayerState.LOADING]
-     * 暂停   [SuperPlayerDef.PlayerState.PAUSE]
-     * 播放结束[SuperPlayerDef.PlayerState.END]
+     * @param playState 正在播放[PlayerDef.PlayerState.PLAYING]
+     * 正在加载[PlayerDef.PlayerState.LOADING]
+     * 暂停   [PlayerDef.PlayerState.PAUSE]
+     * 播放结束[PlayerDef.PlayerState.END]
      */
-    fun updatePlayState(playState: SuperPlayerDef.PlayerState?)
+    fun updatePlayState(playState: PlayerDef.PlayerState?)
 
     /**
      * 设置视频画质信息
@@ -91,11 +91,11 @@ interface UIPlayer {
     /**
      * 更新播放类型
      *
-     * @param type 点播     [SuperPlayerDef.PlayerType.VOD]
-     * 点播     [SuperPlayerDef.PlayerType.LIVE]
-     * 直播回看  [SuperPlayerDef.PlayerType.LIVE_SHIFT]
+     * @param type 点播     [PlayerDef.PlayerType.VOD]
+     * 点播     [PlayerDef.PlayerType.LIVE]
+     * 直播回看  [PlayerDef.PlayerType.LIVE_SHIFT]
      */
-    fun updatePlayType(type: SuperPlayerDef.PlayerType?)
+    fun updatePlayType(type: PlayerDef.PlayerType?)
 
     /**
      * 设置背景
@@ -149,22 +149,22 @@ interface UIPlayer {
          * 切换播放模式回调
          *
          * @param playMode 切换后的播放模式：
-         * 窗口模式      [SuperPlayerDef.PlayerMode.WINDOW]
-         * 全屏模式      [SuperPlayerDef.PlayerMode.FULLSCREEN]
-         * 悬浮窗模式    [SuperPlayerDef.PlayerMode.FLOAT]
+         * 窗口模式      [PlayerDef.PlayerMode.WINDOW]
+         * 全屏模式      [PlayerDef.PlayerMode.FULLSCREEN]
+         * 悬浮窗模式    [PlayerDef.PlayerMode.FLOAT]
          */
-        fun onSwitchPlayMode(playMode: SuperPlayerDef.PlayerMode)
+        fun onSwitchPlayMode(playMode: PlayerDef.PlayerMode)
 
 
         /**
          * 返回点击事件回调
          *
          * @param playMode 当前播放模式：
-         * 窗口模式      [SuperPlayerDef.PlayerMode.WINDOW]
-         * 全屏模式      [SuperPlayerDef.PlayerMode.FULLSCREEN]
-         * 悬浮窗模式    [SuperPlayerDef.PlayerMode.FLOAT]
+         * 窗口模式      [PlayerDef.PlayerMode.WINDOW]
+         * 全屏模式      [PlayerDef.PlayerMode.FULLSCREEN]
+         * 悬浮窗模式    [PlayerDef.PlayerMode.FLOAT]
          */
-        fun onBackPressed(playMode: SuperPlayerDef.PlayerMode)
+        fun onBackPressed(playMode: PlayerDef.PlayerMode)
 
         /**
          * 悬浮窗位置更新回调

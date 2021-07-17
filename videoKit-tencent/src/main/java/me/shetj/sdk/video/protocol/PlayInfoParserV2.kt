@@ -2,8 +2,8 @@ package me.shetj.sdk.video.protocol
 
 import android.util.Log
 import com.tencent.liteav.basic.log.TXCLog
-import com.tencent.video.superplayer.model.entity.*
-import com.tencent.video.superplayer.kit.VideoQualityUtils
+import me.shetj.sdk.video.TXVideoQualityUtils
+import me.shetj.sdk.video.model.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
@@ -386,8 +386,8 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
             }
             if (videoURL != null) {
                 mVideoQualityList =
-                    VideoQualityUtils.convertToVideoQualityList(mTranscodePlayList!!)
-                defaultVideoQuality = VideoQualityUtils.convertToVideoQuality(stream)
+                    TXVideoQualityUtils.convertToVideoQualityList(mTranscodePlayList!!)
+                defaultVideoQuality = TXVideoQualityUtils.convertToVideoQuality(stream)
                 uRL = videoURL
                 return
             }
@@ -395,7 +395,7 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
         //无主播放信息、转码信息，从源视频信息中解析出播放信息
         if (mSourceStream != null) {
             if (mDefaultVideoClassification != null) {
-                defaultVideoQuality = VideoQualityUtils.convertToVideoQuality(
+                defaultVideoQuality = TXVideoQualityUtils.convertToVideoQuality(
                     mSourceStream!!,
                     mDefaultVideoClassification!!
                 )

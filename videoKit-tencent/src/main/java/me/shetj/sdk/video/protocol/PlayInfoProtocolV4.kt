@@ -7,7 +7,7 @@ import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.ResolutionName
 import me.shetj.sdk.video.model.VideoQuality
-import me.shetj.sdk.video.net.SuperPlayerHttpClient
+import me.shetj.sdk.video.net.TXPlayerHttpClient
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -19,7 +19,7 @@ import org.json.JSONObject
 class PlayInfoProtocolV4(  // 协议请求输入的参数
     private val mParams: PlayInfoParams
 ) : IPlayInfoProtocol {
-    private val BASE_URLS_V4 = "https://playvideo.qcloud.com/getplayinfo/v4" // V4协议请求地址
+    private val baseUrlV4 = "https://playvideo.qcloud.com/getplayinfo/v4" // V4协议请求地址
     private val mMainHandler : Handler = Handler(Looper.getMainLooper())
     private var mParser  : IPlayInfoParser? = null
     override var penetrateContext   : String? = null
@@ -35,7 +35,7 @@ class PlayInfoProtocolV4(  // 协议请求输入的参数
             return
         }
         val urlString = makeUrlString()
-        SuperPlayerHttpClient.instance.doGet(urlString, object : SuperPlayerHttpClient.OnHttpCallback {
+        TXPlayerHttpClient.instance.doGet(urlString, object : TXPlayerHttpClient.OnHttpCallback {
             override fun onSuccess(result: String) {
                 val ret = parseJson(result, callback)
                 if (ret) {
@@ -94,7 +94,7 @@ class PlayInfoProtocolV4(  // 协议请求输入的参数
      * @return 协议请求url字符串
      */
     private fun makeUrlString(): String {
-        var urlStr = String.format("%s/%d/%s", BASE_URLS_V4, mParams.appId, mParams.fileId)
+        var urlStr = String.format("%s/%d/%s", baseUrlV4, mParams.appId, mParams.fileId)
         val psign = makeJWTSignature(mParams)
         var query: String? = null
         if (mParams.videoId != null) {

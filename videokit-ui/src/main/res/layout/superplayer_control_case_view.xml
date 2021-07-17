@@ -118,7 +118,7 @@
                     android:layout_gravity="center"
                     android:paddingRight="10dp"
                     android:text="@string/superplayer_mirror"
-                    android:textColor="@color/superplayer_white"
+                    android:textColor="@color/s_player_white"
                     android:textSize="14dp" />
 
                 <Switch
@@ -148,7 +148,7 @@
                     android:layout_gravity="center"
                     android:paddingRight="10dp"
                     android:text="@string/superplayer_hardware_Acceleration"
-                    android:textColor="@color/superplayer_white"
+                    android:textColor="@color/s_player_white"
                     android:textSize="14dp" />
 
                 <Switch
