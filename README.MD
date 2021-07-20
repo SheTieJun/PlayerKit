@@ -2,9 +2,9 @@
 
 具备播放器基本功能，以及
 1. - [X]竖屏切换
-2.- [X]  悬浮窗播放
-3.- [X]  画质切换,player实现
-4.- [X]  硬件加速,player实现
+2. - [X]  悬浮窗播放
+3. - [X]  画质切换,player实现
+4. - [X]  硬件加速,player实现
 5. - [X] 倍速播放,player实现
 6. - [X] 镜像播放,player实现
 7. - [X] 手势控制
@@ -31,3 +31,5 @@
 
 
 <img src="/art/大体架构.png"/>
+
+[wiki](https://github.com/SheTieJun/PlayerKit/wiki)
