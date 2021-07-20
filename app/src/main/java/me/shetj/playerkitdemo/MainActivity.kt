@@ -4,6 +4,8 @@ import me.shetj.sdk.video.base.UIConfig
 import me.shetj.sdk.video.base.VideoViewCallbackBuilder
 import me.shetj.sdk.video.timer.TimerConfigure
 import com.shetj.sdk.video.kit.PlayerKit
+import com.shetj.sdk.video.viedoview.ui.FullScreenPlayer
+import com.shetj.sdk.video.viedoview.ui.WindowPlayer
 import me.shetj.base.ktx.*
 import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.base.mvvm.BaseBindingActivity
@@ -31,9 +33,11 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
 
         mViewBinding.superVodPlayerView.apply {
             val playerImpl = TXVideoFactory.getTXPlayer(this@MainActivity)
+
             updatePlayer(playerImpl) //设置播放器
+
             setPlayerView(playerImpl.playView) //设置播放的view
-            updateFloatView(TXVideoFactory.getTXFloatView(this@MainActivity)) // 设置悬浮窗
+
 
             val model = VideoPlayerModel()
             model.url =
@@ -138,6 +142,11 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                     this.showFull = !isHide
                 })
                 isHide = !isHide
+            }
+            mViewBinding.btnTestChangeUI.setOnClickListener {
+                updateFloatView(TXVideoFactory.getTXFloatView(this@MainActivity)) // 设置悬浮窗
+                updateFullScreenView(FullScreenPlayer(this@MainActivity)) //更新全屏UI
+                updateWindowView(WindowPlayer(this@MainActivity))//更新小屏
             }
         }
     }

@@ -207,9 +207,10 @@ class TXPlayerImpl @JvmOverloads constructor(
             }
             PLAY_EVT_PLAY_END -> {
                 mObserver?.onPlayComplete()
-                updatePlayerState(PlayerState.END)
+                //优先级：定时
                 if (TimerConfigure.instance.isCourseTime()) {
                     TimerConfigure.instance.stateChange(TimerConfigure.STATE_COMPLETE)
+                    updatePlayerState(PlayerState.END)
                     return
                 }
                 if (isLoop()) {
@@ -220,6 +221,7 @@ class TXPlayerImpl @JvmOverloads constructor(
                     reStart()
                     return
                 }
+                updatePlayerState(PlayerState.END)
             }
             PLAY_EVT_PLAY_PROGRESS -> {
                 val progress = param.getInt(EVT_PLAY_PROGRESS_MS)

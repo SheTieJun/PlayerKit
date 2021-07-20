@@ -36,6 +36,7 @@ import me.shetj.sdk.video.player.ISnapshotListener
 import me.shetj.sdk.video.player.OnPlayerCallback
 import me.shetj.sdk.video.player.IPlayer
 import me.shetj.sdk.video.player.IPlayerObserver
+import me.shetj.sdk.video.ui.ABUIPlayer
 
 /**
  *
@@ -59,16 +60,17 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
     protected var mViewBinding: SuperplayerVodViewBinding? = null
 
     // 全屏模式控制view
-    protected var mFullScreenPlayer: FullScreenPlayer? = null
+    protected var mFullScreenPlayer: ABUIPlayer? = null
 
     // 窗口模式控制view
-    protected var mWindowPlayer: WindowPlayer? = null
+    protected var mWindowPlayer: ABUIPlayer? = null
 
     // 悬浮窗模式控制view
     protected var mFloatPlayer: BaseFloatPlayer? = null
 
     // 腾讯云视频播放view
-    protected var mVideoView: IPlayerView? = null
+    private var mVideoView: IPlayerView? = null
+
     private var mLayoutParamWindowMode: ViewGroup.LayoutParams? = null// 窗口播放时SuperPlayerView的布局参数
 
     // 全屏controller的布局参数
@@ -80,7 +82,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
     // 悬浮窗布局参数
     protected var mWindowParams: WindowManager.LayoutParams? = null
 
-    protected val uiPlayerList = ArrayList<AbBaseUIPlayer>()
+    protected val uiPlayerList = ArrayList<ABUIPlayer>()
     protected var onPlayerCallback: OnPlayerCallback? = null
     protected val activityManager: ActivityManager by lazy { getActivityManagerService() }
 
@@ -119,15 +121,11 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         mVodControllerParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         mViewBinding = SuperplayerVodViewBinding.inflate(LayoutInflater.from(mContext), this, true)
         mViewBinding?.apply {
-            mFullScreenPlayer = controllerFull
-            mWindowPlayer = controllerSmall
-            uiPlayerContent.apply {
-                removeView(mFullScreenPlayer)
-                removeView(mWindowPlayer)
-            }
+            mFullScreenPlayer = FullScreenPlayer(context)
+            mWindowPlayer = WindowPlayer(context)
             //添加到列表方便操作
-            uiPlayerList.add(controllerFull)
-            uiPlayerList.add(controllerSmall)
+            uiPlayerList.add(mFullScreenPlayer!!)
+            uiPlayerList.add(mWindowPlayer!!)
             ivStartPlayer.setOnClickListener {
                 when (playerState) {
                     PlayerState.END -> {
@@ -186,6 +184,42 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         mFloatPlayer = floatPlayer
         mFloatPlayer!!.setUICallback(mControllerCallback)
         uiPlayerList.add(mFloatPlayer!!)
+    }
+
+    /**
+     * 全屏
+     */
+    fun updateFullScreenView(fullPlayer: ABUIPlayer) {
+        if (playerMode == PlayerMode.FULLSCREEN) {
+            mViewBinding?.uiPlayerContent?.removeView(mFullScreenPlayer)
+        }
+        uiPlayerList.remove(mFullScreenPlayer!!)
+        fullPlayer.updatePlayConfig(playerConfig)
+        fullPlayer.updateUIConfig(uiConfig)
+        this.mFullScreenPlayer = fullPlayer
+        uiPlayerList.add(fullPlayer)
+        if (playerMode == PlayerMode.FULLSCREEN) {
+            mViewBinding?.uiPlayerContent?.addView(mFullScreenPlayer)
+            mFullScreenPlayer!!.hide()
+        }
+    }
+
+    /**
+     * 小屏
+     */
+    fun updateWindowView(winPlayer: ABUIPlayer) {
+        if (playerMode == PlayerMode.WINDOW) {
+            mViewBinding?.uiPlayerContent?.removeView(mWindowPlayer)
+        }
+        winPlayer.updatePlayConfig(playerConfig)
+        winPlayer.updateUIConfig(uiConfig)
+        this.uiPlayerList.remove(mWindowPlayer!!)
+        this.mWindowPlayer = winPlayer
+        this.uiPlayerList.add(winPlayer)
+        if (playerMode == PlayerMode.WINDOW) {
+            mViewBinding?.uiPlayerContent?.addView(mWindowPlayer)
+            mWindowPlayer!!.hide()
+        }
     }
 
     /**
@@ -595,7 +629,9 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
     override fun updateListPosition(position: Int) {
         playKeyListConfig.position = position
         uiPlayerList.forEach {
-            it.updateListPosition(position)
+            if (it is AbBaseUIPlayer) {
+                it.updateListPosition(position)
+            }
         }
     }
 
@@ -606,7 +642,9 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         onNext: onNext?
     ) {
         uiPlayerList.forEach {
-            it.setKeyList(name, adapter, position, onNext)
+            if (it is AbBaseUIPlayer) {
+                it.setKeyList(name, adapter, position, onNext)
+            }
         }
         playKeyListConfig.onNext = onNext
         playKeyListConfig.keyList = adapter?.data
@@ -720,9 +758,9 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         object : IUIPlayer.VideoViewCallback {
             override fun onSwitchPlayMode(playMode: PlayerMode) {
                 if (getVideoWidth() <= 0) return
-                mFullScreenPlayer!!.hide()
-                mWindowPlayer!!.hide()
-                mFloatPlayer!!.hide()
+                mFullScreenPlayer?.hide()
+                mWindowPlayer?.hide()
+                mFloatPlayer?.hide()
                 if (playMode == PlayerMode.FULLSCREEN) {
                     if (fullContainer == null) {
                         showToast("设置全屏失败，请先设置全屏显示的 window 或者 viewGroup:setFullInWindow")
@@ -751,7 +789,11 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
                         exitFullPlayer()
                     }
                 } else if (playMode == PlayerMode.FLOAT) { //请求悬浮窗模式
-                    if (!GlobalConfig.enableFloatWindow && mFloatPlayer == null) {
+                    if (!GlobalConfig.enableFloatWindow) {
+                        return
+                    }
+                    if (mFloatPlayer == null){
+                        Log.e("playerKit","无设置悬浮view,无法启动悬浮模式")
                         return
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 6.0动态申请悬浮窗权限

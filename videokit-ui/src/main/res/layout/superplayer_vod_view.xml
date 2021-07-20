@@ -21,15 +21,6 @@
         android:id="@+id/uiPlayer_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.shetj.sdk.video.viedoview.ui.WindowPlayer
-            android:id="@+id/controller_small"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.shetj.sdk.video.viedoview.ui.FullScreenPlayer
-            android:id="@+id/controller_full"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
     </FrameLayout>
 
