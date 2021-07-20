@@ -1,13 +1,12 @@
 package me.shetj.sdk.video.player
 
-import me.shetj.sdk.video.PlayerDef
 import me.shetj.sdk.video.base.IPlayerView
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.sdk.video.model.VideoQuality
 
-interface SuperPlayer{
+interface IPlayer{
     /**
      * 开始播放
      *
@@ -137,9 +136,9 @@ interface SuperPlayer{
     /**
      * 设置播放器状态回调
      *
-     * @param observer [SuperPlayerObserver]
+     * @param observer [IPlayerObserver]
      */
-    fun setObserver(observer: SuperPlayerObserver?)
+    fun setObserver(observer: IPlayerObserver?)
 
     fun getDuration():Long
 

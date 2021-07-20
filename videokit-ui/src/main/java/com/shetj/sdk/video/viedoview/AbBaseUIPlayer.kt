@@ -8,13 +8,13 @@ import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import com.shetj.sdk.video.casehelper.KeyListListener
 import com.shetj.sdk.video.casehelper.onNext
-import me.shetj.sdk.video.PlayerDef
-import me.shetj.sdk.video.UIPlayer
+import me.shetj.sdk.video.player.PlayerDef
+import me.shetj.sdk.video.ui.IUIPlayer
 import me.shetj.sdk.video.base.BaseKitAdapter
 import me.shetj.sdk.video.base.ConfigInterface
 import me.shetj.sdk.video.base.PlayerConfig
 import me.shetj.sdk.video.base.UIConfig
-import me.shetj.sdk.video.base.timer.TimerConfigure
+import me.shetj.sdk.video.timer.TimerConfigure
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoQuality
@@ -22,11 +22,11 @@ import me.shetj.sdk.video.model.VideoQuality
 /**
  * 播放器公共逻辑
  */
-abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerConfigure.CallBack ,
+abstract class AbBaseUIPlayer : FrameLayout, IUIPlayer, ConfigInterface, TimerConfigure.CallBack ,
     KeyListListener {
     protected var playerConfig: PlayerConfig = PlayerConfig.playerConfig
     protected var uiConfig: UIConfig = UIConfig.uiConfig
-    protected var mControllerCallback: UIPlayer.VideoViewCallback? = null
+    protected var mControllerCallback: IUIPlayer.VideoViewCallback? = null
     protected var mHideViewRunnable = Runnable { hide() }
 
     constructor(context: Context) : super(context)
@@ -37,7 +37,7 @@ abstract class AbBaseUIPlayer : FrameLayout, UIPlayer, ConfigInterface, TimerCon
         defStyleAttr
     )
 
-    override fun setUICallback(callback: UIPlayer.VideoViewCallback?) {
+    override fun setUICallback(callback: IUIPlayer.VideoViewCallback?) {
         mControllerCallback = callback
     }
 

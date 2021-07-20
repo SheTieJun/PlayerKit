@@ -1,4 +1,4 @@
-package me.shetj.sdk.video.base.timer
+package me.shetj.sdk.video.timer
 
 import android.content.Context
 import android.os.CountDownTimer

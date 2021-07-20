@@ -1,6 +1,5 @@
 package me.shetj.sdk.video.player
 
-import me.shetj.sdk.video.PlayerDef
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoQuality
@@ -8,7 +7,7 @@ import me.shetj.sdk.video.model.VideoQuality
 /**
  * 播放回调
  */
-interface SuperPlayerObserver {
+interface IPlayerObserver {
     /**
      * 开始播放
      * @param name 当前视频名称
@@ -59,7 +58,7 @@ interface SuperPlayerObserver {
 
     fun onPlayerTypeChange(playType: PlayerDef.PlayerType?)
 
-    fun onPlayTimeShiftLive(player: SuperPlayer?, url: String?)
+    fun onPlayTimeShiftLive(player: IPlayer?, url: String?)
 
     fun onVideoQualityListChange(
         videoQualities: ArrayList<VideoQuality>?,

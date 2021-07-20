@@ -1,4 +1,4 @@
-package me.shetj.sdk.video
+package me.shetj.sdk.video.tx
 
 import android.content.*
 import android.os.Bundle
@@ -8,15 +8,17 @@ import com.tencent.liteav.basic.log.TXCLog
 import com.tencent.rtmp.*
 import com.tencent.rtmp.TXLiveConstants.*
 import com.tencent.rtmp.ui.TXCloudVideoView
-import me.shetj.sdk.video.PlayerDef.*
+import me.shetj.sdk.video.TXVideoFactory
+import me.shetj.sdk.video.model.TXVideoQualityUtils
+import me.shetj.sdk.video.player.PlayerDef.*
 import me.shetj.sdk.video.base.GlobalConfig
 import me.shetj.sdk.video.base.IPlayerView
 import me.shetj.sdk.video.base.PlayerConfig
-import me.shetj.sdk.video.base.timer.TimerConfigure
+import me.shetj.sdk.video.timer.TimerConfigure
 import me.shetj.sdk.video.model.*
 import me.shetj.sdk.video.player.ISnapshotListener
-import me.shetj.sdk.video.player.SuperPlayer
-import me.shetj.sdk.video.player.SuperPlayerObserver
+import me.shetj.sdk.video.player.IPlayer
+import me.shetj.sdk.video.player.IPlayerObserver
 import me.shetj.sdk.video.protocol.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,7 +30,7 @@ class TXPlayerImpl @JvmOverloads constructor(
     context: Context,
     var playView: TXVideoPlayerView = TXVideoFactory.getTXPlayerView(context),
     private val playerConfig: PlayerConfig = PlayerConfig.playerConfig,
-) : SuperPlayer,
+) : IPlayer,
     ITXVodPlayListener, ITXLivePlayListener {
     private var mRotation: Int = 0
     private var isAutoPlay: Boolean = true
@@ -42,7 +44,7 @@ class TXPlayerImpl @JvmOverloads constructor(
     private var mLivePlayer: TXLivePlayer? = null // 直播播放器
     private var mLivePlayConfig: TXLivePlayConfig? = null// 直播播放器配置
     private var mCurrentModel: VideoPlayerModel? = null// 当前播放的model
-    private var mObserver: SuperPlayerObserver? = null
+    private var mObserver: IPlayerObserver? = null
     private var mVideoQuality: VideoQuality? = null
     override var playerType = PlayerType.VOD // 当前播放类型
     override var playerMode = PlayerMode.WINDOW // 当前播放模式
@@ -792,11 +794,14 @@ class TXPlayerImpl @JvmOverloads constructor(
         }
     }
 
+    /**
+     * 更新播放的view
+     */
     override fun setPlayerView(videoView: IPlayerView) {
         if (videoView.getPlayerView() is TXCloudVideoView) {
             (videoView.getPlayerView() as? TXCloudVideoView)?.let {
                 this.mVideoView = it
-                this.playView.updatePlayView(it)
+
                 if (playerType == PlayerType.VOD) {
                     mVodPlayer!!.setPlayerView(it)
                 } else {
@@ -876,7 +881,7 @@ class TXPlayerImpl @JvmOverloads constructor(
         }
     }
 
-    override fun setObserver(observer: SuperPlayerObserver?) {
+    override fun setObserver(observer: IPlayerObserver?) {
         mObserver = observer
     }
 

@@ -1,4 +1,4 @@
-package me.shetj.sdk.video
+package me.shetj.sdk.video.model
 
 internal object TXPlayerCode {
     const val NET_ERROR = 10001

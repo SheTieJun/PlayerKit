@@ -1,10 +1,7 @@
 package me.shetj.sdk.video.model
 
 /**
- * Created by yuejiaoli on 2018/7/7.
- *
- *
- * 清晰度
+ * 清晰读相关
  */
 class VideoQuality {
     var index = 0

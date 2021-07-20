@@ -2,6 +2,9 @@ package me.shetj.sdk.video
 
 import android.content.Context
 import com.shetj.sdk.video.viedoview.ui.BaseFloatPlayer
+import me.shetj.sdk.video.tx.TXFloatPlayer
+import me.shetj.sdk.video.tx.TXPlayerImpl
+import me.shetj.sdk.video.tx.TXVideoPlayerView
 
 /**
  *

@@ -1,6 +1,7 @@
-package me.shetj.sdk.video
+package me.shetj.sdk.video.ui
 
 import android.graphics.Bitmap
+import me.shetj.sdk.video.player.PlayerDef
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoQuality
@@ -8,7 +9,7 @@ import me.shetj.sdk.video.model.VideoQuality
 /**
  * 播放控制接口
  */
-interface UIPlayer {
+interface IUIPlayer {
     /**
      * 设置回调
      *

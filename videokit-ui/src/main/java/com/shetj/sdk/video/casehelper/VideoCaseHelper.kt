@@ -13,11 +13,11 @@ import me.shetj.sdk.video.base.*
 import com.shetj.sdk.video.casehelper.adaper.VideoFullPlayModeListAdapter
 import com.shetj.sdk.video.casehelper.adaper.VideoFullSpeedListAdapter
 import com.shetj.sdk.video.casehelper.adaper.VideoFullTimeTypeListAdapter
-import me.shetj.sdk.video.base.timer.TimeType.Companion.getPlayModeList
-import me.shetj.sdk.video.base.timer.TimeType.Companion.getTimeTypeList2
-import me.shetj.sdk.video.base.timer.TimerConfigure
-import me.shetj.sdk.video.base.timer.TimerConfigure.Companion.REPEAT_MODE_ALL
-import me.shetj.sdk.video.base.timer.TimerConfigure.Companion.REPEAT_MODE_ONE
+import me.shetj.sdk.video.timer.TimeType.Companion.getPlayModeList
+import me.shetj.sdk.video.timer.TimeType.Companion.getTimeTypeList2
+import me.shetj.sdk.video.timer.TimerConfigure
+import me.shetj.sdk.video.timer.TimerConfigure.Companion.REPEAT_MODE_ALL
+import me.shetj.sdk.video.timer.TimerConfigure.Companion.REPEAT_MODE_ONE
 import com.shetj.sdk.video.ui.view.VodMoreView
 import java.text.SimpleDateFormat
 import java.util.*

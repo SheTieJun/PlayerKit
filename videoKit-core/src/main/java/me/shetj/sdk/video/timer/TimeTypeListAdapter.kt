@@ -1,4 +1,4 @@
-package me.shetj.sdk.video.base.timer
+package me.shetj.sdk.video.timer
 
 import androidx.core.content.ContextCompat
 import me.shetj.sdk.video.R

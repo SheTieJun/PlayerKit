@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * ViewHolder 基类
  */
-@Keep
 open class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     /**
      * Views indexed with their IDs

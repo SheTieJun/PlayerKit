@@ -19,7 +19,7 @@ import com.shetj.sdk.video.casehelper.KeyListListener
 import com.shetj.sdk.video.ui.R
 import com.shetj.sdk.video.ui.view.*
 import com.shetj.sdk.video.viedoview.AbBaseUIPlayer
-import me.shetj.sdk.video.PlayerDef
+import me.shetj.sdk.video.player.PlayerDef
 import me.shetj.sdk.video.model.VideoQuality
 import kotlin.math.roundToInt
 

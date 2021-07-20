@@ -1,10 +1,7 @@
-package me.shetj.sdk.video
+package me.shetj.sdk.video.model
 
 import com.tencent.liteav.basic.log.TXCLog
 import com.tencent.rtmp.TXBitrateItem
-import me.shetj.sdk.video.model.PlayInfoStream
-import me.shetj.sdk.video.model.ResolutionName
-import me.shetj.sdk.video.model.VideoQuality
 import java.util.*
 import kotlin.collections.ArrayList
 

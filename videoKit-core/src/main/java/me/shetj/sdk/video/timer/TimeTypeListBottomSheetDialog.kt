@@ -1,4 +1,4 @@
-package me.shetj.sdk.video.base.timer
+package me.shetj.sdk.video.timer
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import me.shetj.sdk.video.R
 import me.shetj.sdk.video.base.OnItemClickListener
-import me.shetj.sdk.video.base.timer.TimeType.Companion.getTimeTypeList3
+import me.shetj.sdk.video.timer.TimeType.Companion.getTimeTypeList3
 
 class TimeTypeListBottomSheetDialog(private val context: Context, var position: Int) {
     private val bottomSheetDialog: BottomSheetDialog?

@@ -17,26 +17,25 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import com.shetj.sdk.video.ui.R
 import me.shetj.sdk.video.base.*
-import me.shetj.sdk.video.base.timer.TimerConfigure
+import me.shetj.sdk.video.timer.TimerConfigure
 import com.shetj.sdk.video.casehelper.KeyListListener
 import com.shetj.sdk.video.casehelper.PlayKeyListConfig
 import com.shetj.sdk.video.casehelper.onNext
 import com.shetj.sdk.video.ui.databinding.SuperplayerVodViewBinding
 import com.shetj.sdk.video.kit.PlayerKit.checkOp
 import com.shetj.sdk.video.viedoview.AbBaseUIPlayer
-import me.shetj.sdk.video.PlayerDef.*
-import me.shetj.sdk.video.UIPlayer
+import me.shetj.sdk.video.player.PlayerDef.*
+import me.shetj.sdk.video.ui.IUIPlayer
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.sdk.video.model.VideoQuality
 import me.shetj.sdk.video.player.ISnapshotListener
 import me.shetj.sdk.video.player.OnPlayerCallback
-import me.shetj.sdk.video.player.SuperPlayer
-import me.shetj.sdk.video.player.SuperPlayerObserver
+import me.shetj.sdk.video.player.IPlayer
+import me.shetj.sdk.video.player.IPlayerObserver
 
 /**
  *
@@ -46,8 +45,8 @@ import me.shetj.sdk.video.player.SuperPlayerObserver
  * 硬件加速、倍速播放、镜像播放、手势控制等功能，同时支持直播与点播
  */
 open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
-    SuperPlayer, UIPlayer,
-    ConfigInterface, SuperPlayerObserver, KeyListListener {
+    IPlayer, IUIPlayer,
+    ConfigInterface, IPlayerObserver, KeyListListener {
 
     protected var parentViewGroup: ViewGroup? = null //播放器原容器
     protected var fullContainer: ViewGroup? = null //点击全屏按钮时，播放器相关内容会放到这个容器
@@ -55,7 +54,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
     protected var uiConfig: UIConfig = UIConfig.uiConfig
     protected val playKeyListConfig: PlayKeyListConfig by lazy { PlayKeyListConfig.ofDef() }
     protected var mContext: Context? = null
-    protected var mSuperPlayer: SuperPlayer? = null
+    protected var mSuperPlayer: IPlayer? = null
 
     protected var mViewBinding: SuperplayerVodViewBinding? = null
 
@@ -166,7 +165,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
     /**
      * 更新player
      */
-    fun updatePlayer(player: SuperPlayer) {
+    fun updatePlayer(player: IPlayer) {
         if (mSuperPlayer != null) {
             mSuperPlayer!!.destroy()
         }
@@ -328,7 +327,9 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
      *  [PlayerMode.WINDOW]：窗口模式 ；[PlayerMode.FULLSCREEN]: 全屏模式 ；[PlayerMode.FLOAT]: 悬浮窗模式
      */
     override fun switchPlayMode(playerMode: PlayerMode) {
-        mControllerCallback.onSwitchPlayMode(playerMode)
+        if (playerMode != this.playerMode) {
+            mControllerCallback.onSwitchPlayMode(playerMode)
+        }
     }
 
     /**
@@ -393,7 +394,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         get() = mSuperPlayer?.playerState ?: PlayerState.END
 
 
-    override fun setObserver(observer: SuperPlayerObserver?) {
+    override fun setObserver(observer: IPlayerObserver?) {
         mSuperPlayer?.setObserver(observer)
     }
 
@@ -412,7 +413,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         mSuperPlayer?.updateImageSpriteAndKeyFrame(info, list)
     }
 
-    override fun setUICallback(callback: UIPlayer.VideoViewCallback?) {
+    override fun setUICallback(callback: IUIPlayer.VideoViewCallback?) {
         uiPlayerList.forEach {
             it.setUICallback(callback)
         }
@@ -665,7 +666,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         }
     }
 
-    override fun onPlayTimeShiftLive(player: SuperPlayer?, url: String?) {
+    override fun onPlayTimeShiftLive(player: IPlayer?, url: String?) {
     }
 
     override fun onVideoQualityListChange(
@@ -715,8 +716,8 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
      * 用户操作界面的回调
      */
     @Suppress("DEPRECATION")
-    private val mControllerCallback: UIPlayer.VideoViewCallback =
-        object : UIPlayer.VideoViewCallback {
+    private val mControllerCallback: IUIPlayer.VideoViewCallback =
+        object : IUIPlayer.VideoViewCallback {
             override fun onSwitchPlayMode(playMode: PlayerMode) {
                 if (getVideoWidth() <= 0) return
                 mFullScreenPlayer!!.hide()
@@ -901,6 +902,8 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
                     moveToFront()
                 }
             }
+            mSuperPlayer?.pause()
+            mWindowManager?.removeView(mFloatPlayer)
         }
     }
 
@@ -921,6 +924,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
                 mSuperPlayer?.pause()
                 mWindowManager!!.removeView(mFloatPlayer)
                 onPlayerCallback?.onClickFloatCloseBtn()
+                mSuperPlayer?.switchPlayMode(PlayerMode.WINDOW)
             }
         }
     }

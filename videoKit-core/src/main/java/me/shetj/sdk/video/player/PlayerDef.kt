@@ -1,4 +1,4 @@
-package me.shetj.sdk.video
+package me.shetj.sdk.video.player
 
 class PlayerDef {
     enum class PlayerMode {

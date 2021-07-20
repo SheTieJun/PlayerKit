@@ -1,6 +1,6 @@
 package com.shetj.sdk.video.viedoview.ui
 
-import me.shetj.sdk.video.PlayerDef.*
+import me.shetj.sdk.video.player.PlayerDef.*
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap

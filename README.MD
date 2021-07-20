@@ -18,10 +18,10 @@
 15. 界面控制
 16. 播放回调
 17. 雪碧图（暂时移除）、关键点
-18. 自定义悬浮窗
+18. 自定义悬浮窗(参照[TXFloatPlayer](./videoKit-tencent/src/me/shetj/sdk/video/tx/TXFloatPlayer.kt))
 
 ### TODO
-19. - [ ] 自定义播放内核
+19. - [X] 自定义播放内核 (可以参照[VideoKit-tencent](./videoKit-tencent))
 20. - [ ] 自定义全屏
 21. - [ ] 自定义小屏
 22. - [ ] 单例全局播放器

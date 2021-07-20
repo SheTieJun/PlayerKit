@@ -1,4 +1,4 @@
-package me.shetj.sdk.video.base.timer
+package me.shetj.sdk.video.timer
 
 class TimeType {
     var position: Int = 0

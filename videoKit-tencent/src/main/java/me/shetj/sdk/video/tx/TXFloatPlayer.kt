@@ -1,4 +1,4 @@
-package me.shetj.sdk.video
+package me.shetj.sdk.video.tx
 
 import android.content.*
 import android.util.AttributeSet
@@ -6,6 +6,7 @@ import android.view.*
 import me.shetj.sdk.tx.R
 import com.shetj.sdk.video.viedoview.ui.BaseFloatPlayer
 import me.shetj.sdk.tx.databinding.TxPlayerVodPlayerFloatBinding
+import me.shetj.sdk.video.player.PlayerDef
 
 /**
  * 悬浮窗模式播放控件

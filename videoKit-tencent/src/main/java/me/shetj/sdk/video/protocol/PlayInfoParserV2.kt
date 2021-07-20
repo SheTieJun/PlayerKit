@@ -2,7 +2,7 @@ package me.shetj.sdk.video.protocol
 
 import android.util.Log
 import com.tencent.liteav.basic.log.TXCLog
-import me.shetj.sdk.video.TXVideoQualityUtils
+import me.shetj.sdk.video.model.TXVideoQualityUtils
 import me.shetj.sdk.video.model.*
 import org.json.JSONException
 import org.json.JSONObject

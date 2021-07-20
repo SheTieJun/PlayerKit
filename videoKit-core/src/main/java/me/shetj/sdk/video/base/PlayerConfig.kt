@@ -2,15 +2,17 @@ package me.shetj.sdk.video.base
 
 
 class PlayerConfig   {
-    val RENDER_MODE_ADJUST_RESOLUTION = 1
-    val RENDER_MODE_FULL_FILL_SCREEN = 0
     var renderMode =  RENDER_MODE_ADJUST_RESOLUTION
     var liveRenderMode = RENDER_MODE_FULL_FILL_SCREEN
     var floatViewRect = TXRect(0, 0, 800, 450)
+
     var playShiftDomain = "liteavapp.timeshift.qcloud.com"
+
     var header = HashMap<String, String>()
 
     companion object {
+        const val RENDER_MODE_ADJUST_RESOLUTION = 1 //自适应
+        const val RENDER_MODE_FULL_FILL_SCREEN = 0 //全屏填充
 
         val playerConfig :PlayerConfig by lazy { ofDef()}
 

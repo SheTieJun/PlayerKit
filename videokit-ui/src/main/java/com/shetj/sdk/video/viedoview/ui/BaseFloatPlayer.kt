@@ -4,9 +4,9 @@ import android.content.*
 import android.util.AttributeSet
 import android.view.*
 import com.shetj.sdk.video.viedoview.AbBaseUIPlayer
-import me.shetj.sdk.video.PlayerDef
+import me.shetj.sdk.video.player.PlayerDef
 import me.shetj.sdk.video.base.PlayerConfig
-import me.shetj.sdk.video.UIPlayer
+import me.shetj.sdk.video.ui.IUIPlayer
 import me.shetj.sdk.video.base.IPlayerView
 
 /**
@@ -122,7 +122,7 @@ abstract class BaseFloatPlayer : AbBaseUIPlayer, IPlayerView,View.OnClickListene
         }
 
     /**
-     * 更新悬浮窗的位置信息，在回调[UIPlayer.VideoViewCallback.onFloatPositionChange]中实现悬浮窗移动
+     * 更新悬浮窗的位置信息，在回调[IUIPlayer.VideoViewCallback.onFloatPositionChange]中实现悬浮窗移动
      */
     private fun updateViewPosition() {
         val x = (mXInScreen - mXInView).toInt()

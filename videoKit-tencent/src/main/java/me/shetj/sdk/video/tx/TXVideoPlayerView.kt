@@ -1,4 +1,4 @@
-package me.shetj.sdk.video
+package me.shetj.sdk.video.tx
 
 import android.content.Context
 import com.tencent.rtmp.ui.TXCloudVideoView

@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat.getColor
 import com.shetj.sdk.video.ui.R
 import me.shetj.sdk.video.base.BaseKitAdapter
 import me.shetj.sdk.video.base.BaseViewHolder
-import me.shetj.sdk.video.base.timer.TimeType
+import me.shetj.sdk.video.timer.TimeType
 
 class VideoFullTimeTypeListAdapter(data: ArrayList<TimeType>) :
     BaseKitAdapter<TimeType>(R.layout.superplayer_item_full_time_type, data) {
