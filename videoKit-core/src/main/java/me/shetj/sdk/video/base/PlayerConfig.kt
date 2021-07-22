@@ -5,9 +5,6 @@ class PlayerConfig   {
     var renderMode =  RENDER_MODE_ADJUST_RESOLUTION
     var liveRenderMode = RENDER_MODE_FULL_FILL_SCREEN
     var floatViewRect = TXRect(0, 0, 800, 450)
-
-    var playShiftDomain = "liteavapp.timeshift.qcloud.com"
-
     var header = HashMap<String, String>()
 
     companion object {
@@ -24,9 +21,9 @@ class PlayerConfig   {
         inline fun build(block: PlayerConfig.() -> Unit) =
             PlayerConfig().apply(block)
 
-        fun ofDef(): PlayerConfig {
+        private fun ofDef(): PlayerConfig {
             return build {
-
+                // 看情况修改
             }
         }
     }

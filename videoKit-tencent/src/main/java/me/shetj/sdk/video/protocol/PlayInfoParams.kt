@@ -1,6 +1,6 @@
 package me.shetj.sdk.video.protocol
 
-import me.shetj.sdk.video.model.SuperPlayerVideoId
+import me.shetj.sdk.video.tx.TXPlayerVideoId
 
 /**
  * 视频信息协议解析需要传入的参数
@@ -12,7 +12,7 @@ class PlayInfoParams {
     var fileId // 腾讯云视频fileId
             : String? = null
     var videoId //v4 协议参数
-            : SuperPlayerVideoId? = null
+            : TXPlayerVideoId? = null
 
     override fun toString(): String {
         return "TCPlayInfoParams{" +

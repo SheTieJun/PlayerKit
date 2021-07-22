@@ -17,26 +17,26 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
-import com.shetj.sdk.video.ui.R
-import me.shetj.sdk.video.base.*
-import me.shetj.sdk.video.timer.TimerConfigure
 import com.shetj.sdk.video.casehelper.KeyListListener
 import com.shetj.sdk.video.casehelper.PlayKeyListConfig
 import com.shetj.sdk.video.casehelper.onNext
-import com.shetj.sdk.video.ui.databinding.SuperplayerVodViewBinding
 import com.shetj.sdk.video.kit.PlayerKit.checkOp
+import com.shetj.sdk.video.ui.R
+import com.shetj.sdk.video.ui.databinding.SuperplayerVodViewBinding
 import com.shetj.sdk.video.viedoview.AbBaseUIPlayer
-import me.shetj.sdk.video.player.PlayerDef.*
-import me.shetj.sdk.video.ui.IUIPlayer
+import me.shetj.sdk.video.base.*
 import me.shetj.sdk.video.model.PlayImageSpriteInfo
 import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.sdk.video.model.VideoQuality
-import me.shetj.sdk.video.player.ISnapshotListener
-import me.shetj.sdk.video.player.OnPlayerCallback
 import me.shetj.sdk.video.player.IPlayer
 import me.shetj.sdk.video.player.IPlayerObserver
+import me.shetj.sdk.video.player.ISnapshotListener
+import me.shetj.sdk.video.player.OnPlayerCallback
+import me.shetj.sdk.video.player.PlayerDef.*
+import me.shetj.sdk.video.timer.TimerConfigure
 import me.shetj.sdk.video.ui.ABUIPlayer
+import me.shetj.sdk.video.ui.IUIPlayer
 
 /**
  *
@@ -273,11 +273,9 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
     }
 
-    open fun playWithModel(model: VideoPlayerModel) {
-        if (model.videoId != null) {
-            mSuperPlayer?.play(model.appId, model.videoId!!.fileId, model.videoId!!.pSign)
-        } else if (model.multiURLs != null && model.multiURLs!!.isNotEmpty()) {
-            mSuperPlayer?.play(model.appId, model.multiURLs, model.playDefaultIndex)
+    open fun <T : VideoPlayerModel> playWithModel(model: T) {
+        if (model.multiURLs != null && model.multiURLs!!.isNotEmpty()) {
+            mSuperPlayer?.play(model.multiURLs, model.playDefaultIndex)
         } else {
             mSuperPlayer?.play(model.url)
         }
@@ -287,20 +285,11 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
         mSuperPlayer?.play(url)
     }
 
-    override fun play(appId: Int, url: String?) {
-        mSuperPlayer?.play(appId, url)
-    }
-
-    override fun play(appId: Int, fileId: String?, psign: String?) {
-        mSuperPlayer?.play(appId, fileId, psign)
-    }
-
     override fun play(
-        appId: Int,
-        superPlayerURLS: List<VideoPlayerModel.SuperPlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?,
         defaultIndex: Int
     ) {
-        mSuperPlayer?.play(appId, superPlayerURLS, defaultIndex)
+        mSuperPlayer?.play(superPlayerURLS, defaultIndex)
     }
 
     override fun reStart() {
@@ -792,8 +781,8 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
                     if (!GlobalConfig.enableFloatWindow) {
                         return
                     }
-                    if (mFloatPlayer == null){
-                        Log.e("playerKit","无设置悬浮view,无法启动悬浮模式")
+                    if (mFloatPlayer == null) {
+                        Log.e("playerKit", "无设置悬浮view,无法启动悬浮模式")
                         return
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 6.0动态申请悬浮窗权限

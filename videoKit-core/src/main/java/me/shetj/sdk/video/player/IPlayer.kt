@@ -15,29 +15,12 @@ interface IPlayer{
     fun play(url: String?)
 
     /**
-     * 开始播放
-     *
-     * @param appId 腾讯云视频appId
-     * @param url   直播播放地址
-     */
-    fun play(appId: Int, url: String?)
-
-    /**
-     * 开始播放
-     *
-     * @param appId  腾讯云视频appId
-     * @param fileId 腾讯云视频fileId
-     * @param psign  防盗链签名，开启防盗链的视频必填，非防盗链视频可不填
-     */
-    fun play(appId: Int, fileId: String?, psign: String?)
-
-    /**
      * 多分辨率播放
      * @param appId             腾讯云视频appId
      * @param superPlayerURLS   不同分辨率数据
      * @param defaultIndex      默认播放Index
      */
-    fun play(appId: Int, superPlayerURLS: List<VideoPlayerModel.SuperPlayerURL?>?, defaultIndex: Int)
+    fun play(superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?, defaultIndex: Int)
 
     /**
      * 重播

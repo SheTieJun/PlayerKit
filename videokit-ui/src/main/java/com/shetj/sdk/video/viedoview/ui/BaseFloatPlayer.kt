@@ -127,7 +127,7 @@ abstract class BaseFloatPlayer : AbBaseUIPlayer, IPlayerView,View.OnClickListene
     private fun updateViewPosition() {
         val x = (mXInScreen - mXInView).toInt()
         val y = (mYInScreen - mYInView).toInt()
-        val rect: PlayerConfig.TXRect = PlayerConfig.ofDef().floatViewRect
+        val rect: PlayerConfig.TXRect = PlayerConfig.playerConfig.floatViewRect
         rect.x = x
         rect.y = y
         if (mControllerCallback != null) {

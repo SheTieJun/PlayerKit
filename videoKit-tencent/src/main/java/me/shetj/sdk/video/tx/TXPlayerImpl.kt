@@ -9,17 +9,16 @@ import com.tencent.rtmp.*
 import com.tencent.rtmp.TXLiveConstants.*
 import com.tencent.rtmp.ui.TXCloudVideoView
 import me.shetj.sdk.video.TXVideoFactory
-import me.shetj.sdk.video.model.TXVideoQualityUtils
-import me.shetj.sdk.video.player.PlayerDef.*
+import me.shetj.sdk.video.TXVideoPlayerModel
 import me.shetj.sdk.video.base.GlobalConfig
 import me.shetj.sdk.video.base.IPlayerView
 import me.shetj.sdk.video.base.PlayerConfig
-import me.shetj.sdk.video.timer.TimerConfigure
 import me.shetj.sdk.video.model.*
-import me.shetj.sdk.video.player.ISnapshotListener
-import me.shetj.sdk.video.player.IPlayer
 import me.shetj.sdk.video.player.IPlayerObserver
+import me.shetj.sdk.video.player.ISnapshotListener
+import me.shetj.sdk.video.player.PlayerDef.*
 import me.shetj.sdk.video.protocol.*
+import me.shetj.sdk.video.timer.TimerConfigure
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,7 +29,7 @@ class TXPlayerImpl @JvmOverloads constructor(
     context: Context,
     var playView: TXVideoPlayerView = TXVideoFactory.getTXPlayerView(context),
     private val playerConfig: PlayerConfig = PlayerConfig.playerConfig,
-) : IPlayer,
+) : ITXPlayer,
     ITXVodPlayListener, ITXLivePlayListener {
     private var mRotation: Int = 0
     private var isAutoPlay: Boolean = true
@@ -43,7 +42,7 @@ class TXPlayerImpl @JvmOverloads constructor(
     private var mVodPlayConfig: TXVodPlayConfig? = null// 点播播放器配置
     private var mLivePlayer: TXLivePlayer? = null // 直播播放器
     private var mLivePlayConfig: TXLivePlayConfig? = null// 直播播放器配置
-    private var mCurrentModel: VideoPlayerModel? = null// 当前播放的model
+    private var mCurrentModel: TXVideoPlayerModel? = null// 当前播放的model
     private var mObserver: IPlayerObserver? = null
     private var mVideoQuality: VideoQuality? = null
     override var playerType = PlayerType.VOD // 当前播放类型
@@ -317,7 +316,7 @@ class TXPlayerImpl @JvmOverloads constructor(
      *
      * @param model
      */
-    private fun playWithModel(model: VideoPlayerModel?) {
+    private fun playWithModel(model: TXVideoPlayerModel?) {
         mCurrentModel = model
         if (PlayerState.END != playerState) {
             stop()
@@ -493,7 +492,7 @@ class TXPlayerImpl @JvmOverloads constructor(
      */
     private fun playTimeShiftLiveURL(appId: Int, url: String?) {
         val bizid = url!!.substring(url.indexOf("//") + 2, url.indexOf("."))
-        val domian: String = PlayerConfig.ofDef().playShiftDomain
+        val domian: String = TXVideoFactory.playShiftDomain
         val streamid = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."))
         TXCLog.i(TAG, "bizid:$bizid,streamid:$streamid,appid:$appId")
         playLiveURL(url, TXLivePlayer.PLAY_TYPE_LIVE_FLV)
@@ -645,23 +644,23 @@ class TXPlayerImpl @JvmOverloads constructor(
     }
 
     override fun play(url: String?) {
-        val model = VideoPlayerModel()
+        val model = TXVideoPlayerModel()
         model.url = url!!
         playWithModel(model)
     }
 
     override fun play(appId: Int, url: String?) {
-        val model = VideoPlayerModel()
+        val model = TXVideoPlayerModel()
         model.appId = appId
         model.url = url!!
         playWithModel(model)
     }
 
     override fun play(appId: Int, fileId: String?, psign: String?) {
-        val videoId = SuperPlayerVideoId()
+        val videoId = TXPlayerVideoId()
         videoId.fileId = fileId
         videoId.pSign = psign
-        val model = VideoPlayerModel()
+        val model = TXVideoPlayerModel()
         model.appId = appId
         model.videoId = videoId
         playWithModel(model)
@@ -669,15 +668,26 @@ class TXPlayerImpl @JvmOverloads constructor(
 
     override fun play(
         appId: Int,
-        superPlayerURLS: List<VideoPlayerModel.SuperPlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?,
         defaultIndex: Int
     ) {
-        val model = VideoPlayerModel()
+        val model = TXVideoPlayerModel()
         model.appId = appId
         model.multiURLs = superPlayerURLS
         model.playDefaultIndex = defaultIndex
         playWithModel(model)
     }
+
+    override fun play(
+        superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?,
+        defaultIndex: Int
+    ) {
+        val model = TXVideoPlayerModel()
+        model.multiURLs = superPlayerURLS
+        model.playDefaultIndex = defaultIndex
+        playWithModel(model)
+    }
+
 
     override fun reStart() {
         if (playerType == PlayerType.LIVE || playerType == PlayerType.LIVE_SHIFT) {

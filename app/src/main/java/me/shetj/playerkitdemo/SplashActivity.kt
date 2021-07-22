@@ -14,5 +14,8 @@ class SplashActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_test_go).setOnClickListener {
             start<MainActivity>()
         }
+        findViewById<Button>(R.id.btn_test_go2).setOnClickListener {
+            start<Player2Activity>()
+        }
     }
 }

@@ -10,7 +10,19 @@
         android:id="@+id/btn_test_go"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="测试:BasePlayerView"
+        android:textAllCaps="false"
+        android:layout_marginStart="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="测试" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_test_go2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="测试2:TXPlayerView"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_test_go" />
 </androidx.constraintlayout.widget.ConstraintLayout>

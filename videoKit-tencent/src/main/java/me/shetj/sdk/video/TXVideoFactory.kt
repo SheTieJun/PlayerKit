@@ -15,6 +15,7 @@ import me.shetj.sdk.video.tx.TXVideoPlayerView
  */
 object TXVideoFactory {
 
+    var playShiftDomain = "liteavapp.timeshift.qcloud.com"
 
     /**
      * 获取播放view
