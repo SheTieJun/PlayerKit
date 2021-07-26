@@ -1,7 +1,5 @@
 package me.shetj.playerkitdemo
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import com.shetj.sdk.video.kit.PlayerKit
 import com.shetj.sdk.video.viedoview.ui.FullScreenPlayer
 import com.shetj.sdk.video.viedoview.ui.WindowPlayer
@@ -139,7 +137,7 @@ class Player2Activity : BaseBindingActivity<BaseViewModel, ActivityPlayer2Bindin
                 isHide = !isHide
             }
             mViewBinding.btnTestChangeUI.setOnClickListener {
-                updateFloatView(TXVideoFactory.getTXFloatView(this@Player2Activity)) // 设置悬浮窗
+                updateFloatView(TXVideoFactory.getFloatView(this@Player2Activity)) // 设置悬浮窗
                 updateFullScreenView(FullScreenPlayer(this@Player2Activity)) //更新全屏UI
                 updateWindowView(WindowPlayer(this@Player2Activity))//更新小屏
             }

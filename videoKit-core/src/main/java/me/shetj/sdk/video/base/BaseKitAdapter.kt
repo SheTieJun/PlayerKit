@@ -174,9 +174,21 @@ abstract class BaseKitAdapter<T> @JvmOverloads constructor(
     private fun getOnItemChildLongClickListener(): OnItemChildLongClickListener? =
         mOnItemChildLongClickListener
 
-    fun setNewInstance(list: MutableList<T>?) {
-        data.clear()
-        data = list ?: arrayListOf()
+    fun setList(list: MutableList<T>?) {
+        if (list !== this.data) {
+            this.data.clear()
+            if (!list.isNullOrEmpty()) {
+                this.data.addAll(list)
+            }
+        } else {
+            if (!list.isNullOrEmpty()) {
+                val newList = ArrayList(list)
+                this.data.clear()
+                this.data.addAll(newList)
+            } else {
+                this.data.clear()
+            }
+        }
         notifyDataSetChanged()
     }
 }

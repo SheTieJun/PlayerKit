@@ -22,7 +22,7 @@ abstract class BaseFloatPlayer : AbBaseUIPlayer, IPlayerView,View.OnClickListene
     /**
      * 获取悬浮窗中的视频播放view
      */
-    private var mStatusBarHeight = 0 // 系统状态栏的高度
+    private var mStatusBarHeight = statusBarHeight // 系统状态栏的高度
     private var mXDownInScreen = 0f// 按下事件距离屏幕左边界的距离
     private var mYDownInScreen = 0f // 按下事件距离屏幕上边界的距离
     private var mXInScreen = 0f// 滑动事件距离屏幕左边界的距离
@@ -72,13 +72,13 @@ abstract class BaseFloatPlayer : AbBaseUIPlayer, IPlayerView,View.OnClickListene
                 mXInView = event.x
                 mYInView = event.y
                 mXDownInScreen = event.rawX
-                mYDownInScreen = event.rawY - statusBarHeight
+                mYDownInScreen = event.rawY - mStatusBarHeight
                 mXInScreen = event.rawX
-                mYInScreen = event.rawY - statusBarHeight
+                mYInScreen = event.rawY - mStatusBarHeight
             }
             MotionEvent.ACTION_MOVE -> {
                 mXInScreen = event.rawX
-                mYInScreen = event.rawY - statusBarHeight
+                mYInScreen = event.rawY - mStatusBarHeight
                 updateViewPosition()
             }
             MotionEvent.ACTION_UP -> if (mXDownInScreen == mXInScreen && mYDownInScreen == mYInScreen) { //手指没有滑动视为点击，回到窗口模式

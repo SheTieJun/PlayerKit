@@ -12,12 +12,12 @@ class TXPlayerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BasePlayerView(context, attrs, defStyleAttr) {
 
-    private var playerImpl: TXPlayerImpl = TXVideoFactory.getTXPlayer(context)
+    private var playerImpl: TXPlayerImpl = TXVideoFactory.getPlayer(context)
 
     init {
         updatePlayer(playerImpl) //设置播放器
         setPlayerView(playerImpl.playView) //设置播放的view
-        updateFloatView(TXVideoFactory.getTXFloatView(context)) // 设置悬浮窗
+        updateFloatView(TXVideoFactory.getFloatView(context)) // 设置悬浮窗
     }
 
     override fun <T : VideoPlayerModel> playWithModel(model: T) {

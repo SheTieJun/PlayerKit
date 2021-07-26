@@ -1,25 +1,26 @@
 package me.shetj.playerkitdemo
 
-import me.shetj.sdk.video.base.UIConfig
-import me.shetj.sdk.video.base.VideoViewCallbackBuilder
-import me.shetj.sdk.video.timer.TimerConfigure
 import com.shetj.sdk.video.kit.PlayerKit
 import com.shetj.sdk.video.viedoview.ui.FullScreenPlayer
 import com.shetj.sdk.video.viedoview.ui.WindowPlayer
 import me.shetj.base.ktx.*
-import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.base.mvvm.BaseBindingActivity
 import me.shetj.base.mvvm.BaseViewModel
 import me.shetj.base.tools.app.ArmsUtils
-import me.shetj.playerkitdemo.databinding.ActivityMainBinding
+import me.shetj.playerkitdemo.databinding.ActivityPlayer3Binding
+import me.shetj.sdk.video.base.UIConfig
+import me.shetj.sdk.video.base.VideoViewCallbackBuilder
+import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.sdk.video.player.PlayerDef
-import me.shetj.sdk.video.TXVideoFactory
+import me.shetj.sdk.video.timer.TimerConfigure
+import me.shetj.video.exoplayer.EXOVideoFactory
 
-class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
+class Player3Activity : BaseBindingActivity<BaseViewModel, ActivityPlayer3Binding>() {
+
     private var isTv: Boolean = false
     private var iskey: Boolean = false
-    protected var isAuto:Boolean = true //自定播放
-    protected var isHide:Boolean = false
+    protected var isAuto: Boolean = true //自定播放
+    protected var isHide: Boolean = false
     private var isActivityPause = false
     override fun onActivityCreate() {
         super.onActivityCreate()
@@ -28,17 +29,8 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
     }
 
     private fun initVideoInfo() {
-
         val uiConfig = UIConfig.uiConfig
-
         mViewBinding.superVodPlayerView.apply {
-            //可以随意切换
-            val playerImpl = TXVideoFactory.getPlayer(this@MainActivity)
-
-            updatePlayer(playerImpl) //设置播放器
-
-            setPlayerView(playerImpl.playView) //设置播放的view
-
 
             val model = VideoPlayerModel()
             model.url =
@@ -86,8 +78,8 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                             //这里做具体的下一集
                         })
                     iskey = true
-                }else{
-                    mViewBinding.superVodPlayerView.setKeyList(null,null,0,null)
+                } else {
+                    mViewBinding.superVodPlayerView.setKeyList(null, null, 0, null)
                     iskey = false
                 }
                 mViewBinding.btnKey.text = "设置播放列表KeyList:$iskey"
@@ -97,7 +89,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
             /**
              * 设置全屏显示的window
              */
-            mViewBinding.superVodPlayerView.setFullInWindow(this@MainActivity.window)
+            mViewBinding.superVodPlayerView.setFullInWindow(this@Player3Activity.window)
 
             mViewBinding.btnTv.setOnClickListener {
                 isTv = !isTv
@@ -107,21 +99,27 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 mViewBinding.btnTv.text = "设置TV:$isTv"
             }
 
-            mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallbackBuilder.build{
+            mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallbackBuilder.build {
                 onStart = {
                     "onStart".logi()
                 }
                 onPlayProgress = { current, duration ->
                     "onPlayProgress:$current:$duration".logi()
                 }
-                onPause ={
+                onPause = {
                     "onPause".logi()
                 }
-                onError ={ _, message ->
+                onError = { _, message ->
                     "onError:$message".logi()
                 }
                 onComplete = {
                     "onComplete".logi()
+                }
+                onLoading ={
+                    "onLoading".logi()
+                }
+                onVideoSize = { width,height ->
+                    "onVideoSize:$width:$height".logi()
                 }
             })
             mViewBinding.btnHide.setOnClickListener {
@@ -133,7 +131,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 isHide = !isHide
             }
             mViewBinding.btnShowSpeed.setOnClickListener {
-                TimerConfigure.instance.showTimePick(this@MainActivity)
+                TimerConfigure.instance.showTimePick(this@Player3Activity)
             }
             mViewBinding.btnTestGo.setOnClickListener {
                 start<SplashActivity>()
@@ -145,20 +143,20 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 isHide = !isHide
             }
             mViewBinding.btnTestChangeUI.setOnClickListener {
-                updateFloatView(TXVideoFactory.getFloatView(this@MainActivity)) // 设置悬浮窗
-                updateFullScreenView(FullScreenPlayer(this@MainActivity)) //更新全屏UI
-                updateWindowView(WindowPlayer(this@MainActivity))//更新小屏
+                updateFloatView(EXOVideoFactory.getFloatView(this@Player3Activity)) // 设置悬浮窗
+                updateFullScreenView(FullScreenPlayer(this@Player3Activity)) //更新全屏UI
+                updateWindowView(WindowPlayer(this@Player3Activity))//更新小屏
             }
         }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        PlayerKit.onWindowFocusChanged(window,hasFocus =hasFocus )
+        PlayerKit.onWindowFocusChanged(window, hasFocus = hasFocus)
     }
 
     override fun onBackPressed() {
-        if (mViewBinding.superVodPlayerView.onBackPressed()){
+        if (mViewBinding.superVodPlayerView.onBackPressed()) {
             super.onBackPressed()
         }
     }
@@ -167,7 +165,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
         super.onResume()
         addKeepScreenOn()
         "onResume".logi()
-        if (mViewBinding.superVodPlayerView.playerState !=  PlayerDef.PlayerState.PLAYING && isActivityPause) {
+        if (mViewBinding.superVodPlayerView.playerState != PlayerDef.PlayerState.PLAYING && isActivityPause) {
             isActivityPause = false
             mViewBinding.superVodPlayerView.resume()
         }
@@ -179,7 +177,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
         clearKeepScreenOn()
         // 停止播放
         "onPause".logi()
-        if (mViewBinding.superVodPlayerView.playerMode !=  PlayerDef.PlayerMode.FLOAT) {
+        if (mViewBinding.superVodPlayerView.playerMode != PlayerDef.PlayerMode.FLOAT) {
             isActivityPause = true
             mViewBinding.superVodPlayerView.pause()
         }
@@ -188,7 +186,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mViewBinding.superVodPlayerView.playerMode !=  PlayerDef.PlayerMode.FLOAT) {
+        if (mViewBinding.superVodPlayerView.playerMode != PlayerDef.PlayerMode.FLOAT) {
             mViewBinding.superVodPlayerView.destroy()
             mViewBinding.superVodPlayerView.release()
         }

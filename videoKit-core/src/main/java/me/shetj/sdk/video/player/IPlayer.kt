@@ -20,7 +20,7 @@ interface IPlayer{
      * @param superPlayerURLS   不同分辨率数据
      * @param defaultIndex      默认播放Index
      */
-    fun play(superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?, defaultIndex: Int)
+    fun play(superPlayerURLS: List<VideoPlayerModel.PlayerURL>?, defaultIndex: Int)
 
     /**
      * 重播

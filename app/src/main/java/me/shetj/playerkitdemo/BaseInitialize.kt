@@ -6,6 +6,7 @@ import androidx.startup.Initializer
 import me.shetj.base.S
 import me.shetj.base.network.RxHttp
 import me.shetj.base.network.callBack.SimpleNetCallBack
+import me.shetj.base.tools.app.Tim
 import me.shetj.sdk.video.net.TXPlayerHttp
 import me.shetj.sdk.video.net.TXPlayerHttpClient
 
@@ -14,6 +15,7 @@ class BaseInitialize:Initializer<Unit> {
 
     override fun create(context: Context) {
         S.init(context.applicationContext as Application, false, "https://xxxx.com")
+        Tim.setLogAuto(true)
         TXPlayerHttpClient.instance.setHttpClient(object :
             TXPlayerHttp {
             override fun doGet(url: String?, callBack: TXPlayerHttpClient.OnHttpCallback?) {

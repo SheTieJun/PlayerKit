@@ -18,7 +18,7 @@ open class VideoPlayerModel {
      * 用于拥有多个播放地址的多清晰度视频播放
      * ------------------------------------------------------------------
      */
-    var multiURLs: List<PlayerURL?>? = null
+    var multiURLs: List<PlayerURL>? = null
     var playDefaultIndex    = 0
     var title = ""
 

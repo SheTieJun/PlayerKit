@@ -82,7 +82,7 @@ class VodQualityView : FrameLayout {
      * @param ArrayList
      */
     fun setVideoQualityList(list: ArrayList<VideoQuality>?) {
-        mAdapter?.setNewInstance(list)
+        mAdapter?.setList(list)
     }
 
     /**

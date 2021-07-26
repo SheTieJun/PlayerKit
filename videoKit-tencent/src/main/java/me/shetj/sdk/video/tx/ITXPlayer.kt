@@ -12,7 +12,7 @@ interface ITXPlayer : IPlayer {
 
     fun play(
         appId: Int,
-        superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.PlayerURL>?,
         defaultIndex: Int
     )
 }

@@ -20,21 +20,21 @@ object TXVideoFactory {
     /**
      * 获取播放view
      */
-    fun getTXPlayerView(context: Context): TXVideoPlayerView {
+    fun getPlayerView(context: Context): TXVideoPlayerView {
         return TXVideoPlayerView(context)
     }
 
     /**
      * 获取播放器
      */
-    fun getTXPlayer(context: Context): TXPlayerImpl {
+    fun getPlayer(context: Context): TXPlayerImpl {
         return TXPlayerImpl(context)
     }
 
     /**
      * 获取悬浮
      */
-    fun getTXFloatView(context: Context): BaseFloatPlayer {
+    fun getFloatView(context: Context): BaseFloatPlayer {
         return TXFloatPlayer(context)
     }
 }

@@ -12,6 +12,9 @@ import me.shetj.sdk.video.TXVideoFactory
 import me.shetj.sdk.video.TXVideoPlayerModel
 import me.shetj.sdk.video.base.GlobalConfig
 import me.shetj.sdk.video.base.IPlayerView
+import me.shetj.sdk.video.base.OtherKit
+import me.shetj.sdk.video.base.OtherKit.isFLVPlay
+import me.shetj.sdk.video.base.OtherKit.isRTMPPlay
 import me.shetj.sdk.video.base.PlayerConfig
 import me.shetj.sdk.video.model.*
 import me.shetj.sdk.video.player.IPlayerObserver
@@ -27,7 +30,7 @@ import kotlin.collections.ArrayList
  */
 class TXPlayerImpl @JvmOverloads constructor(
     context: Context,
-    var playView: TXVideoPlayerView = TXVideoFactory.getTXPlayerView(context),
+    var playView: TXVideoPlayerView = TXVideoFactory.getPlayerView(context),
     private val playerConfig: PlayerConfig = PlayerConfig.playerConfig,
 ) : ITXPlayer,
     ITXVodPlayListener, ITXLivePlayListener {
@@ -415,7 +418,6 @@ class TXPlayerImpl @JvmOverloads constructor(
         val videoQualities = protocol.videoQualityList
         mIsMultiBitrateStream = videoQualities == null
         val defaultVideoQuality = protocol.defaultVideoQuality
-        updateVideoQualityList(videoQualities, defaultVideoQuality)
     }
 
     override fun getVideoRotation() = mRotation
@@ -622,27 +624,6 @@ class TXPlayerImpl @JvmOverloads constructor(
             return title
         }
 
-    /**
-     * 是否是RTMP协议
-     *
-     * @param videoURL
-     * @return
-     */
-    private fun isRTMPPlay(videoURL: String?): Boolean {
-        return !TextUtils.isEmpty(videoURL) && videoURL!!.startsWith("rtmp")
-    }
-
-    /**
-     * 是否是HTTP-FLV协议
-     *
-     * @param videoURL
-     * @return
-     */
-    private fun isFLVPlay(videoURL: String?): Boolean {
-        return (!TextUtils.isEmpty(videoURL) && videoURL!!.startsWith("http://")
-                || videoURL!!.startsWith("https://")) && videoURL.contains(".flv")
-    }
-
     override fun play(url: String?) {
         val model = TXVideoPlayerModel()
         model.url = url!!
@@ -668,7 +649,7 @@ class TXPlayerImpl @JvmOverloads constructor(
 
     override fun play(
         appId: Int,
-        superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.PlayerURL>?,
         defaultIndex: Int
     ) {
         val model = TXVideoPlayerModel()
@@ -679,7 +660,7 @@ class TXPlayerImpl @JvmOverloads constructor(
     }
 
     override fun play(
-        superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.PlayerURL>?,
         defaultIndex: Int
     ) {
         val model = TXVideoPlayerModel()
@@ -691,9 +672,9 @@ class TXPlayerImpl @JvmOverloads constructor(
 
     override fun reStart() {
         if (playerType == PlayerType.LIVE || playerType == PlayerType.LIVE_SHIFT) {
-            if (isRTMPPlay(playURL)) {
+            if (OtherKit.isRTMPPlay(playURL)) {
                 playLiveURL(playURL, TXLivePlayer.PLAY_TYPE_LIVE_RTMP)
-            } else if (isFLVPlay(playURL)) {
+            } else if (OtherKit.isFLVPlay(playURL)) {
                 playTimeShiftLiveURL(mCurrentModel!!.appId, playURL)
                 if (mCurrentModel!!.multiURLs != null && mCurrentModel!!.multiURLs!!.isNotEmpty()) {
                     startMultiStreamLiveURL(playURL)

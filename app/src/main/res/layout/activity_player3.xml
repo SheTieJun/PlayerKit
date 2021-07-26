@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-  >
+    >
 
-
-
-    <com.shetj.sdk.video.viedoview.ui.BasePlayerView
+    <me.shetj.video.exoplayer.EXOPlayerView
         android:id="@+id/superVodPlayerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

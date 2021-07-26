@@ -286,7 +286,7 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
     }
 
     override fun play(
-        superPlayerURLS: List<VideoPlayerModel.PlayerURL?>?,
+        superPlayerURLS: List<VideoPlayerModel.PlayerURL>?,
         defaultIndex: Int
     ) {
         mSuperPlayer?.play(superPlayerURLS, defaultIndex)
