@@ -20,7 +20,7 @@
 16. - [X] 播放回调
 17. - [ ] 雪碧图（暂时移除）、关键点
 18. - [X] 自定义悬浮窗(通过`updateFloatView`切换，参照[TXFloatPlayer](./videoKit-tencent/src/main/me/shetj/sdk/video/tx/TXFloatPlayer.kt))
-19. - [X] 自定义播放内核 (可以参照[VideoKit-tencent](./videoKit-tencent)) :通过`   updatePlayer(playerImpl)` 进行切换
+19. - [X] 自定义播放内核 (可以参照[VideoKit-tencent](./videoKit-tencent)) 和[VideoKit-exoPlayer](./videoKit-exoPlayer)):通过`   updatePlayer(playerImpl)` 进行切换
 20. - [X] 自定义全屏：通过`updateFullScreenView`切换
 21. - [X] 自定义小屏：通过`updateWindowView`切换
 
@@ -28,9 +28,42 @@
 ### TODO --- 应该交给使用者自己去定义
 22. - [ ] 单例全局播放器
 
+
+#### 项目架构
+
+[**可以查看项目架构图示**](/art/架构2.png)
+
+```mermaid
+graph TB
+ st(PlayerKit)-->op1(VideoKit-Ui)
+ st-->op2(VideoKit_Core)
+st-->op3(VideoKit_Player)
+```
+
+```mermaid
+graph LR
+ st(VideoKit-Ui)-->op4(设置播放setPlayerView)
+st-->op5(更换播放器updatePlayer)
+st-->op6(自定义全屏updateFullScreenView)
+st-->op7(自定义小屏updateWindowView)
+st-->op8(自定义悬浮窗updateFloatView)
+st-->op9(其他控制API)
+```
+
+```mermaid
+graph LR
+ st(VideoKit-Core)-->op4(播放器UI接口:IUIPlayer)
+st-->op5(播放器接口:IPlayer)
+```
+
+```mermaid
+graph LR
+st(VideoKit-Player)-->op4(腾讯播放器VideoKit-tencent)
+st-->op5(ExoPlayer播放器Videokit-exoPlayer)
+st-->op6(自定义播放器如ijk或者MediaPlayer)
+```
+
+
 <img src="/art/1626509228213.png" width="25%" height="25%" />
 
-
-<img src="/art/架构2.png"/>
-
-[wiki](https://github.com/SheTieJun/PlayerKit/wiki)
+[使用文档wiki](https://github.com/SheTieJun/PlayerKit/wiki)
