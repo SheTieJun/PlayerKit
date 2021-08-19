@@ -20,6 +20,9 @@ import androidx.core.view.isVisible
 import com.shetj.sdk.video.casehelper.KeyListListener
 import com.shetj.sdk.video.casehelper.PlayKeyListConfig
 import com.shetj.sdk.video.casehelper.onNext
+import com.shetj.sdk.video.kit.FloatKit
+import com.shetj.sdk.video.kit.FloatKit.checkFloatPermission
+import com.shetj.sdk.video.kit.FloatKit.getWinManager
 import com.shetj.sdk.video.kit.PlayerKit.checkOp
 import com.shetj.sdk.video.ui.R
 import com.shetj.sdk.video.ui.databinding.SuperplayerVodViewBinding
@@ -785,32 +788,12 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
                         Log.e("playerKit", "无设置悬浮view,无法启动悬浮模式")
                         return
                     }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 6.0动态申请悬浮窗权限
-                        if (!Settings.canDrawOverlays(mContext)) {
-                            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                            intent.data = Uri.parse("package:" + mContext!!.packageName)
-                            mContext!!.startActivity(intent)
-                            return
-                        }
-                    } else {
-                        if (!checkOp(mContext, PlayerConfig.OP_SYSTEM_ALERT_WINDOW)) {
-                            showToast(R.string.superplayer_enter_setting_fail)
-                            return
-                        }
+                    if (mContext!!.checkFloatPermission()){
+                        return
                     }
                     mSuperPlayer?.pause()
-                    mWindowManager =
-                        mContext!!.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                    mWindowParams = WindowManager.LayoutParams()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        mWindowParams!!.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                    } else {
-                        mWindowParams!!.type = WindowManager.LayoutParams.TYPE_PHONE
-                    }
-                    mWindowParams!!.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                            or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
-                    mWindowParams!!.format = PixelFormat.TRANSLUCENT
-                    mWindowParams!!.gravity = Gravity.START or Gravity.TOP
+                    mWindowManager = mContext!!.getWinManager()
+                    mWindowParams = FloatKit.getWindowParams()
                     val rect = playerConfig.floatViewRect
                     mWindowParams!!.x = rect.x
                     mWindowParams!!.y = rect.y

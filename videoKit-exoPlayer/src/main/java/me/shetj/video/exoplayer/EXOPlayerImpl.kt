@@ -297,15 +297,13 @@ class EXOPlayerImpl(private val context: Context) : IEXOPlayer {
 
     override fun setPlaySpeed(speedLevel: Float) {
         val playbackParameters = PlaybackParameters(speedLevel, 1.0F)
-        exoplayer.setPlaybackParameters(playbackParameters)
+        exoplayer.playbackParameters = playbackParameters
     }
 
     override fun setMirror(isMirror: Boolean) {
         if (playerView!!.getPlayerView() is PlayerView) {
-            val videoView = playerView!!.getPlayerView() as PlayerView
-            if (isMirror) {
-            } else {
-            }
+            playerView!!.getPlayerView() as PlayerView
+            //TODO
         }
     }
 

@@ -4,6 +4,7 @@ import android.util.Log
 import com.tencent.liteav.basic.log.TXCLog
 import me.shetj.sdk.video.model.TXVideoQualityUtils
 import me.shetj.sdk.video.model.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
@@ -144,7 +145,7 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
     @Throws(JSONException::class)
     private fun parseVideoClassificationList(playerInfo: JSONObject): List<VideoClassification> {
         val arrayList: MutableList<VideoClassification> = ArrayList()
-        val videoClassificationArray = playerInfo.getJSONArray("videoClassification")
+        val videoClassificationArray :JSONArray?= playerInfo.getJSONArray("videoClassification")
         if (videoClassificationArray != null) {
             for (i in 0 until videoClassificationArray.length()) {
                 val `object` = videoClassificationArray.getJSONObject(i)
@@ -152,7 +153,7 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
                 classification.id = `object`.getString("id")
                 classification.name = `object`.getString("name")
                 val definitionList: MutableList<Int> = ArrayList()
-                val array = `object`.getJSONArray("definitionList")
+                val array  :JSONArray?= `object`.getJSONArray("definitionList")
                 if (array != null) {
                     for (j in 0 until array.length()) {
                         val definition = array.getInt(j)
@@ -174,7 +175,7 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
      */
     @Throws(JSONException::class)
     private fun parseImageSpriteInfo(imageSpriteInfo: JSONObject): PlayImageSpriteInfo? {
-        val imageSpriteList = imageSpriteInfo.getJSONArray("imageSpriteList")
+        val imageSpriteList :JSONArray? = imageSpriteInfo.getJSONArray("imageSpriteList")
         if (imageSpriteList != null) {
             val spriteJSONObject =
                 imageSpriteList.getJSONObject(imageSpriteList.length() - 1) //获取最后一个来解析
@@ -200,7 +201,7 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
      */
     @Throws(JSONException::class)
     private fun parseKeyFrameDescInfo(keyFrameDescInfo: JSONObject): ArrayList<PlayKeyFrameDescInfo>? {
-        val jsonArr = keyFrameDescInfo.getJSONArray("keyFrameDescList")
+        val jsonArr :JSONArray? = keyFrameDescInfo.getJSONArray("keyFrameDescList")
         if (jsonArr != null) {
             val infoList: ArrayList<PlayKeyFrameDescInfo> = ArrayList()
             for (i in 0 until jsonArr.length()) {
@@ -231,10 +232,7 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
      */
     @Throws(JSONException::class)
     private fun parseName(videoInfo: JSONObject): String? {
-        val basicInfo = videoInfo.getJSONObject("basicInfo")
-        return if (basicInfo != null) {
-            basicInfo.getString("name")
-        } else null
+        return videoInfo.getJSONObject("basicInfo").getString("name")
     }
 
     /**
@@ -244,19 +242,16 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
      * @return 源视频流信息对象
      */
     @Throws(JSONException::class)
-    private fun parseSourceStream(videoInfo: JSONObject): PlayInfoStream? {
-        val sourceVideo = videoInfo.getJSONObject("sourceVideo")
-        if (sourceVideo != null) {
-            val stream = PlayInfoStream()
-            stream.url = sourceVideo.getString("url")
-            stream.duration = sourceVideo.getInt("duration")
-            stream.width = sourceVideo.getInt("width")
-            stream.height = sourceVideo.getInt("height")
-            stream.size = sourceVideo.getInt("size")
-            stream.bitrate = sourceVideo.getInt("bitrate")
-            return stream
-        }
-        return null
+    private fun parseSourceStream(videoInfo: JSONObject): PlayInfoStream {
+        val sourceVideo :JSONObject = videoInfo.getJSONObject("sourceVideo")
+        val stream = PlayInfoStream()
+        stream.url = sourceVideo.getString("url")
+        stream.duration = sourceVideo.getInt("duration")
+        stream.width = sourceVideo.getInt("width")
+        stream.height = sourceVideo.getInt("height")
+        stream.size = sourceVideo.getInt("size")
+        stream.bitrate = sourceVideo.getInt("bitrate")
+        return stream
     }
 
     /**
@@ -268,7 +263,7 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
     @Throws(JSONException::class)
     private fun parseMasterPlayList(videoInfo: JSONObject): PlayInfoStream? {
         if (!videoInfo.has("masterPlayList")) return null
-        val masterPlayList = videoInfo.getJSONObject("masterPlayList")
+        val masterPlayList:JSONObject? = videoInfo.getJSONObject("masterPlayList")
         if (masterPlayList != null) {
             val stream = PlayInfoStream()
             stream.url = masterPlayList.getString("url")
@@ -288,7 +283,6 @@ class PlayInfoParserV2(  // 协议请求返回的Json数据
     @Throws(JSONException::class)
     private fun parseTranscodePlayList(videoInfo: JSONObject): LinkedHashMap<String, PlayInfoStream>? {
         val transcodeList = parseStreamList(videoInfo)
-            ?: return mTranscodePlayList
         for (i in transcodeList.indices) {
             val stream = transcodeList[i]
             stream.id = "YH"

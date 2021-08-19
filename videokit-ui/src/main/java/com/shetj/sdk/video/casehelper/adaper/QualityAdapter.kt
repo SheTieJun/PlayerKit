@@ -11,10 +11,10 @@ class QualityAdapter(data:ArrayList<VideoQuality>) :
 
     private var mClickPos: Int = -1
 
-    override fun convert(holder: BaseViewHolder, item: VideoQuality) {
+    override fun convert(holder: BaseViewHolder, data: VideoQuality) {
             holder.getView<TextView>(R.id.superplayer_tv_quality).apply {
                 isSelected = mClickPos == holder.adapterPosition
-            }.text = item.title
+            }.text = data.title
         }
 
     /**
@@ -23,9 +23,9 @@ class QualityAdapter(data:ArrayList<VideoQuality>) :
      * @param position
      */
     fun setDefaultSelectedQuality(position: Int) {
-        var position = position
-        if (position < 0) position = 0
-        mClickPos = position
+        var tempPosition = position
+        if (tempPosition < 0) tempPosition = 0
+        mClickPos = tempPosition
         notifyDataSetChanged()
     }
 

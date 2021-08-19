@@ -21,9 +21,9 @@ import com.shetj.sdk.video.ui.R
 import com.shetj.sdk.video.ui.databinding.SuperplayerVodPlayerFullscreenBinding
 import com.shetj.sdk.video.viedoview.AbBaseUIPlayer
 import com.shetj.sdk.video.kit.VideoGestureDetector
-import com.shetj.sdk.video.ui.view.PointSeekBar
-import com.shetj.sdk.video.ui.view.VodMoreView
-import com.shetj.sdk.video.ui.view.VodQualityView
+import com.shetj.sdk.video.view.PointSeekBar
+import com.shetj.sdk.video.view.VodMoreView
+import com.shetj.sdk.video.view.VodQualityView
 import me.shetj.sdk.video.base.BaseKitAdapter
 import me.shetj.sdk.video.base.GlobalConfig
 import me.shetj.sdk.video.base.PlayerConfig

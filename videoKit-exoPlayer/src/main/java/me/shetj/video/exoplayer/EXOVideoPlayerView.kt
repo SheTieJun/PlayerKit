@@ -1,6 +1,7 @@
 package me.shetj.video.exoplayer
 
 import android.content.Context
+import android.view.View
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import me.shetj.sdk.video.base.IPlayerView

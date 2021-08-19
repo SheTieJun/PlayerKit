@@ -1,6 +1,7 @@
 package me.shetj.sdk.video.tx
 
 import android.content.Context
+import android.view.View
 import com.tencent.rtmp.ui.TXCloudVideoView
 import me.shetj.sdk.video.base.IPlayerView
 

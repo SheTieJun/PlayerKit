@@ -136,7 +136,7 @@
             android:textColor="@android:color/white"
             android:textSize="12.0sp" />
 
-        <com.shetj.sdk.video.ui.view.PointSeekBar
+        <com.shetj.sdk.video.view.PointSeekBar
             android:id="@+id/superplayer_seekbar_progress"
             android:layout_width="0.0dip"
             android:layout_height="wrap_content"
@@ -235,14 +235,14 @@
         android:textSize="14sp"
         android:visibility="gone" />
 
-    <com.shetj.sdk.video.ui.view.VodQualityView
+    <com.shetj.sdk.video.view.VodQualityView
         android:id="@+id/superplayer_vod_quality"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:visibility="gone" />
 
-    <com.shetj.sdk.video.ui.view.VodMoreView
+    <com.shetj.sdk.video.view.VodMoreView
         android:id="@+id/superplayer_vod_more"
         android:layout_width="300dp"
         android:layout_height="match_parent"
@@ -270,7 +270,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-    <com.shetj.sdk.video.ui.view.VolumeBrightnessProgressLayout
+    <com.shetj.sdk.video.view.VolumeBrightnessProgressLayout
         android:id="@+id/superplayer_gesture_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -278,7 +278,7 @@
         android:gravity="center" />
 
 
-    <com.shetj.sdk.video.ui.view.VideoProgressLayout
+    <com.shetj.sdk.video.view.VideoProgressLayout
         android:id="@+id/superplayer_video_progress_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

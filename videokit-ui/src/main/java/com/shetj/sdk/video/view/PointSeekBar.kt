@@ -1,4 +1,4 @@
-package com.shetj.sdk.video.ui.view
+package com.shetj.sdk.video.view
 
 import android.content.*
 import android.graphics.*
@@ -8,7 +8,7 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.shetj.sdk.video.ui.R
-import com.shetj.sdk.video.ui.view.PointSeekBar.*
+import com.shetj.sdk.video.view.PointSeekBar.*
 
 /**
  * 一个带有打点的，模仿seekbar的view

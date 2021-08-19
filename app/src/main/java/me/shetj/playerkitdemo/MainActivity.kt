@@ -1,7 +1,7 @@
 package me.shetj.playerkitdemo
 
 import me.shetj.sdk.video.base.UIConfig
-import me.shetj.sdk.video.base.VideoViewCallbackBuilder
+import me.shetj.sdk.video.base.VideoViewCallback
 import me.shetj.sdk.video.timer.TimerConfigure
 import com.shetj.sdk.video.kit.PlayerKit
 import com.shetj.sdk.video.viedoview.ui.FullScreenPlayer
@@ -107,7 +107,7 @@ class MainActivity : BaseBindingActivity<BaseViewModel,ActivityMainBinding>() {
                 mViewBinding.btnTv.text = "设置TV:$isTv"
             }
 
-            mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallbackBuilder.build{
+            mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallback.build{
                 onStart = {
                     "onStart".logi()
                 }

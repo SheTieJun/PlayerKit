@@ -14,8 +14,6 @@ typealias OnStartFloatWindow = () -> Unit
 
 typealias OnStopFullScreen = () -> Unit
 
-typealias OnSpeedUpdate = (speed: Float) -> Unit
-
 typealias OnLoading = () -> Unit
 
 typealias OnStart = () -> Unit
@@ -46,7 +44,7 @@ typealias OnStop = () ->Unit
 
 typealias OnError = (code: Int, message: String?)  ->Unit
 
-class VideoViewCallbackBuilder {
+class VideoViewCallback {
 
     var onSeekComplete: OnSeekComplete? = null
 
@@ -59,8 +57,6 @@ class VideoViewCallbackBuilder {
     var onClickSmallReturn: OnClickSmallReturn? = null
 
     var onStopFullScreen: OnStopFullScreen? = null
-
-    var onSpeedUpdate: OnSpeedUpdate? = null
 
     var onLoading: OnLoading? = null
 
@@ -92,8 +88,8 @@ class VideoViewCallbackBuilder {
 
     companion object {
 
-        inline fun build(block: VideoViewCallbackBuilder.() -> Unit) =
-            VideoViewCallbackBuilder().apply(block).build()
+        inline fun build(block: VideoViewCallback.() -> Unit) =
+            VideoViewCallback().apply(block).build()
     }
 
     fun build(): OnPlayerCallback {

@@ -45,11 +45,11 @@ class PlayInfoParserV4(  // 协议请求返回的Json数据
             : ArrayList<ResolutionName>? = null
 
     @Throws(JSONException::class)
-    private fun parseSubStreams(substreams: JSONArray?) {
-        if (substreams != null && substreams.length() > 0) {
+    private fun parseSubStreams(subStreams: JSONArray?) {
+        if (subStreams != null && subStreams.length() > 0) {
             mResolutionNameList = ArrayList()
-            for (i in 0 until substreams.length()) {
-                val jsonObject = substreams.getJSONObject(i)
+            for (i in 0 until subStreams.length()) {
+                val jsonObject = subStreams.getJSONObject(i)
                 val resolutionName = ResolutionName()
                 val width = jsonObject.optInt("width")
                 val height = jsonObject.optInt("height")
@@ -67,7 +67,7 @@ class PlayInfoParserV4(  // 协议请求返回的Json数据
      */
     private fun parsePlayInfo() {
         try {
-            val media = mResponse.getJSONObject("media")
+            val media:JSONObject? = mResponse.getJSONObject("media")
             if (media != null) {
                 //解析视频名称
                 val basicInfo = media.optJSONObject("basicInfo")
@@ -75,18 +75,18 @@ class PlayInfoParserV4(  // 协议请求返回的Json数据
                     name = basicInfo.optString("name")
                 }
                 //解析视频播放url
-                val streamingInfo = media.getJSONObject("streamingInfo")
+                val streamingInfo :JSONObject?= media.getJSONObject("streamingInfo")
                 if (streamingInfo != null) {
-                    val plainoutObj = streamingInfo.optJSONObject("plainOutput") //未加密的输出
-                    if (plainoutObj != null) {
-                        mURL = plainoutObj.optString("url") //未加密直接解析出视频url
-                        parseSubStreams(plainoutObj.optJSONArray("subStreams"))
+                    val plantObj = streamingInfo.optJSONObject("plainOutput") //未加密的输出
+                    if (plantObj != null) {
+                        mURL = plantObj.optString("url") //未加密直接解析出视频url
+                        parseSubStreams(plantObj.optJSONArray("subStreams"))
                     }
-                    val drmoutputobj = streamingInfo.optJSONArray("drmOutput") //加密输出
-                    if (drmoutputobj != null && drmoutputobj.length() > 0) {
+                    val drmOutputObj = streamingInfo.optJSONArray("drmOutput") //加密输出
+                    if (drmOutputObj != null && drmOutputObj.length() > 0) {
                         mEncryptedStreamingInfoList = ArrayList()
-                        for (i in 0 until drmoutputobj.length()) {
-                            val jsonObject = drmoutputobj.optJSONObject(i)
+                        for (i in 0 until drmOutputObj.length()) {
+                            val jsonObject = drmOutputObj.optJSONObject(i)
                             val drmType = jsonObject.optString("type")
                             val url = jsonObject.optString("url")
                             val info = EncryptedStreamingInfo()

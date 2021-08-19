@@ -364,12 +364,12 @@ class TXPlayerImpl @JvmOverloads constructor(
             if (model.multiURLs != null && model.multiURLs!!.isNotEmpty()) { // 多码率URL播放
                 for ((i, superPlayerURL) in model.multiURLs!!.withIndex()) {
                     if (i == model.playDefaultIndex) {
-                        videoURL = superPlayerURL!!.url
+                        videoURL = superPlayerURL.url
                     }
                     videoQualities.add(
                         VideoQuality(
                             i,
-                            superPlayerURL!!.qualityName,
+                            superPlayerURL.qualityName,
                             superPlayerURL.url
                         )
                     )
@@ -417,7 +417,6 @@ class TXPlayerImpl @JvmOverloads constructor(
         playVodURL(protocol.url)
         val videoQualities = protocol.videoQualityList
         mIsMultiBitrateStream = videoQualities == null
-        val defaultVideoQuality = protocol.defaultVideoQuality
     }
 
     override fun getVideoRotation() = mRotation
@@ -431,7 +430,7 @@ class TXPlayerImpl @JvmOverloads constructor(
         if (model!!.multiURLs != null && model.multiURLs!!.isNotEmpty()) { // 多码率URL播放
             for (i in model.multiURLs!!.indices) {
                 if (i == model.playDefaultIndex) {
-                    playVodURL(model.multiURLs!![i]!!.url)
+                    playVodURL(model.multiURLs!![i].url)
                 }
             }
         } else if (!TextUtils.isEmpty(model.url)) {

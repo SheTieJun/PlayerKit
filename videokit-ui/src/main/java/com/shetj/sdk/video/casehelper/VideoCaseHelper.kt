@@ -18,7 +18,7 @@ import me.shetj.sdk.video.timer.TimeType.Companion.getTimeTypeList2
 import me.shetj.sdk.video.timer.TimerConfigure
 import me.shetj.sdk.video.timer.TimerConfigure.Companion.REPEAT_MODE_ALL
 import me.shetj.sdk.video.timer.TimerConfigure.Companion.REPEAT_MODE_ONE
-import com.shetj.sdk.video.ui.view.VodMoreView
+import com.shetj.sdk.video.view.VodMoreView
 import java.text.SimpleDateFormat
 import java.util.*
 

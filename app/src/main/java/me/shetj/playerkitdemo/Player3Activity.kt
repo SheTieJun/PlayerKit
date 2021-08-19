@@ -9,7 +9,7 @@ import me.shetj.base.mvvm.BaseViewModel
 import me.shetj.base.tools.app.ArmsUtils
 import me.shetj.playerkitdemo.databinding.ActivityPlayer3Binding
 import me.shetj.sdk.video.base.UIConfig
-import me.shetj.sdk.video.base.VideoViewCallbackBuilder
+import me.shetj.sdk.video.base.VideoViewCallback
 import me.shetj.sdk.video.model.VideoPlayerModel
 import me.shetj.sdk.video.player.PlayerDef
 import me.shetj.sdk.video.timer.TimerConfigure
@@ -99,7 +99,7 @@ class Player3Activity : BaseBindingActivity<BaseViewModel, ActivityPlayer3Bindin
                 mViewBinding.btnTv.text = "设置TV:$isTv"
             }
 
-            mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallbackBuilder.build {
+            mViewBinding.superVodPlayerView.setPlayerCallback(VideoViewCallback.build {
                 onStart = {
                     "onStart".logi()
                 }

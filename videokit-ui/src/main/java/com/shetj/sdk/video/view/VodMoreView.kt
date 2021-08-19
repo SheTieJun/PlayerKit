@@ -1,4 +1,4 @@
-package com.shetj.sdk.video.ui.view
+package com.shetj.sdk.video.view
 
 import android.content.*
 import android.util.AttributeSet

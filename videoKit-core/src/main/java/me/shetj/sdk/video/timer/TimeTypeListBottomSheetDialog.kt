@@ -33,7 +33,7 @@ class TimeTypeListBottomSheetDialog(private val context: Context, var position: 
             dismissBottomSheet()
         }
         val lectureClose = rootView.findViewById<View>(R.id.cancel)
-        lectureClose.setOnClickListener { v: View? -> dismissBottomSheet() }
+        lectureClose.setOnClickListener { dismissBottomSheet() }
         mBottomSheetDialog.setContentView(rootView)
         return mBottomSheetDialog
     }
