@@ -89,6 +89,8 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
     protected var onPlayerCallback: OnPlayerCallback? = null
     protected val activityManager: ActivityManager by lazy { getActivityManagerService() }
 
+    private var showOnTime:Long = 0
+
 
     constructor(context: Context) : super(context) {
         initialize(context)
@@ -788,9 +790,10 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
                         Log.e("playerKit", "无设置悬浮view,无法启动悬浮模式")
                         return
                     }
-                    if (mContext!!.checkFloatPermission()){
+                    if (!mContext!!.checkFloatPermission()) {
                         return
                     }
+                    showOnTime = System.currentTimeMillis()
                     mSuperPlayer?.pause()
                     mWindowManager = mContext!!.getWinManager()
                     mWindowParams = FloatKit.getWindowParams()
@@ -897,17 +900,21 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
      */
     open fun processStopFloatWindow() {
         val viewContext = context
-        if (viewContext is Activity && !viewContext.isDestroyed) {
+        if (System.currentTimeMillis() - showOnTime > 10000){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                activityManager.appTasks?.first {
+                    it.taskInfo.baseIntent.component?.packageName == viewContext.packageName
+                }?.apply {
+                    moveToFront()
+                }
+            }
+        } else if (viewContext is Activity && !viewContext.isDestroyed) {
             //让该类型的Activity 会到前台
             val intent: Intent =
                 Intent(viewContext, viewContext.javaClass).apply {
                     flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                 }
             viewContext.startActivity(intent)
-            mSuperPlayer?.pause()
-            mVideoView?.let { mSuperPlayer?.setPlayerView(it) }
-            mSuperPlayer?.resume()
-            mWindowManager?.removeView(mFloatPlayer)
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 activityManager.appTasks?.first {
@@ -916,9 +923,13 @@ open class BasePlayerView : FrameLayout, TimerConfigure.CallBack,
                     moveToFront()
                 }
             }
-            mSuperPlayer?.pause()
-            mWindowManager?.removeView(mFloatPlayer)
         }
+        mSuperPlayer?.pause()
+        if (viewContext is Activity && !viewContext.isDestroyed) {
+            mVideoView?.let { mSuperPlayer?.setPlayerView(it) }
+            mSuperPlayer?.resume()
+        }
+        mWindowManager?.removeView(mFloatPlayer)
     }
 
     /**

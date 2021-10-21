@@ -249,6 +249,7 @@ class EXOPlayerImpl(private val context: Context) : IEXOPlayer {
     }
 
     override fun destroy() {
+        playerView?.getPlayerView()?.removeCallbacks(updateProgressAction)
         exoplayer.release()
     }
 
