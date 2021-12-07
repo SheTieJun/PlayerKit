@@ -45,3 +45,4 @@ dependencies {
     compileOnly project(path: ':videokit-ui')
     compileOnly project(path: ':videoKit-core')
 }
+apply from : "uploadLocal.gradle"
