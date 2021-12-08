@@ -15,11 +15,6 @@
         <attr name="psb_progressHeight" format="dimension" />
     </declare-styleable>
 
-    <style name="transparent_bottom_dialog_fragment_style" parent="transparent_dialog_fragment_style">
-        <item name="behavior_peekHeight">360dp</item>
-        <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
-    </style>
-
     <style name="transparent_dialog_fragment_style" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
