@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.*
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -19,6 +20,7 @@ import com.shetj.sdk.video.casehelper.KeyListListener
 import com.shetj.sdk.video.ui.R
 import com.shetj.sdk.video.view.*
 import com.shetj.sdk.video.viedoview.AbBaseUIPlayer
+import me.shetj.sdk.video.model.PlayKeyFrameDescInfo
 import me.shetj.sdk.video.player.PlayerDef
 import me.shetj.sdk.video.model.VideoQuality
 import kotlin.math.roundToInt
@@ -92,6 +94,7 @@ class WindowPlayer :  AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDr
     private var mTvQuality: TextView? = null
     private var mFirstShowQuality = false // 是都是首次显示画质信息
     private var mIvTV: View? = null
+    private var mTXPlayKeyFrameDescInfoList: ArrayList<PlayKeyFrameDescInfo>? = null // 关键帧信息
 
     constructor(context: Context) : super(context) {
         initialize(context)
@@ -349,6 +352,25 @@ class WindowPlayer :  AbBaseUIPlayer, View.OnClickListener, PointSeekBar.PointDr
         isShowing = true
         isShowControl(true)
         delayHide()
+        updateKeyPoint()
+    }
+
+
+    override fun updateKeyFrameDescInfo(list: ArrayList<PlayKeyFrameDescInfo>?) {
+        mTXPlayKeyFrameDescInfoList = list
+        updateKeyPoint()
+    }
+
+    private fun updateKeyPoint() {
+        if (mSeekBarProgress != null) {
+            val pointParams: MutableList<PointSeekBar.PointParams> = ArrayList()
+            if (mTXPlayKeyFrameDescInfoList != null) for (info in mTXPlayKeyFrameDescInfoList!!) {
+                val progress =
+                    (info.time / mDuration * mSeekBarProgress!!.max).toInt()
+                pointParams.add(PointSeekBar.PointParams(progress, Color.WHITE))
+            }
+            mSeekBarProgress?.setPointList(pointParams)
+        }
     }
 
     private fun delayHide() {

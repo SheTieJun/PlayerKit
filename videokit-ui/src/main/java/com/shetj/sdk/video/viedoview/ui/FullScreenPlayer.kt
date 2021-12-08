@@ -334,6 +334,12 @@ open class FullScreenPlayer :  AbBaseUIPlayer, View.OnClickListener, VodMoreView
                 mViewBinding.superplayerTvBackToLive.visibility = VISIBLE
             }
         }
+        showKeyPoint()
+        removeCallbacks(mHideViewRunnable)
+        postDelayed(mHideViewRunnable, 7000)
+    }
+
+    private fun showKeyPoint() {
         val pointParams: MutableList<PointSeekBar.PointParams> = ArrayList()
         if (mTXPlayKeyFrameDescInfoList != null) for (info in mTXPlayKeyFrameDescInfoList!!) {
             val progress =
@@ -341,8 +347,6 @@ open class FullScreenPlayer :  AbBaseUIPlayer, View.OnClickListener, VodMoreView
             pointParams.add(PointSeekBar.PointParams(progress, Color.WHITE))
         }
         mViewBinding.superplayerSeekbarProgress.setPointList(pointParams)
-        removeCallbacks(mHideViewRunnable)
-        postDelayed(mHideViewRunnable, 7000)
     }
 
     /**
@@ -540,6 +544,7 @@ open class FullScreenPlayer :  AbBaseUIPlayer, View.OnClickListener, VodMoreView
      */
     override fun updateKeyFrameDescInfo(list: ArrayList<PlayKeyFrameDescInfo>?) {
         mTXPlayKeyFrameDescInfoList = list
+        showKeyPoint()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
