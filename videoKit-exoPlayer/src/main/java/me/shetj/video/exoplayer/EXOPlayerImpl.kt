@@ -69,13 +69,13 @@ class EXOPlayerImpl(private val context: Context) : IEXOPlayer {
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException) {
-                super.onPlayerError(error)
-                Log.e("exoplayer","error type = ${error.type}:${error.message}")
-                if (mObserver != null) {
-                    mObserver?.onError(error.type, error.message)
-                }
-            }
+//            override fun onPlayerError(error: ExoPlaybackException) {
+//                super.onPlayerError(error)
+//                Log.e("exoplayer","error type = ${error.type}:${error.message}")
+//                if (mObserver != null) {
+//                    mObserver?.onError(error.type, error.message)
+//                }
+//            }
 
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
