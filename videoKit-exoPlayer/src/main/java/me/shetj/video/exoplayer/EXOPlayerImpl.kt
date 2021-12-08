@@ -2,6 +2,7 @@ package me.shetj.video.exoplayer
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.STATE_ENDED
@@ -70,6 +71,7 @@ class EXOPlayerImpl(private val context: Context) : IEXOPlayer {
 
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
+                Log.e("exoplayer","error type = ${error.type}:${error.message}")
                 if (mObserver != null) {
                     mObserver?.onError(error.type, error.message)
                 }
