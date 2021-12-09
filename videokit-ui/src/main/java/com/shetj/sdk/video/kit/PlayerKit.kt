@@ -22,7 +22,7 @@ object PlayerKit {
      * API >=23，需要在manifest中申请权限，并在每次需要用到权限的时候检查是否已有该权限，因为用户随时可以取消掉。
      * API >25，TYPE_TOAST 已经被谷歌制裁了，会出现自动消失的情况
      */
-      fun checkOp(context: Context?, op: Int): Boolean {
+    fun checkOp(context: Context?, op: Int): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             val manager = context!!.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
             try {
@@ -48,21 +48,13 @@ object PlayerKit {
     /**
      * 用来隐藏状态栏
      */
-    fun onWindowFocusChanged(window: Window,hasFocus: Boolean) {
-        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
-            if (Build.VERSION.SDK_INT < 30) {
-                val decorView: View = window.decorView
-                decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-            }else{
-                window.insetsController?.hide(WindowInsets.Type.systemBars())
-            }
-        }
+    fun onWindowFocusChanged(window: Window, hasFocus: Boolean) {
+        val decorView: View = window.decorView
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
-
-
 }

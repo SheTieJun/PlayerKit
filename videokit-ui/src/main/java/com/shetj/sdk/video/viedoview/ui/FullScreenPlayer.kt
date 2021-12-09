@@ -806,8 +806,8 @@ open class FullScreenPlayer :  AbBaseUIPlayer, View.OnClickListener, VodMoreView
      * @param progress 播放进度
      */
     private fun setThumbnail(progress: Int) {
-        val percentage = progress.toFloat() / mViewBinding.superplayerSeekbarProgress.max
-        val seekTime = mDuration * percentage
+//        val percentage = progress.toFloat() / mViewBinding.superplayerSeekbarProgress.max
+//        val seekTime = mDuration * percentage
     }
 
     /**
